@@ -22,7 +22,7 @@ public class MyUserPermissionResolver extends UserPermissionResolver {
 
     @Override
     public Boolean hasPermission(String path,Integer type) {
-        return null;
+        return true;
     }
 
     @Override

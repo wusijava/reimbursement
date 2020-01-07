@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,12 +14,12 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisUtil {
 
-    private static RedisTemplate<String, Object> redisTemplate;
+    private static RedisTemplate<String,Object> redisTemplate;
 
-    @Autowired
-  /*  public void setRedisTemplate(RedisTemplate<String, Object> template) {
+    @Resource
+    public void setRedisTemplate(RedisTemplate<String,Object> template) {
         redisTemplate = template;
-    }*/
+    }
     /**
      * 指定缓存失效时间
      * @param key 键
