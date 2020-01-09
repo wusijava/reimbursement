@@ -28,7 +28,7 @@ spring:
     port: 6379
     password: tuchuan2017
     timeout: 3000ms
-    database: 6
+    database: 0
     lettuce:
       pool:
         max-wait: 2000ms
@@ -40,4 +40,5 @@ server:
   port: 8083
 mybatis:
   mapper-locations: classpath:com/wusi/reimbursement/*Mapper.xml
-
+web:
+  server: http://172.16.4.166:8083
