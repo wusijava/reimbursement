@@ -124,4 +124,24 @@ public class BaseController {
         reimbursement.setRemark(reimbursementList.getRemark());
         return reimbursement;
     }
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> save(ReimbursementList reimbursementList) throws ParseException {
+        Reimbursement reimbursement=saveReimbursement(reimbursementList);
+        reimbursementService.insert(reimbursement);
+        return Response.ok("");
+    }
+    private Reimbursement saveReimbursement(ReimbursementList reimbursementList) throws ParseException {
+        Reimbursement reimbursement = new Reimbursement();
+        reimbursement.setId(reimbursementList.getId());
+        reimbursement.setProductName(reimbursementList.getProductName());
+        reimbursement.setTotalPrice(reimbursementList.getTotalPrice());
+        reimbursement.setBuyChannel(reimbursementList.getBuyChannel());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date buydate=simpleDateFormat.parse(reimbursementList.getBuyDate());
+        reimbursement.setBuyDate(buydate);
+        reimbursement.setState(-1);
+        reimbursement.setRemark(reimbursementList.getRemark());
+        return reimbursement;
+    }
 }
