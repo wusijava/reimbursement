@@ -144,4 +144,11 @@ public class BaseController {
         reimbursement.setRemark(reimbursementList.getRemark());
         return reimbursement;
     }
+    @RequestMapping(value = "/del", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> del(ReimbursementQuery query) {
+        System.out.println(query.getId());
+        reimbursementService.delById(query.getId());
+        return Response.ok("");
+    }
 }

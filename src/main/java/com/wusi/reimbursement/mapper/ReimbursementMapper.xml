@@ -185,4 +185,11 @@
         </set>
         WHERE id=#{id}
     </update>
+    <delete id="delById">
+        delete from
+        <include refid="table"/>
+        WHERE
+        id=#{id}
+
+    </delete>
 </mapper>

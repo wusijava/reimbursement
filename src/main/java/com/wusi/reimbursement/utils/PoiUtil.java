@@ -86,7 +86,7 @@ public class PoiUtil {
                 cell.setCellValue(obj.getString(keys[i]));
             }
         }
-        String filename = "导出信息" + DateUtil.formatDate(new Date(), DateUtil.PATTERN_YYYYMMDDHHMMSS) + ".xlsx";
+        String filename = "报销记录表" + DateUtil.formatDate(new Date(), DateUtil.PATTERN_YYYYMMDDHHMMSS) + ".xlsx";
         String filepath = request.getRealPath("/") + filename;
         FileOutputStream out = new FileOutputStream(filepath);
         wb.write(out);
