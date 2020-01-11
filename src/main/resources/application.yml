@@ -24,9 +24,9 @@ spring:
         exclusions: '*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*'
         session-stat-enable: true
   redis:
-    host: 172.16.4.201
+    host: 49.233.192.222
     port: 6379
-    password: tuchuan2017
+    password: 13545630179qq.
     timeout: 3000ms
     database: 0
     lettuce:
@@ -42,3 +42,5 @@ mybatis:
   mapper-locations: classpath:com/wusi/reimbursement/*Mapper.xml
 web:
   server: http://172.16.4.166:8083
+excelDownloadUrl: http://127.0.0.1:8083/downloadExcel/
+

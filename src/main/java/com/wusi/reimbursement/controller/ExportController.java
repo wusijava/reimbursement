@@ -63,18 +63,18 @@ public class ExportController {
         }
         Integer rowNum = sheet.getLastRowNum();
         Reimbursement qualification;
-        for (int i = 1; i < rowNum; i++) {
+        for (int i = 1; i <= rowNum; i++) {
             qualification=new Reimbursement();
             HSSFRow row = sheet.getRow(i);
             format(row);
             qualification.setProductName(getData(row, 1));
             qualification.setTotalPrice(getData(row, 2));
             qualification.setBuyChannel(getData(row, 3));
-            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-DD");
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
             Date buydate=simpleDateFormat.parse(getData(row, 4));
             qualification.setBuyDate(buydate);
             qualification.setState(-1);
-            //qualification.setRemark(getData(row, 8));
+            qualification.setRemark(getData(row, 5));
             list.add(qualification);
         }
         return list;
@@ -84,7 +84,7 @@ public class ExportController {
         row.getCell(2).setCellType(Cell.CELL_TYPE_STRING);
         row.getCell(3).setCellType(Cell.CELL_TYPE_STRING);
         row.getCell(4).setCellType(Cell.CELL_TYPE_STRING);
-        //row.getCell(5).setCellType(Cell.CELL_TYPE_STRING);
+        row.getCell(5).setCellType(Cell.CELL_TYPE_STRING);
        // row.getCell(6).setCellType(Cell.CELL_TYPE_STRING);
         //row.getCell(7).setCellType(Cell.CELL_TYPE_STRING);
         //row.getCell(8).setCellType(Cell.CELL_TYPE_STRING);
