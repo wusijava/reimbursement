@@ -35,12 +35,14 @@ spring:
         min-idle: 50
         max-idle: 100
         max-active: 200
-
+excelDownloadUrl: http://127.0.0.1:8083/downloadExcel/
 server:
   port: 8083
 mybatis:
   mapper-locations: classpath:com/wusi/reimbursement/*Mapper.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 web:
-  server: http://172.16.4.166:8083
-excelDownloadUrl: http://127.0.0.1:8083/downloadExcel/
+  server: http://127.0.0.1:8083
+
 
