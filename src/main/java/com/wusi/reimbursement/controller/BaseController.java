@@ -6,8 +6,10 @@ import com.wusi.reimbursement.entity.RequestContext;
 import com.wusi.reimbursement.query.ReimbursementQuery;
 import com.wusi.reimbursement.service.ReimbursementService;
 import com.wusi.reimbursement.service.RoleService;
+import com.wusi.reimbursement.service.UserService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
+import com.wusi.reimbursement.utils.StringUtils;
 import com.wusi.reimbursement.vo.HomeMenuList;
 import com.wusi.reimbursement.vo.ReimbursementList;
 import com.wusi.reimbursement.vo.UserInfo;
@@ -36,6 +38,8 @@ import java.util.List;
 public class BaseController {
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private ReimbursementService reimbursementService;
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -150,5 +154,24 @@ public class BaseController {
         System.out.println(query.getId());
         reimbursementService.delById(query.getId());
         return Response.ok("");
+    }
+    @RequestMapping(value = "/api/web/user/changePassword", method = RequestMethod.POST)
+    @ResponseBody
+    public Response changePassword(String oldPassword, String newPassword) {
+        if (DataUtil.isEmpty(oldPassword)) {
+            return Response.fail("缺少原密码");
+        }
+        if (DataUtil.isEmpty(newPassword)) {
+            return Response.fail("缺少新密码");
+        }
+        if (StringUtils.isChinese(newPassword)) {
+            return Response.fail("密码不能含有中文字符");
+        }
+        RequestContext.RequestUser user = RequestContext.getCurrentUser();
+        String result = userService.changePassword(Long.valueOf(user.getId()), user.getSalt(), user.getPassword(), oldPassword, newPassword);
+        if (result != null) {
+            return Response.fail(result);
+        }
+        return Response.ok("修改成功，请重新登录");
     }
 }
