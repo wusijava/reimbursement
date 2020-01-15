@@ -14,28 +14,33 @@ import java.io.*;
  */
 @RestController
 public class DownLoadController  {
-    @RequestMapping("filedownload")
+    @RequestMapping("/ok")
+    public  Response<String> ok(){
+        System.out.println("ok");
+        return Response.ok("ok");
+    }
+    @RequestMapping("fileDownload")
     public Response<String> fileDownLoad(HttpServletResponse response) throws IOException {
-        File file = new File("D:\\a.zip");
-
-        InputStream ins = new FileInputStream(file);
+        File file = new File("D:\\a.doc");
+        String fileName = file.getName();
+        //InputStream ins = new FileInputStream(file);
+        InputStream fis=new BufferedInputStream(new FileInputStream(file));
         /* 设置文件ContentType类型，这样设置，会自动判断下载文件类型 */
-        response.setContentType("application/zip");
+        response.setContentType("application/msword;charset=utf-8");
         /* 设置文件头：最后一个参数是设置下载文件名 */
-       response.setHeader("Content-Disposition", "attachment;filename="+file.getName());
+        response.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1"));
+        response.setCharacterEncoding("utf-8");
         try{
-            OutputStream os = response.getOutputStream();
-            byte[] b = new byte[1024];
-            int len;
-            while((len = ins.read(b)) > 0){
-                os.write(b,0,len);
-            }
-            os.flush();
-            os.close();
-            ins.close();
+            byte[] b = new byte[fis.available()];
+            fis.read(b);
+            OutputStream out = response.getOutputStream();
+            out.write(b);
+            out.flush();
+            fis.close();
+            out.close();
         }catch (IOException ioe){
             ioe.printStackTrace();
         }
-        return Response.ok("success");
+        return null;
     }
 }
