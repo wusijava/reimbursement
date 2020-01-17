@@ -21,7 +21,7 @@ public class DownLoadController  {
     }
     @RequestMapping("fileDownload")
     public Response<String> fileDownLoad(HttpServletResponse response) throws IOException {
-        File file = new File("D:\\a.doc");
+        File file = new File("/home/file/a.doc");
         String fileName = file.getName();
         //InputStream ins = new FileInputStream(file);
         InputStream fis=new BufferedInputStream(new FileInputStream(file));
