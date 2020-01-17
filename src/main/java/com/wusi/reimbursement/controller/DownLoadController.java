@@ -21,12 +21,13 @@ public class DownLoadController  {
     }
     @RequestMapping("fileDownload")
     public Response<String> fileDownLoad(HttpServletResponse response) throws IOException {
-        File file = new File("/home/file/a.doc");
+        File file = new File("/home/file/报销记录导入模板.xls");
         String fileName = file.getName();
         //InputStream ins = new FileInputStream(file);
         InputStream fis=new BufferedInputStream(new FileInputStream(file));
         /* 设置文件ContentType类型，这样设置，会自动判断下载文件类型 */
-        response.setContentType("application/msword;charset=utf-8");
+       // response.setContentType("application/msword;charset=utf-8");
+        response.setContentType("application/x-xls;charset=utf-8");
         /* 设置文件头：最后一个参数是设置下载文件名 */
         response.addHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1"));
         response.setCharacterEncoding("utf-8");

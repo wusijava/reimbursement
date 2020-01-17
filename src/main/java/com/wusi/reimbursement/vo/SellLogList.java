@@ -13,11 +13,11 @@ public class SellLogList implements Identifiable<Long> {
   private String product;
   private String buyerName;
   private String myOrderNo;
-  private long sellMoney;
+  private Integer sellMoney;
   private String amyOrderNo;
-  private long buyMoney;
-  private long profit;
-  private long refund;
+  private Integer buyMoney;
+  private Integer profit;
+  private Integer refund;
   private String remark;
   private String orderDate;
 
