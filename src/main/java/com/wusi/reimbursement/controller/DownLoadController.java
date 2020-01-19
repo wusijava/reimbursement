@@ -17,7 +17,7 @@ public class DownLoadController  {
     @RequestMapping("/ok")
     public  Response<String> ok(){
         System.out.println("ok");
-        return Response.ok("ojbk!");
+        return Response.ok("ojbk-jenkins!");
     }
     @RequestMapping("fileDownload")
     public Response<String> fileDownLoad(HttpServletResponse response) throws IOException {
