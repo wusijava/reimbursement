@@ -35,7 +35,7 @@ spring:
         min-idle: 50
         max-idle: 100
         max-active: 200
-excelDownloadUrl: http://127.0.0.1:8083/downloadExcel/
+excelDownloadUrl: http://49.233.192.222:8083/downloadExcel/
 server:
   port: 8083
 mybatis:
@@ -43,6 +43,6 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 web:
-  server: http://127.0.0.1:8083
+  server: http://49.233.192.222:8083
 
 
