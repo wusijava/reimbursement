@@ -148,7 +148,10 @@ public class BaseController {
         Date buydate=simpleDateFormat.parse(reimbursementList.getBuyDate());
         reimbursement.setBuyDate(buydate);
         reimbursement.setState(-1);
-        reimbursement.setRemark(reimbursementList.getRemark()==null|reimbursementList.getRemark().equals("")?"":reimbursementList.getRemark());
+        if(reimbursementList.getRemark()==null||reimbursementList.getRemark().equals("")){
+            reimbursement.setRemark("");
+        }
+        reimbursement.setRemark(reimbursementList.getRemark());
         return reimbursement;
     }
     @RequestMapping(value = "/del", method = RequestMethod.POST)
