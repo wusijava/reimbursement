@@ -46,8 +46,11 @@
                     <if test="endTime != null">
                     and DATE_FORMAT(date,'%Y-%m-%d') &lt;= #{endTime}
                     </if>
+
             </trim>
+
         </where>
+        order by `date` desc
         <if test="offset == null and limit != null">
             limit #{limit}
         </if>
@@ -77,6 +80,7 @@
         FROM
         <include refid="table"/>
         <include refid="Base_Where_Clause"/>
+
     </select>
 
     <insert id="insert" parameterType="com.wusi.reimbursement.entity.Spend" useGeneratedKeys="true"
