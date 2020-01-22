@@ -101,6 +101,7 @@ public class SpendController {
     @RequestMapping(value = "/saveSpend", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> save(SpendList spendList) throws ParseException {
+        System.out.println(spendList.getDate());
         Spend spend=getSpend(spendList);
       spendService.insert(spend);
         return Response.ok("");
