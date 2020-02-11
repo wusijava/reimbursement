@@ -1,17 +1,18 @@
 package com.wusi.reimbursement.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wusi.reimbursement.common.Response;
-import com.wusi.reimbursement.entity.Reimbursement;
+import com.wusi.reimbursement.entity.ExcelDto;
 import com.wusi.reimbursement.entity.Spend;
-import com.wusi.reimbursement.query.ReimbursementQuery;
 import com.wusi.reimbursement.query.SpendQuery;
 import com.wusi.reimbursement.service.SpendService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
-import com.wusi.reimbursement.vo.ReimbursementList;
-import com.wusi.reimbursement.vo.SellLogList;
+import com.wusi.reimbursement.utils.RedisUtil;
 import com.wusi.reimbursement.vo.SpendList;
+import com.wusi.reimbursement.vo.SpendVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @ Description   :  消费类controller
@@ -36,6 +38,10 @@ import java.util.List;
 public class SpendController {
     @Autowired
     SpendService spendService;
+
+    @Value("${excelDownloadUrl}")
+    private  String excelDownloadUrl;
+
     @RequestMapping("spendList")
     @ResponseBody
     public Response<Page<SpendList>> productList(SpendQuery query) {
@@ -105,5 +111,40 @@ public class SpendController {
         Spend spend=getSpend(spendList);
       spendService.insert(spend);
         return Response.ok("");
+    }
+    @RequestMapping(value = "out", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> batchExport(SpendQuery query) {
+        List<Spend> spendList = spendService.queryList(query);
+        List<SpendVo> voList = new ArrayList<>();
+        int index = 1;
+        for (Spend spend : spendList) {
+            SpendVo spendVo = getSpendVo(spend);
+            spendVo.setIndex(index);
+            voList.add(spendVo);
+            index++;
+        }
+        ExcelDto dto = new ExcelDto();
+        dto.setHeaders(SpendVo.headers);
+        dto.setKeys(SpendVo.keys);
+        dto.setObjectList(parser(voList));
+        String key = UUID.randomUUID().toString().replaceAll("-", "");
+        RedisUtil.set(key, dto, 1000 * 60 * 30L);
+        String url = excelDownloadUrl + key;
+        return Response.ok(url);
+    }
+    private List<JSONObject> parser(List<SpendVo> spendVo) {
+        return JSONObject.parseArray(JSONObject.toJSONString(spendVo), JSONObject.class);
+    }
+    private SpendVo getSpendVo(Spend spend) {
+        SpendVo spendVo = new SpendVo();
+       // reimbursementList.setId(reimbursement.getId());
+        spendVo.setId(spend.getId());
+        spendVo.setItem(spend.getItem());
+        spendVo.setPrice(spend.getPrice());
+        spendVo.setConsumer(spend.getConsumer());
+        spendVo.setDate(DateUtil.formatDate(spend.getDate(), DateUtil.PATTERN_YYYY_MM_DD));
+        spendVo.setRemark(spend.getRemark());
+        return spendVo;
     }
 }
