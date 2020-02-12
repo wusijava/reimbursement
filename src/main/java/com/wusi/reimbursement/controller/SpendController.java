@@ -50,7 +50,7 @@ public class SpendController {
             query.setPage(0);
         }
         if (DataUtil.isEmpty(query.getLimit())) {
-            query.setLimit(10);
+            query.setLimit(18);
         }
         Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
         Page<Spend>  page= spendService.queryPage(query,pageable);
