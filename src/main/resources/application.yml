@@ -44,5 +44,10 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 web:
   server: http://49.233.192.222:8083
-
+upload:
+  qiniu:
+    bucket: xiaoningmeng
+    accessKey: dJR8UzN31Iy8-yzRlBR3TBrkOe1RUdMNp0yZM_9k
+    secretKey: l1uLDn9umthxCvqCrKRsAYqriucp0uIJciDcV4Jz
+    host: http://q5xg5ao3l.bkt.clouddn.com/
 

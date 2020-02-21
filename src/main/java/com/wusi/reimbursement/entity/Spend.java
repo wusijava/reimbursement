@@ -11,10 +11,11 @@ public class Spend  implements Identifiable<Long> {
 
   private Long id;
   private String item;
-  private Double price;
+  private String price;
   private String consumer;
   private Date date;
   private String remark;
+  private String url;
 
 
 

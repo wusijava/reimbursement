@@ -9,7 +9,7 @@ public class SpendVo implements Identifiable<Long> {
   private Integer index;
   private Long id;
   private String item;
-  private Double price;
+  private String price;
   private String consumer;
   private String date;
   private String remark;

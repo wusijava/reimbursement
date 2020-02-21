@@ -8,6 +8,7 @@
             <result column="consumer" property="consumer" jdbcType="VARCHAR"/>
             <result column="date" property="date" jdbcType="TIMESTAMP"/>
             <result column="remark" property="remark" jdbcType="VARCHAR"/>
+            <result column="url" property="url" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="table">spend</sql>
@@ -17,7 +18,8 @@
             `price`,
             `consumer`,
             `date`,
-            `remark`
+            `remark`,
+            `url`
     </sql>
     <sql id="Base_Where_Clause">
         <where>
@@ -39,6 +41,9 @@
                     </if>
                     <if test="remark != null and remark != ''">
                         AND `remark`=#{remark}
+                    </if>
+                    <if test="url != null and url != ''">
+                    AND `url`=#{url}
                     </if>
                     <if test="startTime != null">
                     and DATE_FORMAT(date,'%Y-%m-%d') >= #{startTime}
@@ -64,6 +69,7 @@
         WHERE
         id=#{id}
     </delete>
+
 
     <!-- 查询总数 -->
     <select id="selectCount" resultType="java.lang.Long" parameterType="java.util.Map">
@@ -93,7 +99,8 @@
             `price`,
             `consumer`,
             `date`,
-            `remark`
+            `remark`,
+            `url`
         )
         VALUES(
             #{id},
@@ -101,7 +108,8 @@
             #{price},
             #{consumer},
             #{date},
-            #{remark}
+            #{remark},
+            #{url}
         )
     </insert>
 
@@ -114,7 +122,8 @@
             `price`,
             `consumer`,
             `date`,
-            `remark`
+            `remark`,
+            `url`
         )
         VALUES
         <foreach collection="list" item="cm" index="index" separator=",">
@@ -124,7 +133,8 @@
             #{cm.price},
             #{cm.consumer},
             #{cm.date},
-            #{cm.remark}
+            #{cm.remark},
+            #{url}
             )
         </foreach>
     </insert>
@@ -155,6 +165,9 @@
             </if>
             <if test="remark != null and remark != ''">
                  `remark`=#{remark},
+            </if>
+            <if test="url != null and url != ''">
+                `url`=#{url}
             </if>
         </set>
         WHERE id=#{id}

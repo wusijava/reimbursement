@@ -69,6 +69,7 @@ public class SpendController {
         spendList.setConsumer(spend.getConsumer());
         spendList.setDate(DateUtil.formatDate(spend.getDate(), DateUtil.PATTERN_YYYY_MM_DD));
         spendList.setRemark(spend.getRemark());
+        spendList.setUrl(spend.getUrl());
         return spendList;
     }
     @RequestMapping(value = "/spendDetail", method = RequestMethod.POST)
@@ -80,6 +81,7 @@ public class SpendController {
     @RequestMapping(value = "/spendUpdate", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> update(SpendList query) throws ParseException {
+        System.out.println(query);
         Spend spend=getSpend(query);
         spendService.updateById(spend);
         return Response.ok("ok");
@@ -95,6 +97,7 @@ public class SpendController {
         Date buydate=simpleDateFormat.parse(spendList.getDate());
         spend.setDate(buydate);
         spend.setRemark(spendList.getRemark());
+        spend.setUrl(spendList.getUrl());
         return  spend;
     }
     @RequestMapping(value = "/spendDel", method = RequestMethod.POST)
@@ -107,7 +110,8 @@ public class SpendController {
     @RequestMapping(value = "/saveSpend", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> save(SpendList spendList) throws ParseException {
-        System.out.println(spendList.getDate());
+
+        System.out.println(spendList.getUrl());
         Spend spend=getSpend(spendList);
       spendService.insert(spend);
         return Response.ok("");
