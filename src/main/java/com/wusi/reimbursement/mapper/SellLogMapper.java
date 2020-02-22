@@ -10,6 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface SellLogMapper extends BaseMapper<SellLog,Long> {
-
+   void deleteById(Integer id);
 
 }

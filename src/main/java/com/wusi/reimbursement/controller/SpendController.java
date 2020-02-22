@@ -103,8 +103,13 @@ public class SpendController {
     @RequestMapping(value = "/spendDel", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> del(SpendList query) {
-        spendService.delById(query.getId());
-        return Response.ok("");
+        try {
+            spendService.delById(query.getId());
+            return Response.ok("删除SUCCESS!!!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Response.fail("删除失败!!!");
     }
     //saveSpend
     @RequestMapping(value = "/saveSpend", method = RequestMethod.POST)

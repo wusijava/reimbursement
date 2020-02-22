@@ -221,4 +221,11 @@
         </set>
         WHERE id=#{id}
     </update>
+    <delete id="deleteById">
+        delete
+        from
+        <include refid="table"/>
+        where
+        id=#{id}
+    </delete>
 </mapper>

@@ -157,9 +157,13 @@ public class BaseController {
     @RequestMapping(value = "/del", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> del(ReimbursementQuery query) {
-        System.out.println(query.getId());
-        reimbursementService.delById(query.getId());
-        return Response.ok("");
+        try {
+            reimbursementService.delById(query.getId());
+            return Response.ok("删除的非常成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Response.ok("删除失败啊伙计！");
     }
     @RequestMapping(value = "/api/web/user/changePassword", method = RequestMethod.POST)
     @ResponseBody

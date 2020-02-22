@@ -148,7 +148,6 @@ public class SellLogController {
     @RequestMapping(value = "order/save", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> save(SellLogList query) throws ParseException {
-        System.out.println(query+"_____________________________________");
         SellLog sellLog=getSellLog(query);
         try {
             sellLogService.insert(sellLog);
@@ -157,5 +156,17 @@ public class SellLogController {
            log.error("添加失败{}", e.getMessage());
         }
         return Response.fail("添加失败");
+    }
+    @RequestMapping(value = "order/del", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> del(SellLog query) throws ParseException {
+        System.out.println(query.getId());
+        try {
+            sellLogService.deleteById(query.getId());
+            return Response.ok("删除成功!!!");
+        } catch (Exception e) {
+            log.error("添加失败{}", e.getMessage());
+        }
+        return Response.fail("删除失败!!!");
     }
 }
