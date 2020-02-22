@@ -3,7 +3,6 @@ package com.wusi.reimbursement.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.ExcelDto;
-import com.wusi.reimbursement.entity.Reimbursement;
 import com.wusi.reimbursement.entity.SellLog;
 import com.wusi.reimbursement.query.SellLogListQuery;
 import com.wusi.reimbursement.query.SellLogQuery;
@@ -11,9 +10,9 @@ import com.wusi.reimbursement.service.SellLogService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
 import com.wusi.reimbursement.utils.RedisUtil;
-import com.wusi.reimbursement.vo.ReimbursementVo;
 import com.wusi.reimbursement.vo.SellLogList;
 import com.wusi.reimbursement.vo.SellLogListVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -38,6 +37,7 @@ import java.util.UUID;
  * @ CreateDate    :  2020/1/16$ 17:07$
  */
 @RestController
+@Slf4j
 public class SellLogController {
     @Autowired
     private SellLogService sellLogService;
@@ -73,6 +73,7 @@ public class SellLogController {
         sellLogList.setRefund(sellLog.getRefund());
         sellLogList.setRemark(sellLog.getRemark());
         sellLogList.setOrderDate(DateUtil.formatDate(sellLog.getOrderDate(), DateUtil.PATTERN_YYYY_MM_DD));
+        sellLogList.setUrl(sellLog.getUrl());
         return sellLogList;
     }
     @RequestMapping("logDetail")
@@ -102,6 +103,7 @@ public class SellLogController {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Date orderDate=simpleDateFormat.parse(sellLogList.getOrderDate());
     sellLog.setOrderDate(orderDate);
+    sellLog.setUrl(sellLogList.getUrl());
     return sellLog;
     }
     @RequestMapping(value = "logExport", method = RequestMethod.POST)
@@ -142,5 +144,18 @@ public class SellLogController {
         vo.setRemark(sellLog.getRemark());
         vo.setOrderDate(DateUtil.formatDate(sellLog.getOrderDate(), DateUtil.PATTERN_YYYY_MM_DD));
         return vo;
+    }
+    @RequestMapping(value = "order/save", method = RequestMethod.POST)
+    @ResponseBody
+    public Response<String> save(SellLogList query) throws ParseException {
+        System.out.println(query+"_____________________________________");
+        SellLog sellLog=getSellLog(query);
+        try {
+            sellLogService.insert(sellLog);
+            return Response.ok("添加成功");
+        } catch (Exception e) {
+           log.error("添加失败{}", e.getMessage());
+        }
+        return Response.fail("添加失败");
     }
 }

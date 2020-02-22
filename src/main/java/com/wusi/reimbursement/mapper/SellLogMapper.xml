@@ -13,6 +13,7 @@
             <result column="refund" property="refund" jdbcType="INTEGER"/>
             <result column="remark" property="remark" jdbcType="VARCHAR"/>
             <result column="order_date" property="orderDate" jdbcType="TIMESTAMP"/>
+            <result column="url" property="url" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="table">sell_log</sql>
@@ -27,7 +28,8 @@
             `profit`,
             `refund`,
             `remark`,
-            `order_date`
+            `order_date`,
+            `url`
     </sql>
     <sql id="Base_Where_Clause">
         <where>
@@ -64,6 +66,9 @@
                     </if>
                     <if test="orderDate != null">
                         AND `order_date`=#{orderDate}
+                    </if>
+                    <if test="url != null and url != ''">
+                    AND `url`=#{url}
                     </if>
                     <if test="startTime != null">
                     and DATE_FORMAT(order_date,'%Y-%m-%d') >= #{startTime}
@@ -113,7 +118,8 @@
             `profit`,
             `refund`,
             `remark`,
-            `order_date`
+            `order_date`,
+            `url`
         )
         VALUES(
             #{id},
@@ -126,7 +132,8 @@
             #{profit},
             #{refund},
             #{remark},
-            #{orderDate}
+            #{orderDate},
+            #{url}
         )
     </insert>
 
@@ -144,7 +151,8 @@
             `profit`,
             `refund`,
             `remark`,
-            `order_date`
+            `order_date`,
+            `url`
         )
         VALUES
         <foreach collection="list" item="cm" index="index" separator=",">
@@ -159,7 +167,8 @@
             #{cm.profit},
             #{cm.refund},
             #{cm.remark},
-            #{cm.orderDate}
+            #{cm.orderDate},
+            #{url}
             )
         </foreach>
     </insert>
@@ -205,6 +214,9 @@
             </if>
             <if test="orderDate != null">
                  `order_date`=#{orderDate},
+            </if>
+            <if test="url != null and url != ''">
+                `url`=#{url}
             </if>
         </set>
         WHERE id=#{id}

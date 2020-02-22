@@ -20,6 +20,7 @@ public class SellLog implements Identifiable<Long> {
   private Integer refund;
   private String remark;
   private Date orderDate;
+  private String url;
 
 
 

@@ -4,8 +4,6 @@ package com.wusi.reimbursement.vo;
 import com.wusi.reimbursement.common.Identifiable;
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
 public class SellLogList implements Identifiable<Long> {
 
@@ -20,7 +18,7 @@ public class SellLogList implements Identifiable<Long> {
   private Integer refund;
   private String remark;
   private String orderDate;
-
+  private String url;
 
 
 }
