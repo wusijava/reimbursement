@@ -54,13 +54,20 @@ public class SpendController {
             }
             Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
             Page<Spend>  page= spendService.queryPage(query,pageable);
+            //重新封装一个query 不带分页的
+            SpendQuery newQuery=new SpendQuery();
+            newQuery.setItem(query.getItem());
+            newQuery.setStartTime(query.getStartTime());
+            newQuery.setEndTime(query.getEndTime());
+            newQuery.setConsumer(query.getConsumer());
+            List<Spend> List=spendService.queryList(newQuery);
             List<SpendList> volist=new ArrayList<>();
             for (Spend spend:page.getContent()){
                 volist.add(getVo(spend));
             }
         BigDecimal total=new BigDecimal("0.00");
-        for(SpendList spendList:volist){
-            BigDecimal bigDecimal=new BigDecimal(spendList.getPrice());
+        for(Spend spend:List){
+            BigDecimal bigDecimal=new BigDecimal(spend.getPrice());
             total=bigDecimal.add(total);
         }
         for(SpendList spendList:volist){
