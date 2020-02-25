@@ -154,7 +154,7 @@
         WHERE id=#{id}
     </select>
 
-    <update id="updateById" parameterType="com.wusi.reimbursement.entity.Reimbursement">
+    <update id="updateByid" parameterType="com.wusi.reimbursement.entity.Reimbursement">
         UPDATE
         <include refid="table"/>
         <set>
@@ -179,8 +179,8 @@
             <if test="state != null and state != ' '">
                  `state`=#{state},
             </if>
-            <if test="remark != null and remark != ' '">
-                 `remark`=#{remark},
+            <if test="remark != null and remark != ''">
+                 `remark`=#{remark}
             </if>
         </set>
         WHERE id=#{id}

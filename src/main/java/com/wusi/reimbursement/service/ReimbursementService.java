@@ -9,4 +9,5 @@ import com.wusi.reimbursement.entity.Reimbursement;
  **/
 public interface ReimbursementService extends BaseService<Reimbursement,Long> {
     void delById(Long id);
+    void updateByid(Reimbursement reimbursement);
 }

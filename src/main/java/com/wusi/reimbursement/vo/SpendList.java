@@ -14,7 +14,7 @@ public class SpendList implements Identifiable<Long> {
   private String date;
   private String remark;
   private String url;
-
+  private String total;
 
 
 

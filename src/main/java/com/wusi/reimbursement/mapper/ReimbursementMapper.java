@@ -12,4 +12,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ReimbursementMapper extends BaseMapper<Reimbursement,Long> {
 
 void delById(Long id);
+void updateByid(Reimbursement reimbursement);
 }

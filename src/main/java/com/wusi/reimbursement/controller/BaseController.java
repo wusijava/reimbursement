@@ -100,7 +100,7 @@ public class BaseController {
     public Response<String> update(ReimbursementList query) throws ParseException {
         System.out.println(query.toString());
         Reimbursement reimbursement=getReimbursement(query);
-        reimbursementService.updateById(reimbursement);
+        reimbursementService.updateByid(reimbursement);
         return Response.ok("ok");
     }
     private Reimbursement getReimbursement(ReimbursementList reimbursementList) throws ParseException {
@@ -126,7 +126,7 @@ public class BaseController {
         }
         reimbursement.setState(reimbursement.getStatecode(reimbursementList.getState()));
         //
-        reimbursement.setRemark(reimbursementList.getRemark()==null|reimbursementList.getRemark().equals("")?"":reimbursementList.getRemark());
+        reimbursement.setRemark(reimbursementList.getRemark()==null?"  ":reimbursementList.getRemark());
 
         //reimbursement.setRemark(reimbursementList.getRemark());
         return reimbursement;

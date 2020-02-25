@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,18 +46,25 @@ public class SpendController {
     @RequestMapping("spendList")
     @ResponseBody
     public Response<Page<SpendList>> productList(SpendQuery query) {
-        System.out.println(query);
-        if (DataUtil.isEmpty(query.getPage())) {
-            query.setPage(0);
+            if (DataUtil.isEmpty(query.getPage())) {
+                query.setPage(0);
+            }
+            if (DataUtil.isEmpty(query.getLimit())) {
+                query.setLimit(18);
+            }
+            Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+            Page<Spend>  page= spendService.queryPage(query,pageable);
+            List<SpendList> volist=new ArrayList<>();
+            for (Spend spend:page.getContent()){
+                volist.add(getVo(spend));
+            }
+        BigDecimal total=new BigDecimal("0.00");
+        for(SpendList spendList:volist){
+            BigDecimal bigDecimal=new BigDecimal(spendList.getPrice());
+            total=bigDecimal.add(total);
         }
-        if (DataUtil.isEmpty(query.getLimit())) {
-            query.setLimit(18);
-        }
-        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
-        Page<Spend>  page= spendService.queryPage(query,pageable);
-        List<SpendList> volist=new ArrayList<>();
-        for (Spend spend:page.getContent()){
-            volist.add(getVo(spend));
+        for(SpendList spendList:volist){
+            spendList.setTotal(total.toString());
         }
         Page<SpendList> vopage=new PageImpl<>(volist, pageable, page.getTotalElements());
         return Response.ok(vopage);

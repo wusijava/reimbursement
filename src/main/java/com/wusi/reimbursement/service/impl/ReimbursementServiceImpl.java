@@ -28,4 +28,9 @@ public class ReimbursementServiceImpl extends BaseMybatisServiceImpl<Reimburseme
     public void delById(Long id) {
         reimbursementMapper.delById(id);
     }
+
+    @Override
+    public void updateByid(Reimbursement reimbursement) {
+        reimbursementMapper.updateByid(reimbursement);
+    }
 }
