@@ -54,7 +54,7 @@ public class SpendController {
             }
             Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
             Page<Spend>  page= spendService.queryPage(query,pageable);
-            //重新封装一个query 不带分页的
+            //重新封装一个query 不带分页的query
             SpendQuery newQuery=new SpendQuery();
             newQuery.setItem(query.getItem());
             newQuery.setStartTime(query.getStartTime());
