@@ -66,12 +66,18 @@ public class SpendController {
                 volist.add(getVo(spend));
             }
         BigDecimal total=new BigDecimal("0.00");
+        BigDecimal personTotal=new BigDecimal("0.00");
         for(Spend spend:List){
             BigDecimal bigDecimal=new BigDecimal(spend.getPrice());
             total=bigDecimal.add(total);
         }
+        for(SpendList spendlist:volist){
+            BigDecimal bigDecimal=new BigDecimal(spendlist.getPrice());
+            personTotal=bigDecimal.add(personTotal);
+        }
         for(SpendList spendList:volist){
             spendList.setTotal(total.toString());
+            spendList.setPersonTotal(personTotal.toString());
         }
         Page<SpendList> vopage=new PageImpl<>(volist, pageable, page.getTotalElements());
         return Response.ok(vopage);
