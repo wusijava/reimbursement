@@ -46,8 +46,8 @@ web:
   server: http://49.233.192.222:8083
 upload:
   qiniu:
-    bucket: xiaoningmeng
+    bucket: daningmeng001
     accessKey: dJR8UzN31Iy8-yzRlBR3TBrkOe1RUdMNp0yZM_9k
     secretKey: l1uLDn9umthxCvqCrKRsAYqriucp0uIJciDcV4Jz
-    host: http://www.wearelie.com/
+    host: http://www.photo.wearelie.com/
 
