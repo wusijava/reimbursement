@@ -17,18 +17,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @ Description   :  消费类controller
@@ -42,6 +41,8 @@ public class SpendController {
 
     @Value("${excelDownloadUrl}")
     private  String excelDownloadUrl;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @RequestMapping("spendList")
     @ResponseBody
@@ -176,5 +177,26 @@ public class SpendController {
         spendVo.setDate(DateUtil.formatDate(spend.getDate(), DateUtil.PATTERN_YYYY_MM_DD));
         spendVo.setRemark(spend.getRemark());
         return spendVo;
+    }
+    //统计本月消费金额
+    @RequestMapping(value = "/spendMonth", method = RequestMethod.POST)
+    @ResponseBody
+    public Response spendMonth() {
+        Date d = null;
+        DateFormat sdf = new SimpleDateFormat(DateUtil.PATTERN_YYYY_MM_DD);
+        d = new Date();
+         String date = sdf.format(d);
+         //当月消费
+        String sql="select sum(price)  as s from spend where date_format(date,'%Y-%m')=date_format(now(),'%Y-%m');";
+        List<Map<String, Object>> map = jdbcTemplate.queryForList(sql);
+        //本年消费
+        String sqlYear="select sum(price)  as y from spend where date_format(date,'%Y')=date_format(now(),'%Y');";
+        List<Map<String, Object>> mapYear = jdbcTemplate.queryForList(sqlYear);
+        Object sum=map.get(0).getOrDefault("s", 0);
+        Object year=mapYear.get(0).getOrDefault("y", 0);
+        Spend spend=new Spend();
+        spend.setPrice(sum.toString());
+        spend.setItem(year.toString());
+        return Response.ok(spend);
     }
 }

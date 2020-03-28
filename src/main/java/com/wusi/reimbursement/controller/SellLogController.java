@@ -3,6 +3,7 @@ package com.wusi.reimbursement.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.ExcelDto;
+import com.wusi.reimbursement.entity.Reimbursement;
 import com.wusi.reimbursement.entity.SellLog;
 import com.wusi.reimbursement.query.SellLogListQuery;
 import com.wusi.reimbursement.query.SellLogQuery;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,10 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @ Description   :  淘宝记账controller
@@ -39,6 +38,8 @@ import java.util.UUID;
 @RestController
 @Slf4j
 public class SellLogController {
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
     @Autowired
     private SellLogService sellLogService;
     @Value("${excelDownloadUrl}")
@@ -168,5 +169,40 @@ public class SellLogController {
             log.error("添加失败{}", e.getMessage());
         }
         return Response.fail("删除失败!!!");
+    }
+    //统计报销金额
+    @RequestMapping(value = "/countProfit", method = RequestMethod.POST)
+    @ResponseBody
+    public Response spendMonth() {
+
+        //2020
+        String sql1="SELECT sum(profit) as s FROM sell_log where   product='2020';";
+        List<Map<String, Object>> map1 = jdbcTemplate.queryForList(sql1);
+        //本月利润
+        String sql2="select sum(profit)  as s from sell_log where date_format(order_date,'%Y-%m')=date_format(now(),'%Y-%m') and product !='2020';";
+        List<Map<String, Object>> map2 = jdbcTemplate.queryForList(sql2);
+        //本年利润
+        String sql3="select sum(profit)  as s from sell_log where date_format(order_date,'%Y')=date_format(now(),'%Y') and product !='2020';";
+        List<Map<String, Object>> map3 = jdbcTemplate.queryForList(sql3);
+        Object one=map1.get(0).getOrDefault("s", 0);
+        Object two=map2.get(0).getOrDefault("s", 0);
+        Object three=map3.get(0).getOrDefault("s", 0);
+        Reimbursement reimbursement=new Reimbursement();
+        if(one==null){
+            reimbursement.setRemark("0");
+        }else{
+            reimbursement.setRemark(one.toString());
+        }
+        if(two==null){
+            reimbursement.setBuyChannel("0");
+        }else{
+            reimbursement.setBuyChannel(two.toString());
+        }
+        if(three==null){
+            reimbursement.setProductName("0");
+        }else{
+            reimbursement.setProductName(three.toString());        }
+
+        return Response.ok(reimbursement);
     }
 }
