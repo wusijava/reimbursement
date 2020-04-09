@@ -11,11 +11,11 @@ public class SellLogListVo implements Identifiable<Long> {
   private String product;
   private String buyerName;
   private String myOrderNo;
-  private Integer sellMoney;
+  private String sellMoney;
   private String amyOrderNo;
-  private Integer buyMoney;
-  private Integer profit;
-  private Integer refund;
+  private String buyMoney;
+  private String profit;
+  private String refund;
   private String remark;
   private String orderDate;
   public static String[] headers = {
