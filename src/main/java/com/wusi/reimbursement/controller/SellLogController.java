@@ -10,6 +10,7 @@ import com.wusi.reimbursement.query.SellLogQuery;
 import com.wusi.reimbursement.service.SellLogService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
+import com.wusi.reimbursement.utils.MoneyUtil;
 import com.wusi.reimbursement.utils.RedisUtil;
 import com.wusi.reimbursement.vo.SellLogList;
 import com.wusi.reimbursement.vo.SellLogListVo;
@@ -70,7 +71,7 @@ public class SellLogController {
         sellLogList.setSellMoney(sellLog.getSellMoney());
         sellLogList.setAmyOrderNo(sellLog.getAmyOrderNo());
         sellLogList.setBuyMoney(sellLog.getBuyMoney());
-        sellLogList.setProfit(sellLog.getProfit());
+        sellLog.setProfit(sellLog.getProfit());
         sellLogList.setRefund(sellLog.getRefund());
         sellLogList.setRemark(sellLog.getRemark());
         sellLogList.setOrderDate(DateUtil.formatDate(sellLog.getOrderDate(), DateUtil.PATTERN_YYYY_MM_DD));
@@ -149,6 +150,9 @@ public class SellLogController {
     @RequestMapping(value = "order/save", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> save(SellLogList query) throws ParseException {
+        if (query.getProfit()==null){
+        query.setProfit(MoneyUtil.devide(query.getSellMoney(),query.getBuyMoney()));
+        }
         SellLog sellLog=getSellLog(query);
         try {
             sellLogService.insert(sellLog);
