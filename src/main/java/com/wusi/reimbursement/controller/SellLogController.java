@@ -85,17 +85,25 @@ public class SellLogController {
     }
     @RequestMapping("updateLog")
     public Response<String> updateLog(SellLogListQuery query) throws ParseException {
-        System.out.println(query.getId());
     SellLog sellLog=getSellLog(query);
+    SellLog oldSellLog=sellLogService.queryById(query.getId());
+    //每次更新前 如销售金额 或  购买金额 退款要有变化
+    if(!oldSellLog.getSellMoney().equals(query.getSellMoney())||!oldSellLog.getBuyMoney().equals(query.getBuyMoney())||!oldSellLog.getRefund().equals(query.getRefund())){
+        sellLog.setProfit(MoneyUtil.subtract(MoneyUtil.subtract(query.getSellMoney(), query.getBuyMoney()),query.getRefund()));
+    }
         sellLogService.updateById(sellLog);
         return Response.ok("ok");
     }
     public SellLog getSellLog(SellLogList sellLogList) throws ParseException {
-    if (sellLogList.getProfit()==null){
-            sellLogList.setProfit(MoneyUtil.subtract(sellLogList.getSellMoney(),sellLogList.getBuyMoney()));
-    }
-    if(sellLogList.getProfit()!=null&&sellLogList.getRefund()!=null){
-        sellLogList.setProfit(MoneyUtil.subtract(sellLogList.getProfit(),sellLogList.getRefund()));
+    if(sellLogList.getId()==null) {//新增时调用
+        if (sellLogList.getProfit() == null) {
+            sellLogList.setProfit(MoneyUtil.subtract(sellLogList.getSellMoney(), sellLogList.getBuyMoney()));
+        }
+        if (sellLogList.getProfit() != null && sellLogList.getRefund() != null) {
+            sellLogList.setProfit(MoneyUtil.subtract(sellLogList.getProfit(), sellLogList.getRefund()));
+        }else{
+            sellLogList.setRefund("0.00");
+        }
     }
     SellLog sellLog=new SellLog();
     sellLog.setId(sellLogList.getId());
@@ -168,7 +176,6 @@ public class SellLogController {
     @RequestMapping(value = "order/del", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> del(SellLog query) throws ParseException {
-        System.out.println(query.getId());
         try {
             sellLogService.deleteById(query.getId());
             return Response.ok("删除成功!!!");
