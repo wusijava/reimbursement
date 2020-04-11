@@ -92,10 +92,10 @@ public class SellLogController {
     }
     public SellLog getSellLog(SellLogList sellLogList) throws ParseException {
     if (sellLogList.getProfit()==null){
-            sellLogList.setProfit(MoneyUtil.devide(sellLogList.getSellMoney(),sellLogList.getBuyMoney()));
+            sellLogList.setProfit(MoneyUtil.subtract(sellLogList.getSellMoney(),sellLogList.getBuyMoney()));
     }
     if(sellLogList.getProfit()!=null&&sellLogList.getRefund()!=null){
-        sellLogList.setProfit(MoneyUtil.devide(sellLogList.getProfit(),sellLogList.getRefund()));
+        sellLogList.setProfit(MoneyUtil.subtract(sellLogList.getProfit(),sellLogList.getRefund()));
     }
     SellLog sellLog=new SellLog();
     sellLog.setId(sellLogList.getId());
