@@ -71,7 +71,7 @@ public class SellLogController {
         sellLogList.setSellMoney(sellLog.getSellMoney());
         sellLogList.setAmyOrderNo(sellLog.getAmyOrderNo());
         sellLogList.setBuyMoney(sellLog.getBuyMoney());
-        sellLog.setProfit(sellLog.getProfit());
+        sellLogList.setProfit(sellLog.getProfit());
         sellLogList.setRefund(sellLog.getRefund());
         sellLogList.setRemark(sellLog.getRemark());
         sellLogList.setOrderDate(DateUtil.formatDate(sellLog.getOrderDate(), DateUtil.PATTERN_YYYY_MM_DD));
