@@ -91,6 +91,12 @@ public class SellLogController {
         return Response.ok("ok");
     }
     public SellLog getSellLog(SellLogList sellLogList) throws ParseException {
+    if (sellLogList.getProfit()==null){
+            sellLogList.setProfit(MoneyUtil.devide(sellLogList.getSellMoney(),sellLogList.getBuyMoney()));
+    }
+    if(sellLogList.getProfit()!=null&&sellLogList.getRefund()!=null){
+        sellLogList.setProfit(MoneyUtil.devide(sellLogList.getProfit(),sellLogList.getRefund()));
+    }
     SellLog sellLog=new SellLog();
     sellLog.setId(sellLogList.getId());
     sellLog.setProduct(sellLogList.getProduct());
@@ -150,9 +156,6 @@ public class SellLogController {
     @RequestMapping(value = "order/save", method = RequestMethod.POST)
     @ResponseBody
     public Response<String> save(SellLogList query) throws ParseException {
-        if (query.getProfit()==null){
-        query.setProfit(MoneyUtil.devide(query.getSellMoney(),query.getBuyMoney()));
-        }
         SellLog sellLog=getSellLog(query);
         try {
             sellLogService.insert(sellLog);
