@@ -78,6 +78,7 @@
                     </if>
             </trim>
         </where>
+        order by order_date desc
         <if test="offset == null and limit != null">
             limit #{limit}
         </if>
