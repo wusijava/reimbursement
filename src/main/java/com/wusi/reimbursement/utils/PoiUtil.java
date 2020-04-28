@@ -87,6 +87,7 @@ public class PoiUtil {
             }
         }
         String filename = "导出信息" + DateUtil.formatDate(new Date(), DateUtil.PATTERN_YYYYMMDDHHMMSS) + ".xlsx";
+        //存储到home
         String filepath = "/home/excel/" + filename;
         FileOutputStream out = new FileOutputStream(filepath);
         wb.write(out);
