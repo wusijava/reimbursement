@@ -114,9 +114,9 @@ public class PoiUtil {
         out.write(b);
         out.flush();
         fis.close();
-        if (file.exists()) {
+       /* if (file.exists()) {
             file.delete();
-        }
+        }*/
         out.close();
     }
 }
