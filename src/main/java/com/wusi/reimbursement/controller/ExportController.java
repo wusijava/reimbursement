@@ -101,7 +101,7 @@ public class ExportController {
     }
     @RequestMapping(value = "Export", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("导出文件")
     public Response<String> batchExport(ReimbursementQuery query) {
         List<Reimbursement> reimbursementList = reimbursementService.queryList(query);
         List<ReimbursementVo> voList = new ArrayList<>();

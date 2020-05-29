@@ -16,6 +16,7 @@ public class SystemLog implements Identifiable<Long>{
   private String params;
   private Long exeuTime;
   private Date createTime;
+  private String operation;
 
 
 }

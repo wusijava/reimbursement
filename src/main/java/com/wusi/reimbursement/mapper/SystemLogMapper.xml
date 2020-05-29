@@ -9,6 +9,7 @@
             <result column="params" property="params" jdbcType="VARCHAR"/>
             <result column="exeu_time" property="exeuTime" jdbcType="BIGINT"/>
             <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="operation" property="operation" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="table">system_log</sql>
@@ -19,7 +20,8 @@
             `method_name`,
             `params`,
             `exeu_time`,
-            `create_time`
+            `create_time`,
+            `operation`
     </sql>
     <sql id="Base_Where_Clause">
         <where>
@@ -44,6 +46,9 @@
                     </if>
                     <if test="createTime != null">
                         AND `create_time`=#{createTime}
+                    </if>
+                    <if test="operation != null and operation != ''">
+                        AND `operation`=#{operation}
                     </if>
             </trim>
         </where>
@@ -83,7 +88,8 @@
             `method_name`,
             `params`,
             `exeu_time`,
-            `create_time`
+            `create_time`,
+            `operation`
         )
         VALUES(
             #{id},
@@ -92,7 +98,8 @@
             #{methodName},
             #{params},
             #{exeuTime},
-            #{createTime}
+            #{createTime},
+            #{operation}
         )
     </insert>
 
@@ -106,7 +113,8 @@
             `method_name`,
             `params`,
             `exeu_time`,
-            `create_time`
+            `create_time`,
+            `operation`
         )
         VALUES
         <foreach collection="list" item="cm" index="index" separator=",">
@@ -117,7 +125,8 @@
             #{cm.methodName},
             #{cm.params},
             #{cm.exeuTime},
-            #{cm.createTime}
+            #{cm.createTime},
+            #{cm.operation}
             )
         </foreach>
     </insert>
@@ -151,6 +160,9 @@
             </if>
             <if test="createTime != null">
                  `create_time`=#{createTime},
+            </if>
+            <if test="operation != null and operation != ''">
+                 `operation`=#{operation},
             </if>
         </set>
         WHERE id=#{id}

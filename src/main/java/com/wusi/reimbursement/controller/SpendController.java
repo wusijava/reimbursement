@@ -47,7 +47,7 @@ public class SpendController {
 
     @RequestMapping("spendList")
     @ResponseBody
-    @SysLog("测试")
+    @SysLog("开支列表")
     public Response<Page<SpendList>> productList(SpendQuery query) {
             if (DataUtil.isEmpty(query.getPage())) {
                 query.setPage(0);
@@ -98,14 +98,14 @@ public class SpendController {
     }
     @RequestMapping(value = "/spendDetail", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("开支明细")
     public Response<SpendList> todetails(SpendQuery query) {
         Spend Spend=spendService.queryOne(query);
         return Response.ok(getVo(Spend));
     }
     @RequestMapping(value = "/spendUpdate", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("更新消费明细")
     public Response<String> update(SpendList query) throws ParseException {
         System.out.println(query);
         Spend spend=getSpend(query);
@@ -128,7 +128,7 @@ public class SpendController {
     }
     @RequestMapping(value = "/spendDel", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("删除消费项")
     public Response<String> del(SpendList query) {
         try {
             spendService.delById(query.getId());
@@ -141,7 +141,7 @@ public class SpendController {
     //saveSpend
     @RequestMapping(value = "/saveSpend", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("保存消费项")
     public Response<String> save(SpendList spendList) throws ParseException {
 
         System.out.println(spendList.getUrl());
@@ -188,7 +188,7 @@ public class SpendController {
     //统计本月消费金额
     @RequestMapping(value = "/spendMonth", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("统计本月消费金额")
     public Response spendMonth() {
         Date d = null;
         DateFormat sdf = new SimpleDateFormat(DateUtil.PATTERN_YYYY_MM_DD);

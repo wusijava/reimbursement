@@ -3,7 +3,9 @@ package com.wusi.reimbursement.aop;
 import com.google.gson.Gson;
 import com.wusi.reimbursement.entity.RequestContext;
 import com.wusi.reimbursement.entity.SystemLog;
+import com.wusi.reimbursement.entity.User;
 import com.wusi.reimbursement.service.SystemLogService;
+import com.wusi.reimbursement.utils.RedisUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -11,7 +13,11 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,19 +60,22 @@ public class SysLogAspect {
      * @param time
      */
     private void saveLog(ProceedingJoinPoint joinPoint, long time) {
-        RequestContext.RequestUser user = RequestContext.getCurrentUser();
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session=request.getSession();
+        User se = (User)session.getAttribute("user");
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         SystemLog systemLog = new SystemLog();
         systemLog.setExeuTime(time);
-        //systemLog.setUser(user.getUsername());
+        String user = (String)RedisUtil.get("user");
+        systemLog.setUser(user);
         //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         systemLog.setCreateTime(new Date());
         SysLog sysLog = method.getAnnotation(SysLog.class);
-       /* if(sysLog != null){
+        if(sysLog != null){
             //注解上的描述
-            sysLogBO.setRemark(sysLog.value());
-        }*/
+            systemLog.setOperation(sysLog.value());
+        }
         //请求的 类名、方法名
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = signature.getName();

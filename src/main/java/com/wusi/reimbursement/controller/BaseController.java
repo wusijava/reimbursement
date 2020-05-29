@@ -10,6 +10,7 @@ import com.wusi.reimbursement.service.RoleService;
 import com.wusi.reimbursement.service.UserService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
+import com.wusi.reimbursement.utils.RedisUtil;
 import com.wusi.reimbursement.utils.StringUtils;
 import com.wusi.reimbursement.vo.HomeMenuList;
 import com.wusi.reimbursement.vo.ReimbursementList;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,15 +50,19 @@ public class BaseController {
     private ReimbursementService reimbursementService;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
-    public Response<UserInfo> login(String username, String password) {
+    @SysLog("登录")
+    public Response<UserInfo> login(String username, String password, HttpSession session) {
         RequestContext.RequestUser user = RequestContext.getCurrentUser();
         UserInfo info = new UserInfo();
         info.setMobile(user.getMobile());
         info.setUsername(user.getUsername());
         info.setUid(user.getUid());
+        System.out.println(user+"==========================================");
+        session.setAttribute("user",user);
+        RedisUtil.set("user", user.getUsername());
         return Response.ok(info);
     }
     @RequestMapping(value = "/list", method = RequestMethod.POST)
@@ -66,7 +73,7 @@ public class BaseController {
     }
     @RequestMapping(value = "/productList", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("报销列表")
     public Response<Page<ReimbursementList>> productList(ReimbursementQuery query) {
         System.out.println(query);
         if (DataUtil.isEmpty(query.getPage())) {
@@ -100,13 +107,14 @@ public class BaseController {
     }
     @RequestMapping(value = "/toDetails", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog("报销详情")
     public Response<ReimbursementList> todetails(ReimbursementQuery query) {
         Reimbursement reimbursement=reimbursementService.queryOne(query);
         return Response.ok(getReimbursementLististVo(reimbursement));
     }
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("更新报销列表")
     public Response<String> update(ReimbursementList query) throws ParseException {
         System.out.println(query.toString());
         Reimbursement reimbursement=getReimbursement(query);
@@ -143,7 +151,7 @@ public class BaseController {
     }
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("保存报销明细")
     public Response<String> save(ReimbursementList reimbursementList) throws ParseException {
         Reimbursement reimbursement=saveReimbursement(reimbursementList);
         reimbursementService.insert(reimbursement);
@@ -167,7 +175,7 @@ public class BaseController {
     }
     @RequestMapping(value = "/del", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("删除报销")
     public Response<String> del(ReimbursementQuery query) {
         try {
             reimbursementService.delById(query.getId());
@@ -200,7 +208,7 @@ public class BaseController {
     //统计报销金额
     @RequestMapping(value = "/countReimbursement", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("统计报销金额")
     public Response spendMonth() {
 
         //未报销

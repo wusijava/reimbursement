@@ -21,7 +21,7 @@ public class DownLoadController  {
         return Response.ok("2020-01-21");
     }
     @RequestMapping("fileDownload")
-    @SysLog
+    @SysLog("下载文件")
     public Response<String> fileDownLoad(HttpServletResponse response) throws IOException {
         System.out.println("进入文件下载controller");
         File file = new File("/home/file/报销记录导入模板.xls");

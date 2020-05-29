@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author admin
- * @date 2020-05-29 11:35:50
+ * @date 2020-05-29 14:14:54
  **/
 @Service
 public class SystemLogServiceImpl extends BaseMybatisServiceImpl<SystemLog,Long> implements SystemLogService {

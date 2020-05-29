@@ -47,7 +47,7 @@ public class SellLogController {
     @Value("${excelDownloadUrl}")
     private  String excelDownloadUrl;
     @RequestMapping("logList")
-    @SysLog
+    @SysLog("销售列表")
     public Response<Page<SellLogList>> logList(SellLogQuery query){
     if (DataUtil.isEmpty(query.getPage())) {
         query.setPage(0);
@@ -87,7 +87,7 @@ public class SellLogController {
         return Response.ok(getVo(sellLog));
     }
     @RequestMapping("updateLog")
-    @SysLog
+    @SysLog("更新销售")
     public Response<String> updateLog(SellLogListQuery query) throws ParseException {
     SellLog sellLog=getSellLog(query);
     SellLog oldSellLog=sellLogService.queryById(query.getId());
@@ -128,7 +128,7 @@ public class SellLogController {
     }
     @RequestMapping(value = "logExport", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("导出销售明细")
     public Response<String> batchExport(SellLogQuery query) {
         List<SellLog> sellLogs = sellLogService.queryList(query);
         List<SellLogListVo> voList = new ArrayList<>();
@@ -168,7 +168,7 @@ public class SellLogController {
     }
     @RequestMapping(value = "order/save", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("保存销售明细")
     public Response<String> save(SellLogList query) throws ParseException {
         SellLog sellLog=getSellLog(query);
         try {
@@ -194,7 +194,7 @@ public class SellLogController {
     //统计报销金额
     @RequestMapping(value = "/countProfit", method = RequestMethod.POST)
     @ResponseBody
-    @SysLog
+    @SysLog("统计利润")
     public Response spendMonth() {
 
         //2020

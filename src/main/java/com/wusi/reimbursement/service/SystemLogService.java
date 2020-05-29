@@ -5,7 +5,7 @@ import com.wusi.reimbursement.entity.SystemLog;
 
 /**
  * @author admin
- * @date 2020-05-29 11:35:50
+ * @date 2020-05-29 14:14:54
  **/
 public interface SystemLogService extends BaseService<SystemLog,Long> {
 

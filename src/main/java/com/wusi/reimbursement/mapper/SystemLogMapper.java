@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author admin
- * @date 2020-05-29 11:35:50
+ * @date 2020-05-29 14:14:54
  **/
 @Mapper
 public interface SystemLogMapper extends BaseMapper<SystemLog,Long> {
