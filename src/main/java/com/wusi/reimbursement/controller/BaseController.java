@@ -1,5 +1,6 @@
 package com.wusi.reimbursement.controller;
 
+import com.wusi.reimbursement.aop.SysLog;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.Reimbursement;
 import com.wusi.reimbursement.entity.RequestContext;
@@ -48,6 +49,7 @@ public class BaseController {
     private JdbcTemplate jdbcTemplate;
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<UserInfo> login(String username, String password) {
         RequestContext.RequestUser user = RequestContext.getCurrentUser();
         UserInfo info = new UserInfo();
@@ -64,6 +66,7 @@ public class BaseController {
     }
     @RequestMapping(value = "/productList", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<Page<ReimbursementList>> productList(ReimbursementQuery query) {
         System.out.println(query);
         if (DataUtil.isEmpty(query.getPage())) {
@@ -103,6 +106,7 @@ public class BaseController {
     }
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> update(ReimbursementList query) throws ParseException {
         System.out.println(query.toString());
         Reimbursement reimbursement=getReimbursement(query);
@@ -139,6 +143,7 @@ public class BaseController {
     }
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> save(ReimbursementList reimbursementList) throws ParseException {
         Reimbursement reimbursement=saveReimbursement(reimbursementList);
         reimbursementService.insert(reimbursement);
@@ -162,6 +167,7 @@ public class BaseController {
     }
     @RequestMapping(value = "/del", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> del(ReimbursementQuery query) {
         try {
             reimbursementService.delById(query.getId());
@@ -173,6 +179,7 @@ public class BaseController {
     }
     @RequestMapping(value = "/api/web/user/changePassword", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response changePassword(String oldPassword, String newPassword) {
         if (DataUtil.isEmpty(oldPassword)) {
             return Response.fail("缺少原密码");
@@ -193,6 +200,7 @@ public class BaseController {
     //统计报销金额
     @RequestMapping(value = "/countReimbursement", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response spendMonth() {
 
         //未报销

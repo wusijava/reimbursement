@@ -1,5 +1,6 @@
 package com.wusi.reimbursement.controller;
 
+import com.wusi.reimbursement.aop.SysLog;
 import com.wusi.reimbursement.common.Response;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ public class DownLoadController  {
         return Response.ok("2020-01-21");
     }
     @RequestMapping("fileDownload")
+    @SysLog
     public Response<String> fileDownLoad(HttpServletResponse response) throws IOException {
         System.out.println("进入文件下载controller");
         File file = new File("/home/file/报销记录导入模板.xls");

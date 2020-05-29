@@ -1,5 +1,6 @@
 package com.wusi.reimbursement.controller;
 
+import com.wusi.reimbursement.aop.SysLog;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.common.ratelimit.anonation.RateLimit;
 import com.wusi.reimbursement.service.UploadService;
@@ -25,6 +26,7 @@ public class UploadController {
 
     @RateLimit(permitsPerSecond = 0.5, ipLimit = true,description = "限制访问Token频率")
     @PostMapping(value = "getToken")
+    @SysLog
     public Response<Map<String, Object>> getUploadToken(String type) {
         if (DataUtil.isNotEmpty(type)) {
             String filename = MessageFormat.format("temp/{0}/{1}/{2}", type, StringUtils.createRandom(false, 6));

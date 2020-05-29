@@ -1,6 +1,7 @@
 package com.wusi.reimbursement.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wusi.reimbursement.aop.SysLog;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.ExcelDto;
 import com.wusi.reimbursement.entity.Spend;
@@ -46,6 +47,7 @@ public class SpendController {
 
     @RequestMapping("spendList")
     @ResponseBody
+    @SysLog("测试")
     public Response<Page<SpendList>> productList(SpendQuery query) {
             if (DataUtil.isEmpty(query.getPage())) {
                 query.setPage(0);
@@ -96,12 +98,14 @@ public class SpendController {
     }
     @RequestMapping(value = "/spendDetail", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<SpendList> todetails(SpendQuery query) {
         Spend Spend=spendService.queryOne(query);
         return Response.ok(getVo(Spend));
     }
     @RequestMapping(value = "/spendUpdate", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> update(SpendList query) throws ParseException {
         System.out.println(query);
         Spend spend=getSpend(query);
@@ -124,6 +128,7 @@ public class SpendController {
     }
     @RequestMapping(value = "/spendDel", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> del(SpendList query) {
         try {
             spendService.delById(query.getId());
@@ -136,6 +141,7 @@ public class SpendController {
     //saveSpend
     @RequestMapping(value = "/saveSpend", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> save(SpendList spendList) throws ParseException {
 
         System.out.println(spendList.getUrl());
@@ -145,6 +151,7 @@ public class SpendController {
     }
     @RequestMapping(value = "out", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> batchExport(SpendQuery query) {
         List<Spend> spendList = spendService.queryList(query);
         List<SpendVo> voList = new ArrayList<>();
@@ -181,6 +188,7 @@ public class SpendController {
     //统计本月消费金额
     @RequestMapping(value = "/spendMonth", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response spendMonth() {
         Date d = null;
         DateFormat sdf = new SimpleDateFormat(DateUtil.PATTERN_YYYY_MM_DD);

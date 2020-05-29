@@ -1,6 +1,7 @@
 package com.wusi.reimbursement.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wusi.reimbursement.aop.SysLog;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.ExcelDto;
 import com.wusi.reimbursement.entity.Reimbursement;
@@ -44,6 +45,7 @@ public class ExportController {
     private  String excelDownloadUrl;
     @RequestMapping(value = "/Import", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> Import(MultipartFile file) throws ParseException {
         List<Reimbursement> reimbursementList=getReimbursementList(file);
         reimbursementService.insertBatch(reimbursementList);
@@ -99,6 +101,7 @@ public class ExportController {
     }
     @RequestMapping(value = "Export", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> batchExport(ReimbursementQuery query) {
         List<Reimbursement> reimbursementList = reimbursementService.queryList(query);
         List<ReimbursementVo> voList = new ArrayList<>();

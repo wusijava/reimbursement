@@ -1,6 +1,7 @@
 package com.wusi.reimbursement.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.wusi.reimbursement.aop.SysLog;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.ExcelDto;
 import com.wusi.reimbursement.entity.Reimbursement;
@@ -45,7 +46,8 @@ public class SellLogController {
     private SellLogService sellLogService;
     @Value("${excelDownloadUrl}")
     private  String excelDownloadUrl;
-@RequestMapping("logList")
+    @RequestMapping("logList")
+    @SysLog
     public Response<Page<SellLogList>> logList(SellLogQuery query){
     if (DataUtil.isEmpty(query.getPage())) {
         query.setPage(0);
@@ -79,11 +81,13 @@ public class SellLogController {
         return sellLogList;
     }
     @RequestMapping("logDetail")
+    @SysLog
     public Response<SellLogList> todetails(SellLogQuery query) {
         SellLog sellLog=sellLogService.queryOne(query);
         return Response.ok(getVo(sellLog));
     }
     @RequestMapping("updateLog")
+    @SysLog
     public Response<String> updateLog(SellLogListQuery query) throws ParseException {
     SellLog sellLog=getSellLog(query);
     SellLog oldSellLog=sellLogService.queryById(query.getId());
@@ -124,6 +128,7 @@ public class SellLogController {
     }
     @RequestMapping(value = "logExport", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> batchExport(SellLogQuery query) {
         List<SellLog> sellLogs = sellLogService.queryList(query);
         List<SellLogListVo> voList = new ArrayList<>();
@@ -163,6 +168,7 @@ public class SellLogController {
     }
     @RequestMapping(value = "order/save", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> save(SellLogList query) throws ParseException {
         SellLog sellLog=getSellLog(query);
         try {
@@ -175,6 +181,7 @@ public class SellLogController {
     }
     @RequestMapping(value = "order/del", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response<String> del(SellLog query) throws ParseException {
         try {
             sellLogService.deleteById(query.getId());
@@ -187,6 +194,7 @@ public class SellLogController {
     //统计报销金额
     @RequestMapping(value = "/countProfit", method = RequestMethod.POST)
     @ResponseBody
+    @SysLog
     public Response spendMonth() {
 
         //2020

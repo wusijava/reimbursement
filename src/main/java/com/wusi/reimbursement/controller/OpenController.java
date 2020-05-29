@@ -1,5 +1,6 @@
 package com.wusi.reimbursement.controller;
 
+import com.wusi.reimbursement.aop.SysLog;
 import com.wusi.reimbursement.entity.ExcelDto;
 import com.wusi.reimbursement.utils.PoiUtil;
 import com.wusi.reimbursement.utils.RedisUtil;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 public class OpenController {
     @GetMapping(value = "/downloadExcel/{key}")
     @ResponseBody
+    @SysLog
     public void downloadExcel(@PathVariable(value = "key") String key, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Object object = RedisUtil.get(key);
         ExcelDto dto = object == null ? null : (ExcelDto) object;
