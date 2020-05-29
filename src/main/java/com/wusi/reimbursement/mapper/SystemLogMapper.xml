@@ -10,6 +10,7 @@
             <result column="exeu_time" property="exeuTime" jdbcType="BIGINT"/>
             <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
             <result column="operation" property="operation" jdbcType="VARCHAR"/>
+            <result column="ip" property="ip" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="table">system_log</sql>
@@ -21,7 +22,8 @@
             `params`,
             `exeu_time`,
             `create_time`,
-            `operation`
+            `operation`,
+            `ip`
     </sql>
     <sql id="Base_Where_Clause">
         <where>
@@ -49,6 +51,9 @@
                     </if>
                     <if test="operation != null and operation != ''">
                         AND `operation`=#{operation}
+                    </if>
+                    <if test="ip != null and ip != ''">
+                        AND `ip`=#{ip}
                     </if>
             </trim>
         </where>
@@ -89,7 +94,8 @@
             `params`,
             `exeu_time`,
             `create_time`,
-            `operation`
+            `operation`,
+            `ip`
         )
         VALUES(
             #{id},
@@ -99,7 +105,8 @@
             #{params},
             #{exeuTime},
             #{createTime},
-            #{operation}
+            #{operation},
+            #{ip}
         )
     </insert>
 
@@ -114,7 +121,8 @@
             `params`,
             `exeu_time`,
             `create_time`,
-            `operation`
+            `operation`,
+            `ip`
         )
         VALUES
         <foreach collection="list" item="cm" index="index" separator=",">
@@ -126,7 +134,8 @@
             #{cm.params},
             #{cm.exeuTime},
             #{cm.createTime},
-            #{cm.operation}
+            #{cm.operation},
+            #{cm.ip}
             )
         </foreach>
     </insert>
@@ -163,6 +172,9 @@
             </if>
             <if test="operation != null and operation != ''">
                  `operation`=#{operation},
+            </if>
+            <if test="ip != null and ip != ''">
+                 `ip`=#{ip},
             </if>
         </set>
         WHERE id=#{id}

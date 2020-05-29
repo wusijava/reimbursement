@@ -5,6 +5,7 @@ import com.wusi.reimbursement.entity.RequestContext;
 import com.wusi.reimbursement.entity.SystemLog;
 import com.wusi.reimbursement.entity.User;
 import com.wusi.reimbursement.service.SystemLogService;
+import com.wusi.reimbursement.utils.IpUtils;
 import com.wusi.reimbursement.utils.RedisUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -71,6 +72,8 @@ public class SysLogAspect {
         systemLog.setUser(user);
         //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         systemLog.setCreateTime(new Date());
+        String ipAddress = IpUtils.getIpAddress(request);
+        systemLog.setIp(ipAddress);
         SysLog sysLog = method.getAnnotation(SysLog.class);
         if(sysLog != null){
             //注解上的描述
