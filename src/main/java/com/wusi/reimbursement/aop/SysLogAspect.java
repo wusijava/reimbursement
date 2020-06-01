@@ -71,7 +71,7 @@ public class SysLogAspect {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         //HttpServletRequest op = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
-        User user = (User)requestAttributes.getAttribute("user", RequestAttributes.SCOPE_SESSION);
+        //User user = (User)requestAttributes.getAttribute("U", RequestAttributes.SCOPE_SESSION);
         //HttpSession session=request.getSession();
        // User se = (User)session.getAttribute("user");
         //System.out.println(se+"++++++++++++++++++++++++++++++");
@@ -79,8 +79,8 @@ public class SysLogAspect {
         Method method = signature.getMethod();
         SystemLog systemLog = new SystemLog();
         systemLog.setExeuTime(time);
-        //String user = (String)RedisUtil.get("user");
-        systemLog.setUser(user.getUsername());
+        String user = (String)RedisUtil.get("user");
+        systemLog.setUser(user);
         //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         systemLog.setCreateTime(new Date());
         String ipAddress = IpUtils.getIpAddress(request);
