@@ -7,6 +7,7 @@ import com.wusi.reimbursement.entity.User;
 import com.wusi.reimbursement.service.SystemLogService;
 import com.wusi.reimbursement.utils.IpUtils;
 import com.wusi.reimbursement.utils.RedisUtil;
+import jdk.nashorn.internal.runtime.GlobalConstants;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,6 +15,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -35,6 +37,8 @@ import java.util.List;
 public class SysLogAspect {
     @Autowired
     private SystemLogService systemLogService;
+    @Autowired
+    private HttpSession session2;
     /**
      * 这里我们使用注解的形式
      * 当然，我们也可以通过切点表达式直接指定需要拦截的package,需要拦截的class 以及 method
@@ -61,15 +65,22 @@ public class SysLogAspect {
      * @param time
      */
     private void saveLog(ProceedingJoinPoint joinPoint, long time) {
+
+       /* ServletRequestAttributes attr = (ServletRequestAttributes)RequestContextHolder.currentRequestAttributes();
+        HttpSession session=attr.getRequest().getSession(true);*/
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession session=request.getSession();
-        User se = (User)session.getAttribute("user");
+        //HttpServletRequest op = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
+        User user = (User)requestAttributes.getAttribute("user", RequestAttributes.SCOPE_SESSION);
+        //HttpSession session=request.getSession();
+       // User se = (User)session.getAttribute("user");
+        //System.out.println(se+"++++++++++++++++++++++++++++++");
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         SystemLog systemLog = new SystemLog();
         systemLog.setExeuTime(time);
-        String user = (String)RedisUtil.get("user");
-        systemLog.setUser(user);
+        //String user = (String)RedisUtil.get("user");
+        systemLog.setUser(user.getUsername());
         //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         systemLog.setCreateTime(new Date());
         String ipAddress = IpUtils.getIpAddress(request);

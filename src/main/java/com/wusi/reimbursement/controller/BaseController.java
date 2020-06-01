@@ -60,9 +60,10 @@ public class BaseController {
         info.setMobile(user.getMobile());
         info.setUsername(user.getUsername());
         info.setUid(user.getUid());
-        System.out.println(user+"==========================================");
         session.setAttribute("user",user);
-        RedisUtil.set("user", user.getUsername());
+
+       /* RedisUtil.set("user", user.getUsername());
+        Object user1 = session.getAttribute("user");*/
         return Response.ok(info);
     }
     @RequestMapping(value = "/list", method = RequestMethod.POST)
