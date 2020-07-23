@@ -207,4 +207,16 @@ public class SpendController {
         spend.setItem(year.toString());
         return Response.ok(spend);
     }
+
+    //新增相同的消费
+    @RequestMapping(value = "submitAddSame")
+    public void submitAddSame(SpendVo spend){
+        System.out.println(spend);
+        Spend same=new Spend();
+        same.setDate(new Date());
+        same.setConsumer(spend.getConsumer());
+        same.setItem(spend.getItem());
+        same.setPrice(spend.getPrice());
+        spendService.insert(same);
+    }
 }
