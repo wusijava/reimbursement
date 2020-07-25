@@ -99,7 +99,8 @@ public class SellLogController {
         return Response.ok("ok");
     }
     public SellLog getSellLog(SellLogList sellLogList) throws ParseException {
-    if(sellLogList.getId()==null) {//新增时调用
+    if(sellLogList.getId()==null) {
+        //新增时调用
         if (sellLogList.getProfit() == null) {
             sellLogList.setProfit(MoneyUtil.subtract(sellLogList.getSellMoney(), sellLogList.getBuyMoney()));
         }
