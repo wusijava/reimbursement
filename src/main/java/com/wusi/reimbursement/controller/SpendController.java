@@ -93,7 +93,12 @@ public class SpendController {
         spendList.setConsumer(spend.getConsumer());
         spendList.setDate(DateUtil.formatDate(spend.getDate(), DateUtil.PATTERN_YYYY_MM_DD));
         spendList.setRemark(spend.getRemark());
-        spendList.setUrl(spend.getUrl());
+        if(DataUtil.isEmpty(spend.getUrl())){
+            spendList.setUrl("http://www.photo.wearelie.com/temp/1/4yg16z/{2}.jpg");
+        }else{
+            spendList.setUrl(spend.getUrl());
+        }
+
         return spendList;
     }
     @RequestMapping(value = "/spendDetail", method = RequestMethod.POST)
