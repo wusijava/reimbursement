@@ -77,7 +77,12 @@ public class SellLogController {
         sellLogList.setRefund(sellLog.getRefund());
         sellLogList.setRemark(sellLog.getRemark());
         sellLogList.setOrderDate(DateUtil.formatDate(sellLog.getOrderDate(), DateUtil.PATTERN_YYYY_MM_DD));
-        sellLogList.setUrl(sellLog.getUrl());
+        if(DataUtil.isEmpty(sellLog.getUrl())){
+            sellLogList.setUrl("http://www.photo.wearelie.com/temp/1/6i7pb8/{2}.jpg");
+        }else{
+            sellLogList.setUrl(sellLog.getUrl());
+        }
+
         return sellLogList;
     }
     @RequestMapping("logDetail")
