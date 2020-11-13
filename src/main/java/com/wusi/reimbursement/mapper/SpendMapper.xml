@@ -55,7 +55,7 @@
             </trim>
 
         </where>
-        order by `date` ,id desc
+        order by `date` desc,id desc
         <if test="offset == null and limit != null">
             limit #{limit}
         </if>
