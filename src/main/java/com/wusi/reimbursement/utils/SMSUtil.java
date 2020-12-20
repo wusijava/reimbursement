@@ -3,25 +3,22 @@ import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class SMSUtil {
-    public static String sendSMS(HttpServletRequest request, String phoneNumber) {
+    public static String sendSMS(String phoneNumber,String code,int templateId) {
         String reStr = ""; //定义返回值
         // 短信应用SDK AppID  1400开头
         int appid = 1400461503 ;
         // 短信应用SDK AppKey
         String appkey = "0c72576fc914f0e74d82b201be737117";
         // 短信模板ID，需要在短信应用中申请
-        int templateId = 807342 ;
+        //templateId = 807342 ;
         // 签名，使用的是签名内容，而不是签名ID
         String smsSign = "wearelie";
         //随机生成四位验证码的工具类
-        String code = "吴思店铺的凯达8101";
+        //String code = "吴思店铺的凯达8101";
         try {
             //参数，一定要对应短信模板中的参数顺序和个数，
             String[] params = {code};
@@ -59,7 +56,8 @@ public class SMSUtil {
     }
 
     public static void main(String[] args) {
-        SMSUtil.sendSMS(null, "15527875423");
+
+        //SMSUtil.sendSMS(null, "15527875423");
     }
 
 }
