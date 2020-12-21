@@ -21,9 +21,10 @@ public class MonitorRecord implements Identifiable<Long> {
    */
   private long amyOfflineNum;
   /**
-   * 我的下架个数
+   * 爱美上架个数
    */
-  private long myOfflineNum;
+  private long amyOnNum;
+
   /**
    * 创建时间
    */

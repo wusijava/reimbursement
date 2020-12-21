@@ -5,7 +5,7 @@
             <id column="id" property="id" jdbcType="BIGINT"/>
             <result column="total" property="total" jdbcType="VARCHAR"/>
             <result column="amy_offline_num" property="amyOfflineNum" jdbcType="BIGINT"/>
-            <result column="my_offline_num" property="myOfflineNum" jdbcType="BIGINT"/>
+            <result column="amy_on_num" property="amyOnNum" jdbcType="BIGINT"/>
             <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
@@ -14,7 +14,7 @@
             `id`,
             `total`,
             `amy_offline_num`,
-            `my_offline_num`,
+            `amy_on_num`,
             `create_time`
     </sql>
     <sql id="Base_Where_Clause">
@@ -29,8 +29,8 @@
                     <if test="amyOfflineNum != null">
                         AND `amy_offline_num`=#{amyOfflineNum}
                     </if>
-                    <if test="myOfflineNum != null">
-                        AND `my_offline_num`=#{myOfflineNum}
+                    <if test="amyOnNum != null">
+                        AND `amy_on_num`=#{amyOnNum}
                     </if>
                     <if test="createTime != null">
                         AND `create_time`=#{createTime}
@@ -70,14 +70,14 @@
             `id`,
             `total`,
             `amy_offline_num`,
-            `my_offline_num`,
+            `amy_on_num`,
             `create_time`
         )
         VALUES(
             #{id},
             #{total},
             #{amyOfflineNum},
-            #{myOfflineNum},
+            #{amyOnNum},
             #{createTime}
         )
     </insert>
@@ -89,7 +89,7 @@
             `id`,
             `total`,
             `amy_offline_num`,
-            `my_offline_num`,
+            `amy_on_num`,
             `create_time`
         )
         VALUES
@@ -98,7 +98,7 @@
             #{cm.id},
             #{cm.total},
             #{cm.amyOfflineNum},
-            #{cm.myOfflineNum},
+            #{cm.amyOnNum},
             #{cm.createTime}
             )
         </foreach>
@@ -122,8 +122,8 @@
             <if test="amyOfflineNum != null">
                  `amy_offline_num`=#{amyOfflineNum},
             </if>
-            <if test="myOfflineNum != null">
-                 `my_offline_num`=#{myOfflineNum},
+            <if test="amyOnNum != null">
+                 `amy_on_num`=#{amyOnNum},
             </if>
             <if test="createTime != null">
                  `create_time`=#{createTime},

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author admin
- * @date 2020-12-14 15:13:51
+ * @date 2020-12-21 10:58:05
  **/
 @Service
 public class MonitorRecordServiceImpl extends BaseMybatisServiceImpl<MonitorRecord,Long> implements MonitorRecordService {
