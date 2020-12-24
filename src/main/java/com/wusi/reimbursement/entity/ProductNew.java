@@ -41,5 +41,57 @@ public class ProductNew implements Identifiable<Long> {
    */
   private String image;
 
+  public enum AmyState{
+    online("online","在线"),
+    offline("offline","下架");
+    private String code;
+    private String desc;
 
+    AmyState(String code, String desc) {
+      this.code = code;
+      this.desc = desc;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public String getDesc() {
+      return desc;
+    }
+  }
+  public enum MyState{
+    online("online","在线"),
+    offline("offline","下架");
+    private String code;
+    private String desc;
+
+    MyState(String code, String desc) {
+      this.code = code;
+      this.desc = desc;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public String getDesc() {
+      return desc;
+    }
+  }
+  public String getAmyStateDesc(){
+    if(AmyState.offline.getCode().equals(amyState)){
+      return "下架";
+    }else{
+      return "在线";
+    }
+  }
+
+  public String getMyStateDesc(){
+    if(MyState.offline.getCode().equals(myState)){
+      return "下架";
+    }else{
+      return "在线";
+    }
+  }
 }
