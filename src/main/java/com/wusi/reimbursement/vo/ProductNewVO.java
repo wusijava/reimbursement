@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 /**
- * 吴思 2020-12-14 淘宝产品实体类
+ * 吴思 2020-12-14 淘宝产品VO
  */
 @Data
 public class ProductNewVO {
