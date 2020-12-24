@@ -45,7 +45,7 @@ public class ProductController {
     private MonitorRecordService monitorRecordService;
 
     @RequestMapping(value = "getProductState")
-    @Scheduled(cron = "0 55 9 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     @ResponseBody
     public void product() throws IOException, InterruptedException {
         log.error("定时任务已启动!,{}", DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
@@ -62,7 +62,7 @@ public class ProductController {
             try {
                 html = Jsoup.connect(productNew.getAmyUrl()).timeout(200000).execute().body();
             } catch (IOException e) {
-                SMSUtil.sendSMS(PHONE_NUB, ":异常!快起来改bug!", templatedIdTotal);
+                //SMSUtil.sendSMS(PHONE_NUB, ":异常!快起来改bug!", templatedIdTotal);
                 log.error("扫描商品异常,{},{}", productNew.getModel(), e);
             }
             //本地
