@@ -62,7 +62,6 @@ public class ProductController {
             try {
                 html = Jsoup.connect(productNew.getAmyUrl()).timeout(200000).execute().body();
             } catch (IOException e) {
-                //SMSUtil.sendSMS(PHONE_NUB, ":异常!快起来改bug!", templatedIdTotal);
                 log.error("扫描商品异常,{},{}", productNew.getModel(), e);
             }
             //本地
@@ -85,9 +84,7 @@ public class ProductController {
                 myValue = GetJsonValue(html, "online");
                 productNew.setMyState(myValue.equals(" false") ? "offline" : "online");
             }
-
             if (amyValue.equals(" true,") && (!amyValue.equals(myValue))) {
-
                 //提示已上架
                 SMSUtil.sendSMS(PHONE_NUB, productNew.getModel(), templatedIdOnline);
             } else if (amyValue.equals("false") && (!amyValue.equals(myValue))) {
