@@ -56,7 +56,6 @@ public class ProductController {
         int amyOnNum = 0;
         for (ProductNew productNew : productNews) {
             i++;
-            //判断爱美商品状态
             //增加延迟时间  线上
             Thread.sleep(240000);
             try {
