@@ -16,6 +16,7 @@ public class HomeworkQuery extends Homework {
     private Integer limit;
 
     private Integer offset;
+
     private String startTime;
 
     private String endTime;

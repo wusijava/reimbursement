@@ -6,6 +6,10 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * 记录小柠檬作业实体类
+ */
+
 @Data
 public class Homework implements Identifiable<Long> {
 
