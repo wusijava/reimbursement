@@ -1,15 +1,13 @@
-package com.wusi.reimbursement.entity;
+package com.wusi.reimbursement.vo;
 
-import com.wusi.reimbursement.common.Identifiable;
 import lombok.Data;
 
-import java.util.Date;
 
 /**
  * 每天的监控记录
  */
 @Data
-public class MonitorRecord implements Identifiable<Long> {
+public class MonitorRecordVo  {
 
   private Long id;
   /**
@@ -28,7 +26,7 @@ public class MonitorRecord implements Identifiable<Long> {
   /**
    * 创建时间
    */
-  private Date createTime;
+  private String createTime;
   /**
    * 是处理
    */

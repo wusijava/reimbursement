@@ -3,12 +3,14 @@ package com.wusi.reimbursement.controller;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.MonitorRecord;
 import com.wusi.reimbursement.entity.ProductNew;
+import com.wusi.reimbursement.query.MonitorRecordQuery;
 import com.wusi.reimbursement.query.ProductNewQuery;
 import com.wusi.reimbursement.service.MonitorRecordService;
 import com.wusi.reimbursement.service.ProductNewService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
 import com.wusi.reimbursement.utils.SMSUtil;
+import com.wusi.reimbursement.vo.MonitorRecordVo;
 import com.wusi.reimbursement.vo.ProductNewVO;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -99,8 +101,8 @@ public class ProductController {
         MonitorRecord record = new MonitorRecord();
         record.setTotal(String.valueOf(i));
         record.setCreateTime(new Date());
-        record.setAmyOfflineNum(amyOffNum);
-        record.setAmyOnNum(amyOnNum);
+        record.setAmyOfflineNum(String.valueOf(amyOffNum));
+        record.setAmyOnNum(String.valueOf(amyOnNum));
         monitorRecordService.insert(record);
         SMSUtil.sendSMS(PHONE_NUB, ":" + String.valueOf(i), templatedIdTotal);
         log.error("定时任务已结束!", DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
@@ -146,5 +148,52 @@ public class ProductController {
         }
         return vo;
     }
+    //监控记录
+    @RequestMapping(value = "monitorRecord")
+    @ResponseBody
+    public Response<Page<MonitorRecordVo>> monitorRecord(MonitorRecordQuery query){
+        if (DataUtil.isEmpty(query.getPage())) {
+            query.setPage(0);
+        }
+        if (DataUtil.isEmpty(query.getLimit())) {
+            query.setLimit(3);
+        }
+        query.setLimit(3);
+        Pageable pageable=PageRequest.of(query.getPage(), query.getLimit());
+        Page<MonitorRecord> page=monitorRecordService.queryPage(query,pageable);
+        List<MonitorRecordVo> voList=new ArrayList<>();
+        for (MonitorRecord record:page.getContent()){
+            voList.add(getRecodeVO(record));
+        }
+        Page<MonitorRecordVo> voPage=new PageImpl<>(voList,pageable,page.getTotalElements());
+        return Response.ok(voPage);
+    }
 
+    private MonitorRecordVo getRecodeVO(MonitorRecord record) {
+        MonitorRecordVo vo=new MonitorRecordVo();
+        vo.setId(record.getId());
+        vo.setAmyOfflineNum(record.getAmyOfflineNum());
+        vo.setAmyOnNum(record.getAmyOnNum());
+        vo.setIsDo(record.getIsDo());
+        vo.setTotal(record.getTotal());
+        vo.setCreateTime(DateUtil.formatDate(record.getCreateTime(), "yyyy-MM-dd"));
+        return vo;
+    }
+//监控记录
+    @RequestMapping(value = "changeState")
+    @ResponseBody
+    public Response<String> changeState(Long id){
+        if(DataUtil.isEmpty(id)){
+            return Response.fail("id空");
+        }
+        MonitorRecord record = monitorRecordService.queryById(id);
+        record.setIsDo("1");
+        try {
+            monitorRecordService.updateById(record);
+        } catch (Exception e) {
+            log.error("update异常,{}", id);
+        }
+        return Response.ok("处理成功!");
+
+    }
 }

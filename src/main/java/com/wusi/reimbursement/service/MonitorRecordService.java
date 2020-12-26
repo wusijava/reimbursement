@@ -5,7 +5,7 @@ import com.wusi.reimbursement.entity.MonitorRecord;
 
 /**
  * @author admin
- * @date 2020-12-14 15:13:51
+ * @date 2020-12-26 10:58:15
  **/
 public interface MonitorRecordService extends BaseService<MonitorRecord,Long> {
 

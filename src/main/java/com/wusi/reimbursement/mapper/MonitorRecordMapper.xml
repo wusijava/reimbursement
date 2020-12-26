@@ -4,9 +4,10 @@
     <resultMap id="BaseResultMap" type="com.wusi.reimbursement.entity.MonitorRecord">
             <id column="id" property="id" jdbcType="BIGINT"/>
             <result column="total" property="total" jdbcType="VARCHAR"/>
-            <result column="amy_offline_num" property="amyOfflineNum" jdbcType="BIGINT"/>
-            <result column="amy_on_num" property="amyOnNum" jdbcType="BIGINT"/>
+            <result column="amy_offline_num" property="amyOfflineNum" jdbcType="VARCHAR"/>
+            <result column="amy_on_num" property="amyOnNum" jdbcType="VARCHAR"/>
             <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+            <result column="is_do" property="isDo" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="table">monitor_record</sql>
@@ -15,7 +16,8 @@
             `total`,
             `amy_offline_num`,
             `amy_on_num`,
-            `create_time`
+            `create_time`,
+            `is_do`
     </sql>
     <sql id="Base_Where_Clause">
         <where>
@@ -26,14 +28,17 @@
                     <if test="total != null and total != ''">
                         AND `total`=#{total}
                     </if>
-                    <if test="amyOfflineNum != null">
+                    <if test="amyOfflineNum != null and amyOfflineNum != ''">
                         AND `amy_offline_num`=#{amyOfflineNum}
                     </if>
-                    <if test="amyOnNum != null">
+                    <if test="amyOnNum != null and amyOnNum != ''">
                         AND `amy_on_num`=#{amyOnNum}
                     </if>
                     <if test="createTime != null">
                         AND `create_time`=#{createTime}
+                    </if>
+                    <if test="isDo != null and isDo != ''">
+                        AND `is_do`=#{isDo}
                     </if>
             </trim>
         </where>
@@ -71,14 +76,16 @@
             `total`,
             `amy_offline_num`,
             `amy_on_num`,
-            `create_time`
+            `create_time`,
+            `is_do`
         )
         VALUES(
             #{id},
             #{total},
             #{amyOfflineNum},
             #{amyOnNum},
-            #{createTime}
+            #{createTime},
+            #{isDo}
         )
     </insert>
 
@@ -90,7 +97,8 @@
             `total`,
             `amy_offline_num`,
             `amy_on_num`,
-            `create_time`
+            `create_time`,
+            `is_do`
         )
         VALUES
         <foreach collection="list" item="cm" index="index" separator=",">
@@ -99,7 +107,8 @@
             #{cm.total},
             #{cm.amyOfflineNum},
             #{cm.amyOnNum},
-            #{cm.createTime}
+            #{cm.createTime},
+            #{cm.isDo}
             )
         </foreach>
     </insert>
@@ -119,14 +128,17 @@
             <if test="total != null and total != ''">
                  `total`=#{total},
             </if>
-            <if test="amyOfflineNum != null">
+            <if test="amyOfflineNum != null and amyOfflineNum != ''">
                  `amy_offline_num`=#{amyOfflineNum},
             </if>
-            <if test="amyOnNum != null">
+            <if test="amyOnNum != null and amyOnNum != ''">
                  `amy_on_num`=#{amyOnNum},
             </if>
             <if test="createTime != null">
                  `create_time`=#{createTime},
+            </if>
+            <if test="isDo != null and isDo != ''">
+                 `is_do`=#{isDo},
             </if>
         </set>
         WHERE id=#{id}
