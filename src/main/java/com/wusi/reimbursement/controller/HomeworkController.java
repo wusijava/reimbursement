@@ -118,6 +118,9 @@ public class HomeworkController {
         if (DataUtil.isEmpty(content)) {
             return Response.fail("内容必填!");
         }
+        if(user.equals(loginUser.getNickName())){
+            return Response.fail("你个憨批,你确定要给自己安排家务?!");
+        }
         if (content.length() > 12) {
             return Response.fail("内容长度需小于12个字!");
         }
