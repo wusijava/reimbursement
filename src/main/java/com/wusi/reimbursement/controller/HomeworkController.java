@@ -194,16 +194,18 @@ public class HomeworkController {
     private HouseworkVO gethouseworkVo(Housework housework) {
         HouseworkVO vo = new HouseworkVO();
         vo.setId(housework.getId());
+        vo.setRemark(housework.getRemark());
         vo.setContent(housework.getContent());
         vo.setCreateTime(DateUtil.formatDate(housework.getCreateTime(), "yyyy-MM-dd HH:mm:ss "));
         vo.setRequiredFinishTime(DateUtil.formatDate(housework.getRequiredFinishTime(), "yyyy-MM-dd HH:mm:ss "));
         if (DataUtil.isNotEmpty(housework.getRealityFinishTime())) {
-            vo.setRequiredFinishTime(DateUtil.formatDate(housework.getRealityFinishTime(), "yyyy-MM-dd HH:mm:ss "));
+            vo.setRealityFinishTime(DateUtil.formatDate(housework.getRealityFinishTime(), "yyyy-MM-dd HH:mm:ss "));
         }
         vo.setStateDesc(housework.getStateDesc());
         vo.setState(housework.getState());
         vo.setReceiveStateDesc(housework.getReceiveStateDesc());
         vo.setReceiveState(housework.getReceiveState());
+        vo.setUserNameBy(housework.getUserNameBy());
         return vo;
     }
 
