@@ -1,21 +1,23 @@
 package com.wusi.reimbursement.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import com.wusi.reimbursement.common.Response;
-import com.wusi.reimbursement.entity.Homework;
-import com.wusi.reimbursement.entity.Housework;
-import com.wusi.reimbursement.entity.RequestContext;
+import com.wusi.reimbursement.common.ratelimit.anonation.RateLimit;
+import com.wusi.reimbursement.entity.*;
+import com.wusi.reimbursement.query.AddressQuery;
 import com.wusi.reimbursement.query.HomeworkQuery;
 import com.wusi.reimbursement.query.HouseworkQuery;
+import com.wusi.reimbursement.query.RemindRecordQuery;
+import com.wusi.reimbursement.service.AddressService;
 import com.wusi.reimbursement.service.HomeworkService;
 import com.wusi.reimbursement.service.HouseworkService;
+import com.wusi.reimbursement.service.RemindRecordService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
 import com.wusi.reimbursement.utils.SMSUtil;
+import com.wusi.reimbursement.vo.AddressVO;
 import com.wusi.reimbursement.vo.HomeworkList;
 import com.wusi.reimbursement.vo.HouseworkVO;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +47,10 @@ public class HomeworkController {
     private HomeworkService homeworkService;
     @Autowired
     private HouseworkService houseworkService;
+    @Autowired
+    private RemindRecordService remindRecordService;
+    @Autowired
+    private AddressService addressService;
 
     @ResponseBody
     @RequestMapping(value = "addHomework")
@@ -118,7 +123,7 @@ public class HomeworkController {
         if (DataUtil.isEmpty(content)) {
             return Response.fail("内容必填!");
         }
-        if(user.equals(loginUser.getNickName())){
+        if (user.equals(loginUser.getNickName())) {
             return Response.fail("你个憨批,你确定要给自己安排家务?!");
         }
         if (content.length() > 12) {
@@ -212,16 +217,16 @@ public class HomeworkController {
     //receiveWork
     @ResponseBody
     @RequestMapping(value = "receiveWork")
-    public Response<String> receiveWork(Integer state,Long id,Integer stateType) {
+    public Response<String> receiveWork(Integer state, Long id, Integer stateType) {
         Housework housework = houseworkService.queryById(id);
-        if(DataUtil.isEmpty(housework)){
+        if (DataUtil.isEmpty(housework)) {
             return Response.fail("查询不存在!");
         }
         try {
             //1是更新接受状态
-            if(stateType.equals(1)){
+            if (stateType.equals(1)) {
                 housework.setReceiveState(state);
-            }else{
+            } else {
                 housework.setState(state);
                 housework.setRealityFinishTime(new Date());
             }
@@ -232,4 +237,92 @@ public class HomeworkController {
         return Response.ok("处理成功!");
     }
 
+    //发短信
+    @ResponseBody
+    @RequestMapping(value = "sendMsg")
+    @RateLimit(permitsPerSecond = 0.01, ipLimit = true, description = "限制短信频率")
+    public void sendMsg(String user) {
+        RemindRecord remindRecord = new RemindRecord();
+        remindRecord.setTimeStr(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+        Long num = remindRecordService.queryCount(remindRecord);
+        if (num < 1) {
+            SMSUtil.sendSMS("18602702325", user, 828706);
+            RemindRecord record = new RemindRecord();
+            record.setTimeStr(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+            record.setCreateTime(new Date());
+            remindRecordService.insert(record);
+        }
+
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "saveAdd")
+    @RateLimit(permitsPerSecond = 0.01, ipLimit = true, description = "限制存储频率")
+    public void saveAdd(Address address) {
+        RequestContext.RequestUser loginUser = RequestContext.getCurrentUser();
+        address.setName(loginUser.getNickName());
+        address.setCreateTime(new Date());
+        addressService.insert(address);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "address")
+    public Response<Page<AddressVO>> showAddress(AddressQuery query) {
+        if (DataUtil.isEmpty(query.getPage())) {
+            query.setPage(0);
+        }
+        query.setLimit(5);
+        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+        Page<Address> addresses = addressService.queryPage(query, pageable);
+        List<AddressVO> voList = new ArrayList<>();
+        for (Address address : addresses) {
+            voList.add(getAddress(address));
+        }
+        Page<AddressVO> voPage = new PageImpl<>(voList, pageable, addresses.getTotalElements());
+        return Response.ok(voPage);
+
+    }
+
+    private AddressVO getAddress(Address address) {
+        AddressVO vo = new AddressVO();
+        vo.setId(address.getId());
+        vo.setAddress(address.getAddress());
+        vo.setCity(address.getCity());
+        vo.setCreateTime(DateUtil.formatDate(address.getCreateTime(), "yyyy-MM-dd HH:MM:ss"));
+        vo.setDistrict(address.getDistrict());
+        vo.setProvince(address.getProvince());
+        vo.setName(address.getName());
+        vo.setJwd(address.getLng() + "," + address.getLat());
+        return vo;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "remind")
+    public Response<Page<RemindRecord>> showAddress(RemindRecordQuery query) {
+        if (DataUtil.isEmpty(query.getPage())) {
+            query.setPage(0);
+        }
+        query.setLimit(5);
+        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+        Page<RemindRecord> remind = remindRecordService.queryPage(query, pageable);
+        List<RemindRecord> voList = new ArrayList<>();
+        for (RemindRecord RemindRecord : remind) {
+            voList.add(getRec(RemindRecord));
+        }
+        Page<RemindRecord> voPage = new PageImpl<>(voList, pageable, remind.getTotalElements());
+        return Response.ok(voPage);
+    }
+
+    private RemindRecord getRec(RemindRecord remindRecord) {
+        RemindRecord rec = new RemindRecord();
+        rec.setId(remindRecord.getId());
+        rec.setTimeStr(DateUtil.formatDate(remindRecord.getCreateTime(), "yyyy-MM-dd HH:MM:ss"));
+        return rec;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "deleteRec")
+    public void deleteRec(Long id) {
+        remindRecordService.deleteById(id);
+    }
 }

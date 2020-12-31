@@ -59,7 +59,7 @@ public class ProductController {
         for (ProductNew productNew : productNews) {
             i++;
             //增加延迟时间  线上
-            //;Thread.sleep(240000);
+            Thread.sleep(240000);
             try {
                 html = Jsoup.connect(productNew.getAmyUrl()).timeout(200000).execute().body();
             } catch (IOException e) {
@@ -103,6 +103,11 @@ public class ProductController {
         record.setCreateTime(new Date());
         record.setAmyOfflineNum(String.valueOf(amyOffNum));
         record.setAmyOnNum(String.valueOf(amyOnNum));
+        if(amyOnNum==0&&amyOffNum==0){
+           record.setIsDo("1");
+        }else{
+            record.setIsDo("0");
+        }
         monitorRecordService.insert(record);
         SMSUtil.sendSMS(PHONE_NUB, ":" + String.valueOf(i), templatedIdTotal);
         log.error("定时任务已结束!", DateUtil.formatDate(new Date(), "yyyy-MM-dd"));

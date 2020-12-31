@@ -40,8 +40,8 @@ server:
   port: 8083
 mybatis:
   mapper-locations: classpath:com/wusi/reimbursement/*Mapper.xml
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+ # configuration:
+   # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 web:
   server: http://49.233.192.222:8083
 upload:

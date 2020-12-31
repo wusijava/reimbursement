@@ -19,14 +19,15 @@ import java.util.concurrent.Executors;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+
         /*SmsService  service=new SmsServiceImpl();
         SmsProxy proxy= new SmsProxy(service);
         proxy.send("c++");*/
        /* SmsService service = (SmsService) JdkProxyFactory.getProxy(new SmsServiceImpl());
         service.send("ss++");*/
-        AliSmsService service =(AliSmsService) CglibProxyFactory.getProxy(AliSmsService.class);
+       /* AliSmsService service =(AliSmsService) CglibProxyFactory.getProxy(AliSmsService.class);
         service.send("QQQQQ");
-      /*  String basePack = Main.class.getPackage().getName();
+      *//*  String basePack = Main.class.getPackage().getName();
         CodeGenerator codeGenerator = new CodeGenerator();
         codeGenerator.generateMybatisXml(basePack, Reimbursement.class);*/
        // codeGenerator.generateDao(basePack, Reimbursement.class);
