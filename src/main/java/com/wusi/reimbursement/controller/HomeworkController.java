@@ -288,7 +288,7 @@ public class HomeworkController {
         vo.setId(address.getId());
         vo.setAddress(address.getAddress());
         vo.setCity(address.getCity());
-        vo.setCreateTime(DateUtil.formatDate(address.getCreateTime(), "yyyy-MM-dd HH:MM:ss"));
+        vo.setCreateTime(DateUtil.formatDate(address.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
         vo.setDistrict(address.getDistrict());
         vo.setProvince(address.getProvince());
         vo.setName(address.getName());
@@ -316,7 +316,7 @@ public class HomeworkController {
     private RemindRecord getRec(RemindRecord remindRecord) {
         RemindRecord rec = new RemindRecord();
         rec.setId(remindRecord.getId());
-        rec.setTimeStr(DateUtil.formatDate(remindRecord.getCreateTime(), "yyyy-MM-dd HH:MM:ss"));
+        rec.setTimeStr(DateUtil.formatDate(remindRecord.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
         return rec;
     }
 
