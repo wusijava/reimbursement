@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.Ssq;
 import com.wusi.reimbursement.entity.SsqBonus;
+import com.wusi.reimbursement.query.SsqBonusQuery;
 import com.wusi.reimbursement.query.SsqQuery;
 import com.wusi.reimbursement.service.SsqBonusService;
 import com.wusi.reimbursement.service.SsqService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
-import com.wusi.reimbursement.utils.WeatherUtils;
 import com.wusi.reimbursement.utils.WeekUtils;
-import com.wusi.reimbursement.vo.HouseworkVO;
 import com.wusi.reimbursement.vo.SsqBonusVo;
 import com.wusi.reimbursement.vo.SsqVo;
 import lombok.extern.slf4j.Slf4j;
@@ -172,7 +171,7 @@ public class SsqController {
 
     @RequestMapping(value = "getSsqRecord")
     @ResponseBody
-    public Response<Page<SsqBonusVo>> getSsqRecord(SsqQuery query) {
+    public Response<Page<SsqBonusVo>> getSsqRecord(SsqBonusQuery query) {
         if (DataUtil.isEmpty(query.getPage())) {
             query.setPage(0);
         }
@@ -266,5 +265,37 @@ public class SsqController {
             log.error("新增异常,{}", JSONObject.toJSONString(Ssq));
         }
         return Response.ok("定能暴富!");
+    }
+    //buyRecord
+    @RequestMapping(value = "buyRecord")
+    @ResponseBody
+    public Response<Page<SsqVo>> buyRecord(SsqQuery query) {
+        if (DataUtil.isEmpty(query.getPage())) {
+            query.setPage(0);
+        }
+        query.setLimit(2);
+        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+        Page<Ssq> page = SsqService.queryPage(query, pageable);
+        List<SsqVo> voList = new ArrayList<>();
+        for (Ssq ssq : page.getContent()) {
+            voList.add(getSsqVo2(ssq));
+        }
+        Page<SsqVo> voPage = new PageImpl<>(voList, pageable, page.getTotalElements());
+        return Response.ok(voPage);
+    }
+
+    private SsqVo getSsqVo2(Ssq ssq) {
+        SsqVo vo= new SsqVo();
+        vo.setRed5(ssq.getRed5());
+        vo.setRed6(ssq.getRed6());
+        vo.setBlue(ssq.getBlue());
+        vo.setRed1(ssq.getRed1());
+        vo.setRed2(ssq.getRed2());
+        vo.setRed3(ssq.getRed3());
+        vo.setRed4(ssq.getRed4());
+        vo.setNum(ssq.getNum());
+        vo.setTerm(ssq.getTerm());
+        vo.setCreateTime(DateUtil.formatDate(ssq.getCreateTime(),"yyyy-MM-dd HH:mm:ss"));
+        return vo;
     }
 }

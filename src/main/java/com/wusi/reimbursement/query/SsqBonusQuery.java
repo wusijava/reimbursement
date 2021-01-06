@@ -1,16 +1,15 @@
 package com.wusi.reimbursement.query;
 
-import com.wusi.reimbursement.entity.Ssq;
 import com.wusi.reimbursement.entity.SsqBonus;
 import lombok.Data;
 
 /**
- * @ Description   :  ssq
+ * @ Description   :  作业query
  * @ Author        :  wusi
  * @ CreateDate    :  2020/1/16$ 17:14$
  */
 @Data
-public class SsqQuery extends Ssq {
+public class SsqBonusQuery extends SsqBonus {
     private Integer page;
 
     private Integer limit;
