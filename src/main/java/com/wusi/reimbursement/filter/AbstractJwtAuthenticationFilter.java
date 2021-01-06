@@ -63,9 +63,10 @@ public abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilt
                     requestUser.setCityCode(user.getCityCode());
                     requestUser.setProvinceCode(user.getProvinceCode());
                     RequestContext.setCurrentUser(requestUser);
-                    if (!isLogoutUrl(request)) {
+                    /*if (!isLogoutUrl(request)) {
+                        System.out.println(5555);
                         JwtUtil.refreshAndAddTokenToResponseHeader(request, response, user.getId(), user.getUsername(), getTokenStoreResolver());
-                    }
+                    }*/
                 }
             } catch (UserPermissionResolver.UsernameAndPasswordException e) {
                 response.setCharacterEncoding("UTF-8");

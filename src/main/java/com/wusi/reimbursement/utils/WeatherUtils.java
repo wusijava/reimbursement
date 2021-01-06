@@ -34,7 +34,6 @@ public class WeatherUtils {
             map.put ("日期",two.get("date").toString());
             map.put ("天气情况",two.get("cond_txt_d").toString());
             if(i==0){
-                System.out.println(two.get("cond_txt_d"));
                 if(two.get("cond_txt_d").toString().indexOf("雨")!=-1){
                     SMSUtil.sendSMS("15527875423", "小岩同学", 834979);
                 }

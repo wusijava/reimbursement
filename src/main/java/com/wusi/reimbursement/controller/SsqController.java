@@ -28,10 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @ Description   :  菩萨保佑 让我走向人生巅峰
@@ -237,6 +234,16 @@ public class SsqController {
     @RequestMapping(value = "addSsq")
     @ResponseBody
     public Response<String> addSsq(Ssq Ssq) {
+        HashSet set=new HashSet();
+        set.add(Ssq.getRed1());
+        set.add(Ssq.getRed2());
+        set.add(Ssq.getRed3());
+        set.add(Ssq.getRed4());
+        set.add(Ssq.getRed5());
+        set.add(Ssq.getRed6());
+        if(set.size()<6){
+            return Response.fail("红球有重复!");
+        }
         if(  (Integer.valueOf(Ssq.getRed1())>33||Integer.valueOf(Ssq.getRed1())<1)||Ssq.getRed1().length()!=2){
             return Response.fail("红球范围或格式错误错误!");
         }

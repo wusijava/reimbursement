@@ -21,9 +21,7 @@ public class WeekUtils {
         start.setTime(sdf.parse(yearStr +"-01-01 00:00:00"));
         int num=0;
         for (int i=0;i<days;i++){
-            System.out.println(sdf.format(start.getTime()));
             int w = start.get(Calendar.DAY_OF_WEEK)-1;
-            System.out.println(w);
             if (w < 0) {
                 w = 0;
             }

@@ -52,7 +52,7 @@ class ReimbursementApplicationTests {
     }
     @Test
     void test(){
-        System.out.println(getMax(666666666));
+        //System.out.println(getMax(666666666));
     }
     @Test
     @Transactional(rollbackFor = Exception.class)
