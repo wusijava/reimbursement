@@ -7,6 +7,7 @@ import com.wusi.reimbursement.client.EstablishRedPacketRequest;
 import com.wusi.reimbursement.client.EstablishRedPacketResponse;
 import com.wusi.reimbursement.client.ZcRequestClient;
 import com.wusi.reimbursement.common.Response;
+import com.wusi.reimbursement.common.ratelimit.anonation.RateLimit;
 import com.wusi.reimbursement.entity.ExcelDto;
 import com.wusi.reimbursement.entity.Spend;
 import com.wusi.reimbursement.query.SpendQuery;
@@ -168,16 +169,16 @@ public class SpendController {
     @RequestMapping(value = "/saveSpend", method = RequestMethod.POST)
     @ResponseBody
     @SysLog("保存消费项")
+    @RateLimit(permitsPerSecond = 0.2, ipLimit = true, description = "限制导出频率")
     public Response<String> save(SpendList spendList) throws Exception {
 
-        System.out.println(spendList.getUrl());
         Spend spend=getSpend(spendList);
       spendService.insert(spend);
       //红包创建平台创建红包
-        EstablishRedPacketRequest request = new EstablishRedPacketRequest();
+        /*EstablishRedPacketRequest request = new EstablishRedPacketRequest();
         request.setModel(registerModel(spendList));
-        EstablishRedPacketResponse response = client.execute(request);
-        return Response.ok("");
+        EstablishRedPacketResponse response = client.execute(request);*/
+        return Response.ok("添加成功!");
     }
     @RequestMapping(value = "out", method = RequestMethod.POST)
     @ResponseBody

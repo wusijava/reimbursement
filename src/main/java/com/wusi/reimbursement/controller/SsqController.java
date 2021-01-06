@@ -1,5 +1,6 @@
 package com.wusi.reimbursement.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.Ssq;
 import com.wusi.reimbursement.entity.SsqBonus;
@@ -8,6 +9,8 @@ import com.wusi.reimbursement.service.SsqBonusService;
 import com.wusi.reimbursement.service.SsqService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
+import com.wusi.reimbursement.utils.WeatherUtils;
+import com.wusi.reimbursement.utils.WeekUtils;
 import com.wusi.reimbursement.vo.HouseworkVO;
 import com.wusi.reimbursement.vo.SsqBonusVo;
 import com.wusi.reimbursement.vo.SsqVo;
@@ -127,6 +130,7 @@ public class SsqController {
                     }else{
                         //未中奖
                         buyOne.setIsBonus("0");
+                        buyOne.setBonus("0");
                     }
                     buyOne.setWeek(ssq.getWeek());
                     buyOne.setBonusTime(sdf.parse(list.get(1)));
@@ -225,5 +229,42 @@ public class SsqController {
             vo.setList(null);
         }
         return vo;
+    }
+    @RequestMapping(value = "getSsqNum")
+    @ResponseBody
+    public Response<String> getSsqNum() throws ParseException {
+        return Response.ok(WeekUtils.getSsqNum());
+    }
+    @RequestMapping(value = "addSsq")
+    @ResponseBody
+    public Response<String> addSsq(Ssq Ssq) {
+        if(  (Integer.valueOf(Ssq.getRed1())>33||Integer.valueOf(Ssq.getRed1())<1)||Ssq.getRed1().length()!=2){
+            return Response.fail("红球范围或格式错误错误!");
+        }
+        if(  (Integer.valueOf(Ssq.getRed2())>33||Integer.valueOf(Ssq.getRed2())<1)||Ssq.getRed1().length()!=2){
+            return Response.fail("红球范围或格式错误错误!");
+        }
+        if(  (Integer.valueOf(Ssq.getRed3())>33||Integer.valueOf(Ssq.getRed3())<1)||Ssq.getRed1().length()!=2){
+            return Response.fail("红球范围或格式错误错误!");
+        }
+        if(  (Integer.valueOf(Ssq.getRed4())>33||Integer.valueOf(Ssq.getRed4())<1)||Ssq.getRed1().length()!=2){
+            return Response.fail("红球范围或格式错误错误!");
+        }
+        if(  (Integer.valueOf(Ssq.getRed5())>33||Integer.valueOf(Ssq.getRed5())<1)||Ssq.getRed1().length()!=2){
+            return Response.fail("红球范围或格式错误错误!");
+        }
+        if( ( Integer.valueOf(Ssq.getRed6())>33||Integer.valueOf(Ssq.getRed6())<1)||Ssq.getRed1().length()!=2){
+            return Response.fail("红球范围或格式错误错误!");
+        }
+        if(  (Integer.valueOf(Ssq.getBlue())>16||Integer.valueOf(Ssq.getBlue())<1)||Ssq.getRed1().length()!=2){
+            return Response.fail("篮球范围或格式错误错误!");
+        }
+        Ssq.setCreateTime(new Date());
+        try {
+            SsqService.insert(Ssq);
+        } catch (Exception e) {
+            log.error("新增异常,{}", JSONObject.toJSONString(Ssq));
+        }
+        return Response.ok("定能暴富!");
     }
 }
