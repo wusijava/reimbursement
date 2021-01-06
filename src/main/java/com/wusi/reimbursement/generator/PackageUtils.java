@@ -17,8 +17,6 @@ public class PackageUtils {
 
     public static void main(String[] args) throws Exception {
         String packageName = PackageUtils.class.getPackage().getName();
-        System.out.println(packageName);
-        System.out.println(packageName.replaceAll("\\.","\\\\"));
         packageName = packageName.substring(0,packageName.lastIndexOf("."));
         List<String> classNames = getClassName(packageName, true);
         if (classNames != null) {
