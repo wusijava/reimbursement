@@ -273,7 +273,7 @@ public class SsqController {
         if (DataUtil.isEmpty(query.getPage())) {
             query.setPage(0);
         }
-        query.setLimit(2);
+        query.setLimit(5);
         Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
         Page<Ssq> page = SsqService.queryPage(query, pageable);
         List<SsqVo> voList = new ArrayList<>();
