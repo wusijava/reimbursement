@@ -36,7 +36,7 @@ public class Ssq implements Identifiable<Long> {
    */
   private Date bonusTime;
   /**
-   * 是否
+   * 0待开奖 1中奖 -1 未中奖
    */
   private String isBonus;
   /**
@@ -60,6 +60,43 @@ public class Ssq implements Identifiable<Long> {
    */
   private String blueNum;
 
+  public enum IsBonus {
+    no("1", "未中奖"),
+    waiting("0", "待开奖"),
+    success("1", "已中奖");
 
+    private String code;
+    private String desc;
+
+    IsBonus(String code, String desc) {
+      this.code = code;
+      this.desc = desc;
+    }
+
+    public String getCode() {
+      return code;
+    }
+
+    public void setCode(String code) {
+      this.code = code;
+    }
+
+    public String getDesc() {
+      return desc;
+    }
+
+    public void setDesc(String desc) {
+      this.desc = desc;
+    }
+  }
+  public String getIsBonusDesc(){
+    if (IsBonus.success.code.equals(isBonus)){
+      return IsBonus.success.getDesc();
+    }  else if (IsBonus.waiting.code.equals(isBonus)){
+      return IsBonus.waiting.getDesc();
+    }else {
+      return IsBonus.no.getDesc();
+    }
+  }
 
 }

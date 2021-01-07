@@ -2,7 +2,6 @@ package com.wusi.reimbursement.vo;
 
 import lombok.Data;
 
-import java.util.Date;
 
 /**
  * 购买的ssq

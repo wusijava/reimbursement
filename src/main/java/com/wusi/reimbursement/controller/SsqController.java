@@ -131,7 +131,7 @@ public class SsqController {
                         }
                     }else{
                         //未中奖
-                        buyOne.setIsBonus("0");
+                        buyOne.setIsBonus("-1");
                         buyOne.setBonus("0");
                     }
                     buyOne.setWeek(ssq.getWeek());
@@ -272,6 +272,8 @@ public class SsqController {
             return Response.fail("篮球范围或格式错误错误!");
         }
         Ssq.setCreateTime(new Date());
+        //初始待开奖
+        Ssq.setIsBonus("0");
         try {
             SsqService.insert(Ssq);
         } catch (Exception e) {
@@ -321,7 +323,11 @@ public class SsqController {
             SsqQuery ssqQuery = new SsqQuery();
             ssqQuery.setTerm(s);
             List<Ssq> ssqs = SsqService.queryList(ssqQuery);
-            ssqParams.add(new SsqParam(ssqs,ssqQuery.getTerm(),page));
+            List<SsqVo> list2=new ArrayList<>();
+            for(Ssq Ssq:ssqs){
+                list2.add(getSsqVo2(Ssq));
+            }
+            ssqParams.add(new SsqParam(list2,ssqQuery.getTerm(),page));
         }
         return Response.ok(ssqParams);
     }
@@ -339,6 +345,7 @@ public class SsqController {
         vo.setRed4(ssq.getRed4());
         vo.setNum(ssq.getNum());
         vo.setTerm(ssq.getTerm());
+        vo.setIsBonus(ssq.getIsBonusDesc());
         vo.setCreateTime(DateUtil.formatDate(ssq.getCreateTime(),"yyyy-MM-dd HH:mm:ss"));
         return vo;
     }
