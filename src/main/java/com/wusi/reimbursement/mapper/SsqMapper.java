@@ -2,7 +2,10 @@ package com.wusi.reimbursement.mapper;
 
 import com.wusi.reimbursement.base.dao.mybatis.BaseMapper;
 import com.wusi.reimbursement.entity.Ssq;
+import com.wusi.reimbursement.query.SsqQuery;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author admin
@@ -11,5 +14,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SsqMapper extends BaseMapper<Ssq,Long> {
 
-
+    List<Ssq> queryListByParam(SsqQuery ssqQuery);
 }

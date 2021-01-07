@@ -5,6 +5,7 @@ import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.Ssq;
 import com.wusi.reimbursement.entity.SsqBonus;
 import com.wusi.reimbursement.query.SsqBonusQuery;
+import com.wusi.reimbursement.query.SsqParam;
 import com.wusi.reimbursement.query.SsqQuery;
 import com.wusi.reimbursement.service.SsqBonusService;
 import com.wusi.reimbursement.service.SsqService;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ Description   :  菩萨保佑 让我走向人生巅峰
@@ -267,22 +269,44 @@ public class SsqController {
         return Response.ok("定能暴富!");
     }
     //buyRecord
+
+    /**
+     * 分页查询
+     * @param query
+     * @return
+     */
     @RequestMapping(value = "buyRecord")
     @ResponseBody
-    public Response<Page<SsqVo>> buyRecord(SsqQuery query) {
+    public Response<List<SsqParam>> buyRecord(SsqQuery query) {
+        //if (DataUtil.isEmpty(query.getPage())) {
+        //    query.setPage(0);
+        //}
+        //query.setLimit(2);
+        //Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+        //Page<Ssq> page = SsqService.queryPage(query, pageable);
+        //List<SsqVo> voList = new ArrayList<>();
+        //for (Ssq ssq : page.getContent()) {
+        //    voList.add(getSsqVo2(ssq));
+        //}
+        //Page<SsqVo> voPage = new PageImpl<>(voList, pageable, page.getTotalElements());
+        //return Response.ok(voPage);
         if (DataUtil.isEmpty(query.getPage())) {
             query.setPage(0);
+            query.setLimit(2);
         }
-        query.setLimit(2);
-        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
-        Page<Ssq> page = SsqService.queryPage(query, pageable);
-        List<SsqVo> voList = new ArrayList<>();
-        for (Ssq ssq : page.getContent()) {
-            voList.add(getSsqVo2(ssq));
+        List<Ssq> ssqs1 = SsqService.queryListByParam(query);
+        List<String> list = ssqs1.stream().map(Ssq::getTerm).collect(Collectors.toList());
+        ArrayList<SsqParam> ssqParams = new ArrayList<>();
+        for (String s : list) {
+            SsqQuery ssqQuery = new SsqQuery();
+            ssqQuery.setTerm(s);
+            List<Ssq> ssqs = SsqService.queryList(ssqQuery);
+            ssqParams.add(new SsqParam(ssqs,query.getTerm()));
         }
-        Page<SsqVo> voPage = new PageImpl<>(voList, pageable, page.getTotalElements());
-        return Response.ok(voPage);
+        return Response.ok(ssqParams);
     }
+
+
 
     private SsqVo getSsqVo2(Ssq ssq) {
         SsqVo vo= new SsqVo();
