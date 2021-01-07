@@ -119,6 +119,12 @@
         <include refid="Base_Where_Clause"/>
     </select>
 
+
+
+    <select id="queryListByParam" resultMap="BaseResultMap">
+    SELECT DISTINCT term FROM `ssq` ORDER BY term desc limit #{page},#{limit}
+    </select>
+
     <!-- 查询 -->
     <select id="select" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
@@ -228,6 +234,9 @@
         FROM
         <include refid="table"/>
         WHERE id=#{id}
+    </select>
+    <select id="querycount" resultType="java.lang.Long">
+        select COUNT(*) FROM (select term from ssq GROUP BY term) a
     </select>
 
     <update id="updateById" parameterType="com.wusi.reimbursement.entity.Ssq">

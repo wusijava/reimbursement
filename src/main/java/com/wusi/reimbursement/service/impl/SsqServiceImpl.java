@@ -4,9 +4,12 @@ import com.wusi.reimbursement.base.dao.mybatis.BaseMapper;
 import com.wusi.reimbursement.base.service.impl.BaseMybatisServiceImpl;
 import com.wusi.reimbursement.entity.Ssq;
 import com.wusi.reimbursement.mapper.SsqMapper;
+import com.wusi.reimbursement.query.SsqQuery;
 import com.wusi.reimbursement.service.SsqService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author admin
@@ -22,5 +25,15 @@ public class SsqServiceImpl extends BaseMybatisServiceImpl<Ssq,Long> implements 
     @Override
     protected BaseMapper<Ssq, Long> getBaseMapper() {
         return ssqMapper;
+    }
+
+    @Override
+    public List<Ssq> queryListByParam(SsqQuery ssqQuery) {
+        return ssqMapper.queryListByParam(ssqQuery);
+    }
+
+    @Override
+    public long querycount() {
+        return ssqMapper.querycount();
     }
 }
