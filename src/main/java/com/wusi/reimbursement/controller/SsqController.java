@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.Ssq;
 import com.wusi.reimbursement.entity.SsqBonus;
+import com.wusi.reimbursement.mapper.SsqMapper;
 import com.wusi.reimbursement.query.SsqBonusQuery;
 import com.wusi.reimbursement.query.SsqParam;
 import com.wusi.reimbursement.query.SsqQuery;
@@ -47,6 +48,8 @@ public class SsqController {
     private SsqBonusService SsqBonusService;
     @Autowired
     private SsqService SsqService;
+    @Autowired
+    private SsqMapper SsqMapper;
 
     @RequestMapping(value = "getBonusNum")
     @ResponseBody
@@ -260,7 +263,9 @@ public class SsqController {
         }
         query.setLimit(5);
         query.setPage(query.getLimit()*(query.getPage()));
-
+        Map<String, Object> value = SsqMapper.getValue();
+        String bonus=(String.valueOf(value.get("bonus")));
+        String spend=MoneyUtil.multiply((String.valueOf(value.get("count"))),"2") ;
         long count=SsqService.querycount();
         long page=0;
         if(count%query.getLimit()==0){
@@ -279,7 +284,7 @@ public class SsqController {
             for(Ssq Ssq:ssqs){
                 list2.add(getSsqVo2(Ssq));
             }
-            ssqParams.add(new SsqParam(list2,ssqQuery.getTerm(),page));
+            ssqParams.add(new SsqParam(list2,ssqQuery.getTerm(),page,bonus,spend));
         }
         return Response.ok(ssqParams);
     }

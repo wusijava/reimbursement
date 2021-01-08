@@ -6,6 +6,7 @@ import com.wusi.reimbursement.query.SsqQuery;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author admin
@@ -17,4 +18,6 @@ public interface SsqMapper extends BaseMapper<Ssq,Long> {
     List<Ssq> queryListByParam(SsqQuery ssqQuery);
 
     long querycount();
+
+    Map<String,Object>  getValue();
 }

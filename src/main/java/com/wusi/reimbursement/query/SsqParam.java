@@ -13,4 +13,6 @@ public class SsqParam {
     private List<SsqVo> ssqList;
     private String term;
     private long totalPage;
+    private String bonus;
+    private String spend;
 }

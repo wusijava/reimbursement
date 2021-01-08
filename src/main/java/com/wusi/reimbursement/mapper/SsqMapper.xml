@@ -238,6 +238,9 @@
     <select id="querycount" resultType="java.lang.Long">
         select COUNT(*) FROM (select term from ssq GROUP BY term) a
     </select>
+    <select id="getValue" resultType="java.util.Map">
+        select sum(bonus) as bonus ,count(*) as count FROM ssq
+    </select>
 
     <update id="updateById" parameterType="com.wusi.reimbursement.entity.Ssq">
         UPDATE
