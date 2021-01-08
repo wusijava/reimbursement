@@ -20,4 +20,6 @@ public interface SsqMapper extends BaseMapper<Ssq,Long> {
     long querycount();
 
     Map<String,Object>  getValue();
+
+    long getCommission(String buyer);
 }

@@ -58,6 +58,11 @@ public class SsqVo  {
    */
   private String blueNum;
 
+  /**
+   *
+   * state
+   */
+  private Integer state;
 
 
 }

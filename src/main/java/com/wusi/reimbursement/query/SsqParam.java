@@ -1,6 +1,5 @@
 package com.wusi.reimbursement.query;
 
-import com.wusi.reimbursement.entity.Ssq;
 import com.wusi.reimbursement.vo.SsqVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,4 +14,5 @@ public class SsqParam {
     private long totalPage;
     private String bonus;
     private String spend;
+    private long commission;
 }

@@ -16,7 +16,6 @@ import com.wusi.reimbursement.vo.SsqBonusVo;
 import com.wusi.reimbursement.vo.SsqVo;
 import com.wusi.reimbursement.vo.suiJi;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,13 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ Description   :  菩萨保佑 让我走向人生巅峰
@@ -265,10 +259,14 @@ public class SsqController {
     @RequestMapping(value = "buyRecord")
     @ResponseBody
     public Response<List<SsqParam>> buyRecord(SsqQuery query) {
+        RequestContext.RequestUser loginUser = RequestContext.getCurrentUser();
         if (DataUtil.isEmpty(query.getPage())) {
             query.setPage(0);
         }
         query.setLimit(5);
+        if(query.getType().equals(3)){
+            query.setBuyer(loginUser.getNickName());
+        }
         query.setPage(query.getLimit()*(query.getPage()));
         Map<String, Object> value = SsqMapper.getValue();
         String bonus=(String.valueOf(value.get("bonus")));
@@ -283,15 +281,17 @@ public class SsqController {
         List<Ssq> ssqs1 = SsqService.queryListByParam(query);
         List<String> list = ssqs1.stream().map(Ssq::getTerm).collect(Collectors.toList());
         ArrayList<SsqParam> ssqParams = new ArrayList<>();
+        long commission=SsqMapper.getCommission(loginUser.getNickName());
         for (String s : list) {
             SsqQuery ssqQuery = new SsqQuery();
             ssqQuery.setTerm(s);
+            ssqQuery.setBuyer(loginUser.getNickName());
             List<Ssq> ssqs = SsqService.queryList(ssqQuery);
             List<SsqVo> list2=new ArrayList<>();
             for(Ssq Ssq:ssqs){
                 list2.add(getSsqVo2(Ssq));
             }
-            ssqParams.add(new SsqParam(list2,ssqQuery.getTerm(),page,bonus,spend));
+            ssqParams.add(new SsqParam(list2,ssqQuery.getTerm(),page,bonus,spend,commission));
         }
         return Response.ok(ssqParams);
     }
@@ -310,6 +310,8 @@ public class SsqController {
         vo.setNum(ssq.getNum());
         vo.setTerm(ssq.getTerm());
         vo.setIsBonus(ssq.getIsBonusDesc());
+        vo.setState(ssq.getState());
+        vo.setId(ssq.getId());
         vo.setCreateTime(DateUtil.formatDate(ssq.getCreateTime(),"yyyy-MM-dd HH:mm:ss"));
         return vo;
     }
@@ -356,5 +358,21 @@ public class SsqController {
         }
         return Response.ok(suiJi);
     }
+
+    @RequestMapping(value = "changeSsqState")
+    @ResponseBody
+    public Response<String> changeSsqState(Long id,Integer state) {
+        Ssq ssq = SsqService.queryById(id);
+        ssq.setState(state);
+        try {
+            SsqService.updateById(ssq);
+        } catch (Exception e) {
+            log.error("更新异常，{}", id);
+            return Response.fail("操作失败！");
+        }
+        return Response.ok("操作成功！");
+    }
+
+
 
 }
