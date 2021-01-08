@@ -365,6 +365,9 @@ public class SsqController {
     @RequestMapping(value = "changeSsqState")
     @ResponseBody
     public Response<String> changeSsqState(Long id,Integer state) {
+        if(DataUtil.isEmpty(id)||DataUtil.isEmpty(state)){
+            return Response.fail("缺少参数！");
+        }
         Ssq ssq = SsqService.queryById(id);
         ssq.setState(state);
         try {
