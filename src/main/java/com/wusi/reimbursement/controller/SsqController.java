@@ -267,7 +267,7 @@ public class SsqController {
             query.setPage(0);
         }
         query.setLimit(5);
-        if(query.getType().equals(3)){
+        if(DataUtil.isNotEmpty(query.getType())&&query.getType().equals(3)){
             query.setBuyer(loginUser.getNickName());
         }
         query.setPage(query.getLimit()*(query.getPage()));
