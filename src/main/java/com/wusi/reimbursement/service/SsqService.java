@@ -7,7 +7,7 @@ import com.wusi.reimbursement.query.SsqQuery;
 import java.util.List;
 
 /**
- * @author admin
+ * @author wusi
  * @date 2021-01-05 11:42:29
  **/
 public interface SsqService extends BaseService<Ssq,Long> {
