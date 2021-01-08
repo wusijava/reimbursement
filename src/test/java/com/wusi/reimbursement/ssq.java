@@ -1,7 +1,8 @@
 package com.wusi.reimbursement;
 
-import com.wusi.reimbursement.utils.WeekUtils;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,19 +23,19 @@ import java.util.List;
 public class ssq {
     @Test
     public void Test() throws IOException {
-        String html = Jsoup.connect("https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=%E5%8F%8C%E8%89%B2%E7%90%83&fenlei=256&rsv_pq=80b37df9000408f5&rsv_t=010coSUSP%2FnvityAj%2FwITb2JWy1prLMoue7ZVxtbRk0cHcElsUmVreYjJzQ&rqlang=cn&rsv_dl=tb&rsv_enter=1&rsv_sug3=10&rsv_sug1=14&rsv_sug7=101&rsv_sug2=0&rsv_btype=i&inputT=4181&rsv_sug4=5061").timeout(200000).execute().body();
+        String html = Jsoup.connect("https://shuangseqiu.cjcp.com.cn/").timeout(200000).execute().body();
         //System.out.println(html);
-        List<String> list=GetJsonValue(html, "<span class=\"c-icon c-icon-ball-red op_caipiao_ball_red c-gap-right-small\">");
-        System.out.println(list);
+        List<String> list=GetJsonValue(html, "<div class=\"red_q\">");
+        System.out.println(html);
     }
     public static List<String> GetJsonValue(String jsonStr, String key) {
         List<String> ball=new ArrayList<>();
         //获取期数
-        int index = jsonStr.indexOf("期开奖结果");
-        String term=jsonStr.substring(index-8, index);
+        int index = jsonStr.indexOf("中国福利彩票双色球第");
+        String term=jsonStr.substring(index+"中国福利彩票双色球第".length(), index+"中国福利彩票双色球第".length()+7);
         //开奖日期
-        int bonusIndex = jsonStr.indexOf("开奖日期：");
-        String bonusTime=jsonStr.substring(bonusIndex+"开奖日期：".length(), bonusIndex+"开奖日期：".length()+"2021-01-03 21:15:00".length());
+        int bonusIndex = jsonStr.indexOf("开奖日期:");
+        String bonusTime=jsonStr.substring(bonusIndex+"开奖日期:".length(), bonusIndex+"开奖日期:".length()+"2021-03-07".length());
         System.out.println(term);
         System.out.println(bonusTime);
         for(int i=0;i<6;i++){
@@ -42,7 +43,7 @@ public class ssq {
             ball.add(value);
             jsonStr=jsonStr.replace(key+value, value);
         }
-        String blue=getStr(jsonStr,"<span class=\"c-icon c-icon-ball-blue op_caipiao_ball_blue c-gap-right-small\">");
+        String blue=getStr(jsonStr,"<div class=\"blue_q\">");
         ball.add(blue);
         return ball;
     }
