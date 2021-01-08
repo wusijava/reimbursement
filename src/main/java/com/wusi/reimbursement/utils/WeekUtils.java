@@ -32,14 +32,22 @@ public class WeekUtils {
             }
             start.add(Calendar.DAY_OF_YEAR,1);
         }
+
         String format = sdf2.format(new Date());
         Calendar query=Calendar.getInstance();
         query.setTime(sdf2.parse(format));
         Date parse = sdf.parse(format + " 20:00:00");
-        //开奖当天20点后 只能获取下一期了
-        if(new Date().getTime()>parse.getTime()){
-            num++;
+        int w = query.get(Calendar.DAY_OF_WEEK)-1;
+        if (w < 0) {
+            w = 0;
         }
+        if(w==0||w==2||w==4){
+            //开奖当天20点后 只能获取下一期了
+            if(new Date().getTime()>parse.getTime()){
+                num++;
+            }
+        }
+
         String numStr=String.valueOf(num+1);
         if(String.valueOf(num).length()<3){
             for( int j=3-String.valueOf(num).length();j<=3;j++ ){

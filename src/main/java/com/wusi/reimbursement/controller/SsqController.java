@@ -288,7 +288,9 @@ public class SsqController {
         for (String s : list) {
             SsqQuery ssqQuery = new SsqQuery();
             ssqQuery.setTerm(s);
-            ssqQuery.setBuyer(loginUser.getNickName());
+            if(DataUtil.isNotEmpty(query.getType())&&query.getType().equals(3)){
+                ssqQuery.setBuyer(loginUser.getNickName());
+            }
             List<Ssq> ssqs = SsqService.queryList(ssqQuery);
             List<SsqVo> list2=new ArrayList<>();
             for(Ssq Ssq:ssqs){

@@ -298,7 +298,13 @@
         select sum(bonus) as bonus ,count(*) as count FROM ssq
     </select>
     <select id="queryListByParam" resultMap="BaseResultMap">
-        SELECT DISTINCT term FROM `ssq` where buyer = #{buyer} ORDER BY term desc limit #{page},#{limit}
+        SELECT DISTINCT term FROM `ssq`
+        <where>
+            <if test="buyer != null and buyer != ''">
+                `buyer`=#{buyer}
+            </if>
+         </where>
+         ORDER BY term desc limit #{page},#{limit}
     </select>
     <select id="getCommission" resultType="java.lang.Long">
         select sum(commission) from ssq where buyer =#{buyer}
