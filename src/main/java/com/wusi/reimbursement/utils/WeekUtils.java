@@ -1,5 +1,6 @@
 package com.wusi.reimbursement.utils;
 
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,6 +15,7 @@ import java.util.Date;
 public class WeekUtils {
     public static String getSsqNum() throws ParseException {
         DateFormat sdf = new SimpleDateFormat(DateUtil.PATTERN_YYYY_MM_DD_HH_MM_SS);
+        DateFormat sdf2 = new SimpleDateFormat(DateUtil.PATTERN_YYYY_MM_DD);
         Calendar calendar=Calendar.getInstance();
         String yearStr = String.valueOf(calendar.get(Calendar.YEAR));
         long days = DateUtil.betweenDays(sdf.parse(yearStr +"-01-01 00:00:00"), new Date());
@@ -29,6 +31,14 @@ public class WeekUtils {
                 num++;
             }
             start.add(Calendar.DAY_OF_YEAR,1);
+        }
+        String format = sdf2.format(new Date());
+        Calendar query=Calendar.getInstance();
+        query.setTime(sdf2.parse(format));
+        Date parse = sdf.parse(format + " 20:00:00");
+        //开奖当天20点后 只能获取下一期了
+        if(new Date().getTime()>parse.getTime()){
+            num++;
         }
         String numStr=String.valueOf(num+1);
         if(String.valueOf(num).length()<3){
