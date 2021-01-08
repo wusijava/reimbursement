@@ -297,7 +297,9 @@
     <select id="getValue" resultType="java.util.Map">
         select sum(bonus) as bonus ,count(*) as count FROM ssq
     </select>
-
+    <select id="queryListByParam" resultMap="BaseResultMap">
+        SELECT DISTINCT term FROM `ssq` ORDER BY term desc limit #{page},#{limit}
+    </select>
     <update id="updateById" parameterType="com.wusi.reimbursement.entity.Ssq">
         UPDATE
         <include refid="table"/>

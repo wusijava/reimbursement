@@ -2,6 +2,7 @@ package com.wusi.reimbursement.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wusi.reimbursement.common.Response;
+import com.wusi.reimbursement.entity.RequestContext;
 import com.wusi.reimbursement.entity.Ssq;
 import com.wusi.reimbursement.entity.SsqBonus;
 import com.wusi.reimbursement.mapper.SsqMapper;
@@ -13,6 +14,7 @@ import com.wusi.reimbursement.service.SsqService;
 import com.wusi.reimbursement.utils.*;
 import com.wusi.reimbursement.vo.SsqBonusVo;
 import com.wusi.reimbursement.vo.SsqVo;
+import com.wusi.reimbursement.vo.suiJi;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ import java.util.*;
  */
 @RestController
 @Slf4j
-@RequestMapping(value = "/ssq")
+@RequestMapping(value = "api/ssq")
 public class SsqController {
     @Autowired
     private SsqBonusService SsqBonusService;
@@ -195,6 +197,7 @@ public class SsqController {
     @RequestMapping(value = "addSsq")
     @ResponseBody
     public Response<String> addSsq(Ssq Ssq) {
+        RequestContext.RequestUser loginUser = RequestContext.getCurrentUser();
         HashSet set=new HashSet();
         set.add(Ssq.getRed1());
         set.add(Ssq.getRed2());
@@ -227,8 +230,25 @@ public class SsqController {
             return Response.fail("篮球范围或格式错误错误!");
         }
         Ssq.setCreateTime(new Date());
-        //初始待开奖
         Ssq.setIsBonus("0");
+        Ssq.setBonus("0");
+        Ssq.setUser(loginUser.getNickName());
+        //代买
+        if(Ssq.getType().equals(2)){
+            //代买者
+            if(DataUtil.isEmpty(Ssq.getBuyer())){
+                return Response.fail("请指定购买者!!");
+            }
+            if(Ssq.getBuyer().equals(loginUser.getNickName())){
+                return Response.fail("无法指定自己购买!!");
+            }
+            Ssq.setState(0);
+        }else{
+            Ssq.setType(1);
+            Ssq.setState(1);
+        }
+
+
         try {
             SsqService.insert(Ssq);
         } catch (Exception e) {
@@ -236,7 +256,6 @@ public class SsqController {
         }
         return Response.ok("定能暴富!");
     }
-    //buyRecord
 
     /**
      * 分页查询
@@ -246,18 +265,6 @@ public class SsqController {
     @RequestMapping(value = "buyRecord")
     @ResponseBody
     public Response<List<SsqParam>> buyRecord(SsqQuery query) {
-        //if (DataUtil.isEmpty(query.getPage())) {
-        //    query.setPage(0);
-        //}
-        //query.setLimit(2);
-        //Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
-        //Page<Ssq> page = SsqService.queryPage(query, pageable);
-        //List<SsqVo> voList = new ArrayList<>();
-        //for (Ssq ssq : page.getContent()) {
-        //    voList.add(getSsqVo2(ssq));
-        //}
-        //Page<SsqVo> voPage = new PageImpl<>(voList, pageable, page.getTotalElements());
-        //return Response.ok(voPage);
         if (DataUtil.isEmpty(query.getPage())) {
             query.setPage(0);
         }
@@ -306,4 +313,48 @@ public class SsqController {
         vo.setCreateTime(DateUtil.formatDate(ssq.getCreateTime(),"yyyy-MM-dd HH:mm:ss"));
         return vo;
     }
+
+    @RequestMapping(value = "suiJi")
+    @ResponseBody
+    public Response<suiJi> buyRecord() {
+        suiJi suiJi=new suiJi();
+        List<Integer> num=new ArrayList<>();
+        Random r = new Random();
+        int i=0;
+        while(true) {
+            int number = r.nextInt(32)+1;
+            if(!num.contains(number)) {
+                num.add(number);
+                i++;
+                if(i==6){
+                    break;
+                }
+            }
+        }
+        Collections.sort(num, (y,x)->{
+            return x-y;
+        });
+        List<String> str=new ArrayList<>();
+        for (int j=0;j<6;j++){
+            if(String.valueOf(num.get(j)).length()<2){
+                str.add(j, "0"+String.valueOf(num.get(j)));
+            }else{
+                str.add(j, String.valueOf(num.get(j)));
+            }
+        }
+        suiJi.setRed6(str.get(0));
+        suiJi.setRed5(str.get(1));
+        suiJi.setRed4(str.get(2));
+        suiJi.setRed3(str.get(3));
+        suiJi.setRed2(str.get(4));
+        suiJi.setRed1(str.get(5));
+        int blue = r.nextInt(15)+1;
+        if(String.valueOf(blue).length()<2){
+            suiJi.setBlue("0"+String.valueOf(blue));
+        }else{
+            suiJi.setBlue(String.valueOf(blue));
+        }
+        return Response.ok(suiJi);
+    }
+
 }
