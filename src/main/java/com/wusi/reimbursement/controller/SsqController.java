@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
-@RequestMapping(value = "api/ssq")
+@RequestMapping(value = "/api/ssq")
 public class SsqController {
     @Autowired
     private SsqBonusService SsqBonusService;
@@ -63,7 +63,7 @@ public class SsqController {
             List<Ssq> buyList = SsqService.queryList(buy);
             if(DataUtil.isNotEmpty(buyList)){
                 for(Ssq buyOne:buyList){
-                    if(!ssq.getTerm().equals(buyOne.getTerm())){
+                    if(!query.getTerm().equals(buyOne.getTerm())){
                         break;
                     }
                     int redNum=0;
@@ -103,6 +103,9 @@ public class SsqController {
                             buyOne.setBonus("二等奖");
                         }else{
                             buyOne.setBonus("一等奖");
+                        }
+                        if(buyOne.getType().equals(2)){
+                            buyOne.setCommission(MoneyUtil.multiply(buyOne.getBonus(), MoneyUtil.devide(buyOne.getRate(), "100")));
                         }
                     }else{
                         //未中奖
