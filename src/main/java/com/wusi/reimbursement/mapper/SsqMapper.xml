@@ -306,7 +306,7 @@
          </where>
          ORDER BY term desc limit #{page},#{limit}
     </select>
-    <select id="getCommission" resultType="java.lang.Long">
+    <select id="getCommission" resultType="java.lang.String">
         select sum(commission) from ssq where buyer =#{buyer}
     </select>
     <update id="updateById" parameterType="com.wusi.reimbursement.entity.Ssq">

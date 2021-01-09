@@ -284,10 +284,11 @@ public class SsqController {
         List<Ssq> ssqs1 = SsqService.queryListByParam(query);
         List<String> list = ssqs1.stream().map(Ssq::getTerm).collect(Collectors.toList());
         ArrayList<SsqParam> ssqParams = new ArrayList<>();
-        long commission=SsqMapper.getCommission(loginUser.getNickName());
+        String commission=SsqMapper.getCommission(loginUser.getNickName());
         for (String s : list) {
             SsqQuery ssqQuery = new SsqQuery();
             ssqQuery.setTerm(s);
+
             if(DataUtil.isNotEmpty(query.getType())&&query.getType().equals(3)){
                 ssqQuery.setBuyer(loginUser.getNickName());
             }

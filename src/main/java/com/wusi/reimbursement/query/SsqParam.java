@@ -14,5 +14,5 @@ public class SsqParam {
     private long totalPage;
     private String bonus;
     private String spend;
-    private long commission;
+    private String commission;
 }

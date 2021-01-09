@@ -21,5 +21,5 @@ public interface SsqMapper extends BaseMapper<Ssq,Long> {
 
     Map<String,Object>  getValue();
 
-    long getCommission(String buyer);
+    String getCommission(String buyer);
 }
