@@ -240,6 +240,7 @@ public class SsqController {
                 return Response.fail("无法指定自己购买!!");
             }
             Ssq.setState(0);
+            Ssq.setCommission("0");
         }else{
             Ssq.setType(1);
             Ssq.setState(1);
