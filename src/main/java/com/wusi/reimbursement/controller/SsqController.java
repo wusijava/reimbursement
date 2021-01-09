@@ -231,7 +231,7 @@ public class SsqController {
         Ssq.setBonus("0");
         Ssq.setUser(loginUser.getNickName());
         //代买
-        if(Ssq.getType().equals(2)){
+        if(DataUtil.isNotEmpty(Ssq.getType())&&Ssq.getType().equals(2)){
             //代买者
             if(DataUtil.isEmpty(Ssq.getBuyer())){
                 return Response.fail("请指定购买者!!");
