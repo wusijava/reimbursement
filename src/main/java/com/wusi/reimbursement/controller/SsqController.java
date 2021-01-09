@@ -208,22 +208,22 @@ public class SsqController {
         if(  (Integer.valueOf(Ssq.getRed1())>33||Integer.valueOf(Ssq.getRed1())<1)||Ssq.getRed1().length()!=2){
             return Response.fail("红球范围或格式错误错误!");
         }
-        if(  (Integer.valueOf(Ssq.getRed2())>33||Integer.valueOf(Ssq.getRed2())<1)||Ssq.getRed1().length()!=2){
+        if(  (Integer.valueOf(Ssq.getRed2())>33||Integer.valueOf(Ssq.getRed2())<1)||Ssq.getRed2().length()!=2){
             return Response.fail("红球范围或格式错误错误!");
         }
-        if(  (Integer.valueOf(Ssq.getRed3())>33||Integer.valueOf(Ssq.getRed3())<1)||Ssq.getRed1().length()!=2){
+        if(  (Integer.valueOf(Ssq.getRed3())>33||Integer.valueOf(Ssq.getRed3())<1)||Ssq.getRed3().length()!=2){
             return Response.fail("红球范围或格式错误错误!");
         }
-        if(  (Integer.valueOf(Ssq.getRed4())>33||Integer.valueOf(Ssq.getRed4())<1)||Ssq.getRed1().length()!=2){
+        if(  (Integer.valueOf(Ssq.getRed4())>33||Integer.valueOf(Ssq.getRed4())<1)||Ssq.getRed4().length()!=2){
             return Response.fail("红球范围或格式错误错误!");
         }
-        if(  (Integer.valueOf(Ssq.getRed5())>33||Integer.valueOf(Ssq.getRed5())<1)||Ssq.getRed1().length()!=2){
+        if(  (Integer.valueOf(Ssq.getRed5())>33||Integer.valueOf(Ssq.getRed5())<1)||Ssq.getRed5().length()!=2){
             return Response.fail("红球范围或格式错误错误!");
         }
-        if( ( Integer.valueOf(Ssq.getRed6())>33||Integer.valueOf(Ssq.getRed6())<1)||Ssq.getRed1().length()!=2){
+        if( ( Integer.valueOf(Ssq.getRed6())>33||Integer.valueOf(Ssq.getRed6())<1)||Ssq.getRed6().length()!=2){
             return Response.fail("红球范围或格式错误错误!");
         }
-        if(  (Integer.valueOf(Ssq.getBlue())>16||Integer.valueOf(Ssq.getBlue())<1)||Ssq.getRed1().length()!=2){
+        if(  (Integer.valueOf(Ssq.getBlue())>16||Integer.valueOf(Ssq.getBlue())<1)||Ssq.getBlue().length()!=2){
             return Response.fail("篮球范围或格式错误错误!");
         }
         Ssq.setCreateTime(new Date());
