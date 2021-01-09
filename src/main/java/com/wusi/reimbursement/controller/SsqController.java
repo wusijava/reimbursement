@@ -245,8 +245,6 @@ public class SsqController {
             Ssq.setType(1);
             Ssq.setState(1);
         }
-
-
         try {
             SsqService.insert(Ssq);
         } catch (Exception e) {
@@ -255,11 +253,6 @@ public class SsqController {
         return Response.ok("定能暴富!");
     }
 
-    /**
-     * 分页查询
-     * @param query
-     * @return
-     */
     @RequestMapping(value = "buyRecord")
     @ResponseBody
     public Response<List<SsqParam>> buyRecord(SsqQuery query) {

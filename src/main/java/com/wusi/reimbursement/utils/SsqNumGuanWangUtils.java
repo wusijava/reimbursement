@@ -36,14 +36,14 @@ public class SsqNumGuanWangUtils {
         if (w < 0) {
             w = 0;
         }
-        ssq.setWeek(weekDays[w]);
-        ssq.setRed1(list.get(2));
-        ssq.setRed2(list.get(3));
-        ssq.setRed3(list.get(4));
         ssq.setRed4(list.get(5));
         ssq.setRed5(list.get(6));
         ssq.setRed6(list.get(7));
         ssq.setBlue(list.get(8));
+        ssq.setWeek(weekDays[w]);
+        ssq.setRed1(list.get(2));
+        ssq.setRed2(list.get(3));
+        ssq.setRed3(list.get(4));
         return ssq;
     }
 
@@ -52,7 +52,6 @@ public class SsqNumGuanWangUtils {
             //获取期数
             int index = jsonStr.indexOf("中国福利彩票双色球第");
             String term=jsonStr.substring(index+"中国福利彩票双色球第".length(), index+"中国福利彩票双色球第".length()+4)+"-"+jsonStr.substring(index+"中国福利彩票双色球第".length()+4, index+"中国福利彩票双色球第".length()+7);
-
             //开奖日期
             int bonusIndex = jsonStr.indexOf("开奖日期:");
             String bonusTime=jsonStr.substring(bonusIndex+"开奖日期:".length(), bonusIndex+"开奖日期:".length()+"2021-03-07".length());
