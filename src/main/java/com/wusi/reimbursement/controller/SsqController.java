@@ -105,7 +105,7 @@ public class SsqController {
                             buyOne.setBonus("一等奖");
                         }
                         if(buyOne.getType().equals(2)){
-                            buyOne.setCommission(MoneyUtil.multiply(buyOne.getBonus(), MoneyUtil.devide(buyOne.getRate(), "100")));
+                            buyOne.setCommission(MoneyUtil.multiply(buy.getNum(), MoneyUtil.multiply(buyOne.getBonus(), MoneyUtil.devide(buyOne.getRate(), "100"))));
                         }
                     }else{
                         //未中奖
@@ -382,6 +382,17 @@ public class SsqController {
         return Response.ok("操作成功！");
     }
 
+    @RequestMapping(value = "getOnlineNum")
+    @ResponseBody
+    public Response<SsqBonus> getOnlineNum(Integer type) throws IOException, ParseException {
+        SsqBonus ssqNum=null;
+        if(type.equals(1)){
+            ssqNum = SsqNumUtils.getSsqNum();
+        }else{
+            ssqNum = SsqNumGuanWangUtils.getSsqNum();
+        }
+       return Response.ok(ssqNum);
 
+    }
 
 }
