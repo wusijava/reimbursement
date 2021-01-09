@@ -105,7 +105,7 @@ public class SsqController {
                             buyOne.setBonus("一等奖");
                         }
                         if(buyOne.getType().equals(2)){
-                            buyOne.setCommission(MoneyUtil.multiply(buy.getNum(), MoneyUtil.multiply(buyOne.getBonus(), MoneyUtil.devide(buyOne.getRate(), "100"))));
+                            buyOne.setCommission(MoneyUtil.multiply(buyOne.getNum(), MoneyUtil.multiply(buyOne.getBonus(), MoneyUtil.devide(buyOne.getRate(), "100"))));
                         }
                     }else{
                         //未中奖
