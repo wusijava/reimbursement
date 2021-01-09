@@ -118,7 +118,7 @@ public class SsqController {
                 }
 
             }else{
-                log.error("本期未购买,{}", ssq.getTerm());
+                log.error("本期未购买,下期继续{}", ssq.getTerm());
             }
         }
         log.error("获取开奖号码执行结束,{}", DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
