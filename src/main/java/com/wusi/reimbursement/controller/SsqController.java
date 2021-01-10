@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
-@RequestMapping(value = "/ssq")
+@RequestMapping(value = "/api/ssq")
 public class SsqController {
     @Autowired
     private SsqBonusService SsqBonusService;
