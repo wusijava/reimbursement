@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
-@RequestMapping(value = "/api/ssq")
+@RequestMapping(value = "/ssq")
 public class SsqController {
     @Autowired
     private SsqBonusService SsqBonusService;
@@ -52,6 +52,13 @@ public class SsqController {
     @Scheduled(cron = "0 0 22 * * ?")
     public void getBonusNum() throws IOException, ParseException {
         SsqBonus ssq = SsqNumGuanWangUtils.getSsqNum();
+        List<String> kaiJiang=new ArrayList<>();
+        kaiJiang.add(ssq.getRed1());
+        kaiJiang.add(ssq.getRed2());
+        kaiJiang.add(ssq.getRed3());
+        kaiJiang.add(ssq.getRed4());
+        kaiJiang.add(ssq.getRed5());
+        kaiJiang.add(ssq.getRed6());
         SsqBonus query = new SsqBonus();
         query.setTerm(ssq.getTerm());
         Long num = SsqBonusService.queryCount(query);
@@ -59,7 +66,7 @@ public class SsqController {
             SsqBonusService.insert(ssq);
             //去查找有误购买此期的购买记录
             Ssq buy=new Ssq();
-            ssq.setTerm(buy.getTerm());
+            buy.setTerm(query.getTerm());
             List<Ssq> buyList = SsqService.queryList(buy);
             if(DataUtil.isNotEmpty(buyList)){
                 for(Ssq buyOne:buyList){
@@ -80,7 +87,7 @@ public class SsqController {
                     myNum.add(buyOne.getRed6());
                     for(int i=0;i<6;i++){
                         for(int j=0;j<6;j++){
-                            if(myNum.get(i).equals(1)){
+                            if(myNum.get(i).equals(kaiJiang.get(j))){
                                 redNum++;
                             }
                         }
@@ -104,7 +111,7 @@ public class SsqController {
                         }else{
                             buyOne.setBonus("一等奖");
                         }
-                        if(buyOne.getType().equals(2)){
+                        if(DataUtil.isNotEmpty(buyOne.getType())&&buyOne.getType().equals(2)){
                             buyOne.setCommission(MoneyUtil.multiply(buyOne.getNum(), MoneyUtil.multiply(buyOne.getBonus(), MoneyUtil.devide(buyOne.getRate(), "100"))));
                         }
                     }else{
