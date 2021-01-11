@@ -5,11 +5,13 @@ import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.RequestContext;
 import com.wusi.reimbursement.entity.Ssq;
 import com.wusi.reimbursement.entity.SsqBonus;
+import com.wusi.reimbursement.entity.SsqQuick;
 import com.wusi.reimbursement.mapper.SsqMapper;
 import com.wusi.reimbursement.query.SsqBonusQuery;
 import com.wusi.reimbursement.query.SsqParam;
 import com.wusi.reimbursement.query.SsqQuery;
 import com.wusi.reimbursement.service.SsqBonusService;
+import com.wusi.reimbursement.service.SsqQuickService;
 import com.wusi.reimbursement.service.SsqService;
 import com.wusi.reimbursement.utils.*;
 import com.wusi.reimbursement.vo.SsqBonusVo;
@@ -46,6 +48,8 @@ public class SsqController {
     private SsqService SsqService;
     @Autowired
     private SsqMapper SsqMapper;
+    @Autowired
+    private SsqQuickService ssqQuickService;
 
     @RequestMapping(value = "getBonusNum")
     @ResponseBody
@@ -395,5 +399,13 @@ public class SsqController {
        return Response.ok(ssqNum);
 
     }
-
+    @RequestMapping(value = "SsqQuick")
+    @ResponseBody
+    public Response<List<SsqQuick>> SsqQuick() {
+        RequestContext.RequestUser loginUser = RequestContext.getCurrentUser();
+        SsqQuick quick=new SsqQuick();
+        quick.setUser(loginUser.getNickName());
+        List<SsqQuick> ssqQuicks = ssqQuickService.queryList(quick);
+        return Response.ok(ssqQuicks);
+    }
 }
