@@ -295,7 +295,7 @@
         select COUNT(*) FROM (select term from ssq GROUP BY term) a
     </select>
     <select id="getValue" resultType="java.util.Map">
-        select sum(bonus) as bonus ,count(*) as count FROM ssq
+        select sum(bonus*num) as bonus ,sum(num) as count FROM ssq
     </select>
     <select id="queryListByParam" resultMap="BaseResultMap">
         SELECT DISTINCT term FROM `ssq`
