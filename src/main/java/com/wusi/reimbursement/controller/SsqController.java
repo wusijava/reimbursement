@@ -53,7 +53,7 @@ public class SsqController {
 
     @RequestMapping(value = "getBonusNum")
     @ResponseBody
-    @Scheduled(cron = "0 0 22 * * ?")
+    @Scheduled(cron = "0 30 21,22 * * ?")
     public void getBonusNum() throws IOException, ParseException {
         SsqBonus ssq = SsqNumGuanWangUtils.getSsqNum();
         List<String> kaiJiang=new ArrayList<>();
@@ -72,17 +72,18 @@ public class SsqController {
         his.setTerm(ssq.getTerm());
         SsqHistory history = SsqHistoryService.queryOne(his);
         if(DataUtil.isEmpty(history)){
-            history.setTerm(ssq.getTerm());
-            history.setRed1(ssq.getRed1());
-            history.setRed2(ssq.getRed2());
-            history.setRed3(ssq.getRed3());
-            history.setRed4(ssq.getRed4());
-            history.setRed5(ssq.getRed5());
-            history.setCreateTime(new Date());
-            history.setRed6(ssq.getRed6());
-            history.setBlue(ssq.getBlue());
-            history.setBonusTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
-            SsqHistoryService.insert(history);
+            SsqHistory ins=new SsqHistory();
+            ins.setTerm(ssq.getTerm());
+            ins.setRed1(ssq.getRed1());
+            ins.setRed2(ssq.getRed2());
+            ins.setRed3(ssq.getRed3());
+            ins.setRed4(ssq.getRed4());
+            ins.setRed5(ssq.getRed5());
+            ins.setCreateTime(new Date());
+            ins.setRed6(ssq.getRed6());
+            ins.setBlue(ssq.getBlue());
+            ins.setBonusTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+            SsqHistoryService.insert(ins);
         }
         if (num < 1) {
             SsqBonusService.insert(ssq);
