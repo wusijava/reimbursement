@@ -66,7 +66,6 @@ public class SsqController {
         SsqBonus query = new SsqBonus();
         query.setTerm(ssq.getTerm());
         Long num = SsqBonusService.queryCount(query);
-
         //加入到历史库
         SsqHistory his=new SsqHistory();
         his.setTerm(ssq.getTerm());
@@ -154,7 +153,6 @@ public class SsqController {
         }
         log.error("获取开奖号码执行结束,{}", DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
     }
-
 
 
     @RequestMapping(value = "getSsqRecord")
