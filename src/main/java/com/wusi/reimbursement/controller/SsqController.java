@@ -2,15 +2,13 @@ package com.wusi.reimbursement.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.wusi.reimbursement.common.Response;
-import com.wusi.reimbursement.entity.RequestContext;
-import com.wusi.reimbursement.entity.Ssq;
-import com.wusi.reimbursement.entity.SsqBonus;
-import com.wusi.reimbursement.entity.SsqQuick;
+import com.wusi.reimbursement.entity.*;
 import com.wusi.reimbursement.mapper.SsqMapper;
 import com.wusi.reimbursement.query.SsqBonusQuery;
 import com.wusi.reimbursement.query.SsqParam;
 import com.wusi.reimbursement.query.SsqQuery;
 import com.wusi.reimbursement.service.SsqBonusService;
+import com.wusi.reimbursement.service.SsqHistoryService;
 import com.wusi.reimbursement.service.SsqQuickService;
 import com.wusi.reimbursement.service.SsqService;
 import com.wusi.reimbursement.utils.*;
@@ -50,6 +48,8 @@ public class SsqController {
     private SsqMapper SsqMapper;
     @Autowired
     private SsqQuickService ssqQuickService;
+    @Autowired
+    private SsqHistoryService SsqHistoryService;
 
     @RequestMapping(value = "getBonusNum")
     @ResponseBody
@@ -66,6 +66,24 @@ public class SsqController {
         SsqBonus query = new SsqBonus();
         query.setTerm(ssq.getTerm());
         Long num = SsqBonusService.queryCount(query);
+
+        //加入到历史库
+        SsqHistory his=new SsqHistory();
+        his.setTerm(ssq.getTerm());
+        SsqHistory history = SsqHistoryService.queryOne(his);
+        if(DataUtil.isEmpty(history)){
+            history.setTerm(ssq.getTerm());
+            history.setRed1(ssq.getRed1());
+            history.setRed2(ssq.getRed2());
+            history.setRed3(ssq.getRed3());
+            history.setRed4(ssq.getRed4());
+            history.setRed5(ssq.getRed5());
+            history.setCreateTime(new Date());
+            history.setRed6(ssq.getRed6());
+            history.setBlue(ssq.getBlue());
+            history.setBonusTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+            SsqHistoryService.insert(history);
+        }
         if (num < 1) {
             SsqBonusService.insert(ssq);
             //去查找有误购买此期的购买记录
@@ -99,6 +117,7 @@ public class SsqController {
                     buyOne.setRedNum(String.valueOf(redNum));
                     buyOne.setBlueNum(String.valueOf(blueNum));
                     if (redNum>=4||blueNum==1){
+                        SMSUtil.sendSMS("18602702325", "吴思", 841458);
                         buyOne.setIsBonus("1");
                         if(blueNum==1&&redNum<3){
                             buyOne.setBonus("5");
@@ -111,9 +130,9 @@ public class SsqController {
                         }else if(blueNum==1&&redNum==5){
                             buyOne.setBonus("3000");
                         }else if(redNum==6&&blueNum==0){
-                            buyOne.setBonus("二等奖");
+                            buyOne.setBonus("500000");
                         }else{
-                            buyOne.setBonus("一等奖");
+                            buyOne.setBonus("5000000");
                         }
                         if(DataUtil.isNotEmpty(buyOne.getType())&&buyOne.getType().equals(2)){
                             buyOne.setCommission(MoneyUtil.multiply(buyOne.getNum(), MoneyUtil.multiply(buyOne.getBonus(), MoneyUtil.devide(buyOne.getRate(), "100"))));
