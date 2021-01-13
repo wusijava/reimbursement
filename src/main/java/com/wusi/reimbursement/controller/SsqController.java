@@ -119,7 +119,6 @@ public class SsqController {
                     buyOne.setRedNum(String.valueOf(redNum));
                     buyOne.setBlueNum(String.valueOf(blueNum));
                     if (redNum>=4||blueNum==1){
-                        SMSUtil.sendSMS("18602702325", "吴思", 841458);
                         buyOne.setIsBonus("1");
                         if(blueNum==1&&redNum<3){
                             buyOne.setBonus("5");
@@ -136,6 +135,7 @@ public class SsqController {
                         }else{
                             buyOne.setBonus("5000000");
                         }
+                        SMSUtil.sendSMS("18602702325", buyOne.getBonus(), 842665);
                         if(DataUtil.isNotEmpty(buyOne.getType())&&buyOne.getType().equals(2)){
                             buyOne.setCommission(MoneyUtil.multiply(buyOne.getNum(), MoneyUtil.multiply(buyOne.getBonus(), MoneyUtil.devide(buyOne.getRate(), "100"))));
                         }
@@ -150,7 +150,7 @@ public class SsqController {
                 }
 
             }else{
-                log.error("本期未购买,下期继续{}", ssq.getTerm());
+                log.error("本期未购买,下期继续,{}", ssq.getTerm());
             }
         }
         log.error("获取开奖号码执行结束,{}", DateUtil.formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));
