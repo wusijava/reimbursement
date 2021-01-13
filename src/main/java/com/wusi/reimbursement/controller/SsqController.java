@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
-@RequestMapping(value = "/ssq")
+@RequestMapping(value = "/api/ssq")
 public class SsqController {
     @Autowired
     private SsqBonusService SsqBonusService;
@@ -481,7 +481,7 @@ public class SsqController {
         return vo;
     }
 
-    @RequestMapping(value = "luckNum")
+    /*@RequestMapping(value = "luckNum")
     @ResponseBody
     public Response<suiJi> luckNum(Integer count) {
         List<Map<String, Object>> value = SsqHistoryService.getValue(count);
@@ -511,7 +511,7 @@ public class SsqController {
         suiJi suiJi=new suiJi();
         suiJi.setRed1(query.getRed1());
         return  Response.ok(suiJi);
-    }
+    }*/
 
     private Integer getStr(Map map) {
         return Integer.parseInt((String) map.get("ball"));
