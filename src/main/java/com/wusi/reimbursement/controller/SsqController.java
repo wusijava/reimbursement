@@ -517,4 +517,31 @@ public class SsqController {
         return Integer.parseInt((String) map.get("ball"));
     }
 
+
+    @RequestMapping(value = "blueThree")
+    @ResponseBody
+    public Response<List<String>> blueThree(Integer count) {
+        List<SsqHistory> list = SsqHistoryService.queryList(new SsqHistory());
+        List<String > blue=new ArrayList<>();
+        for(int j=1;j<=16;j++){
+            if(String.valueOf(j).length()<2){
+                blue.add("0"+String.valueOf(j));
+            }else{
+                blue.add(String.valueOf(j));
+            }
+        }
+        System.out.println(blue.get(15));
+        for (SsqHistory query:list){
+           for(int i=0;i<blue.size();i++){
+               if(query.getBlue().equals(blue.get(i))){
+                   blue.remove(query.getBlue());
+                   break;
+               }
+           }
+           if(blue.size()==count){
+               break;
+           }
+        }
+        return Response.ok(blue);
+    }
 }
