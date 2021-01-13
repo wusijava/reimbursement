@@ -5,6 +5,7 @@ import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.entity.*;
 import com.wusi.reimbursement.mapper.SsqMapper;
 import com.wusi.reimbursement.query.SsqBonusQuery;
+import com.wusi.reimbursement.query.SsqHistoryQuery;
 import com.wusi.reimbursement.query.SsqParam;
 import com.wusi.reimbursement.query.SsqQuery;
 import com.wusi.reimbursement.service.SsqBonusService;
@@ -12,6 +13,7 @@ import com.wusi.reimbursement.service.SsqHistoryService;
 import com.wusi.reimbursement.service.SsqQuickService;
 import com.wusi.reimbursement.service.SsqService;
 import com.wusi.reimbursement.utils.*;
+import com.wusi.reimbursement.vo.KeyValue;
 import com.wusi.reimbursement.vo.SsqBonusVo;
 import com.wusi.reimbursement.vo.SsqVo;
 import com.wusi.reimbursement.vo.suiJi;
@@ -38,7 +40,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @Slf4j
-@RequestMapping(value = "/api/ssq")
+@RequestMapping(value = "/ssq")
 public class SsqController {
     @Autowired
     private SsqBonusService SsqBonusService;
@@ -426,4 +428,93 @@ public class SsqController {
         List<SsqQuick> ssqQuicks = ssqQuickService.queryList(quick);
         return Response.ok(ssqQuicks);
     }
+
+    @RequestMapping(value = "history")
+    @ResponseBody
+    public Response<Page<SsqHistory>> history(SsqHistoryQuery query) {
+        if (DataUtil.isEmpty(query.getPage())) {
+            query.setPage(0);
+        }
+        query.setLimit(10);
+        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+        Page<SsqHistory> page = SsqHistoryService.queryPage(query, pageable);
+        List<SsqHistory> voList = new ArrayList<>();
+        for (SsqHistory his : page.getContent()) {
+            voList.add(his);
+        }
+        Page<SsqHistory> voPage = new PageImpl<>(voList, pageable, page.getTotalElements());
+        return Response.ok(voPage);
+    }
+    @RequestMapping(value = "getHistory")
+    @ResponseBody
+    public Response<String> getHistory(SsqHistoryQuery query) {
+        if(DataUtil.isEmpty(query.getRed1())&&DataUtil.isEmpty(query.getRed2())&&DataUtil.isEmpty(query.getRed3())&&DataUtil.isEmpty(query.getRed4())&&DataUtil.isEmpty(query.getRed5())&&DataUtil.isEmpty(query.getRed6())&&DataUtil.isEmpty(query.getBlue())){
+            return Response.ok("最少输入一个号码!");
+        }
+        SsqHistory history = SsqHistoryService.queryOne(query);
+        if(DataUtil.isEmpty(history)){
+            return Response.ok("历史未出过此号!");
+        }else{
+            return Response.ok("历史已出过此号!");
+        }
+    }
+
+    @RequestMapping(value = "getHistoryTimes")
+    @ResponseBody
+    public Response<List<KeyValue>> getHistoryTimes(Integer count) {
+        List<Map<String, Object>> value = SsqHistoryService.getValue(count);
+        List<KeyValue> list=new ArrayList<>();
+        for(Map map:value){
+            list.add(getDto(map));
+        }
+        return Response.ok(list);
+    }
+
+    private KeyValue getDto(Map map) {
+        KeyValue vo=new KeyValue();
+        if(map.get("ball")!=null){
+            vo.setKey((String)map.get("ball"));
+        }
+        if(map.get("count")!=null){
+            vo.setValue(String.valueOf(map.get("count")));
+        }
+        return vo;
+    }
+
+    @RequestMapping(value = "luckNum")
+    @ResponseBody
+    public Response<suiJi> luckNum(Integer count) {
+        List<Map<String, Object>> value = SsqHistoryService.getValue(count);
+        List<Integer> list=new ArrayList<>();
+        for(Map map:value){
+            list.add(getStr(map));
+        }
+        Collections.sort(list, (y,x)->{
+            return x-y;
+        });
+        SsqHistory query=new SsqHistory();
+        for (int i=0;i<count;i++){
+            query.setRed6(String.valueOf(list.get(0)));
+            for(int j=i+1;j<count-i;j++){
+                query.setRed5(String.valueOf(list.get(j)));
+                SsqHistory history = SsqHistoryService.queryOne(query);
+                if(DataUtil.isEmpty(history)){
+                    query.setRed4(String.valueOf(list.get(j+1)));
+                }
+                SsqHistory query3 = SsqHistoryService.queryOne(query);
+                if(DataUtil.isEmpty(query3)){
+                    query.setRed3(String.valueOf(list.get(j+2)));
+                }
+            }
+        }
+
+        suiJi suiJi=new suiJi();
+        suiJi.setRed1(query.getRed1());
+        return  Response.ok(suiJi);
+    }
+
+    private Integer getStr(Map map) {
+        return Integer.parseInt((String) map.get("ball"));
+    }
+
 }

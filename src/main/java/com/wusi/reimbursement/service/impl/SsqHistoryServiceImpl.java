@@ -8,6 +8,9 @@ import com.wusi.reimbursement.service.SsqHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author admin
  * @date 2021-01-12 16:22:33
@@ -22,5 +25,10 @@ public class SsqHistoryServiceImpl extends BaseMybatisServiceImpl<SsqHistory,Lon
     @Override
     protected BaseMapper<SsqHistory, Long> getBaseMapper() {
         return ssqHistoryMapper;
+    }
+
+    @Override
+    public List<Map<String, Object>> getValue(Integer count) {
+        return ssqHistoryMapper.getValue(count);
     }
 }

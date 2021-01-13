@@ -67,7 +67,7 @@
                     </if>
             </trim>
         </where>
-        order by id desc
+        order by term desc
         <if test="offset == null and limit != null">
             limit #{limit}
         </if>
@@ -165,6 +165,23 @@
         FROM
         <include refid="table"/>
         WHERE id=#{id}
+    </select>
+    <select id="getValue" resultType="java.util.Map">
+        select t.red as ball,SUM(count) as count from
+            (
+                    (SELECT red1 red,count(red1) count FROM `ssq_history` GROUP BY red1 )
+                    union
+                    (SELECT red2 red,count(red2) count FROM `ssq_history` GROUP BY red2 )
+                    union
+                    (SELECT red3 red,count(red3) count FROM `ssq_history` GROUP BY red3 )
+                    union
+                    (SELECT red4 red,count(red4) count FROM `ssq_history` GROUP BY red4 )
+                    union
+                    (SELECT red5 red,count(red5) count FROM `ssq_history` GROUP BY red5 )
+                    union
+                    (SELECT red6 red,count(red6) count FROM `ssq_history` GROUP BY red6 )
+            ) t
+        GROUP BY red ORDER BY SUM(count) limit #{count};
     </select>
 
     <update id="updateById" parameterType="com.wusi.reimbursement.entity.SsqHistory">
