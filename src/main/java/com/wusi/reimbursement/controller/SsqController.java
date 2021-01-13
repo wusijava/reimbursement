@@ -481,42 +481,6 @@ public class SsqController {
         return vo;
     }
 
-    /*@RequestMapping(value = "luckNum")
-    @ResponseBody
-    public Response<suiJi> luckNum(Integer count) {
-        List<Map<String, Object>> value = SsqHistoryService.getValue(count);
-        List<Integer> list=new ArrayList<>();
-        for(Map map:value){
-            list.add(getStr(map));
-        }
-        Collections.sort(list, (y,x)->{
-            return x-y;
-        });
-        SsqHistory query=new SsqHistory();
-        for (int i=0;i<count;i++){
-            query.setRed6(String.valueOf(list.get(0)));
-            for(int j=i+1;j<count-i;j++){
-                query.setRed5(String.valueOf(list.get(j)));
-                SsqHistory history = SsqHistoryService.queryOne(query);
-                if(DataUtil.isEmpty(history)){
-                    query.setRed4(String.valueOf(list.get(j+1)));
-                }
-                SsqHistory query3 = SsqHistoryService.queryOne(query);
-                if(DataUtil.isEmpty(query3)){
-                    query.setRed3(String.valueOf(list.get(j+2)));
-                }
-            }
-        }
-
-        suiJi suiJi=new suiJi();
-        suiJi.setRed1(query.getRed1());
-        return  Response.ok(suiJi);
-    }*/
-
-    private Integer getStr(Map map) {
-        return Integer.parseInt((String) map.get("ball"));
-    }
-
 
     @RequestMapping(value = "blueThree")
     @ResponseBody
@@ -530,7 +494,6 @@ public class SsqController {
                 blue.add(String.valueOf(j));
             }
         }
-        System.out.println(blue.get(15));
         for (SsqHistory query:list){
            for(int i=0;i<blue.size();i++){
                if(query.getBlue().equals(blue.get(i))){
