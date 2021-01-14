@@ -105,10 +105,10 @@ public class SsqController {
                     List<String> myNum=new ArrayList<>();
                     myNum.add(buyOne.getRed1());
                     myNum.add(buyOne.getRed2());
-                    myNum.add(buyOne.getRed3());
-                    myNum.add(buyOne.getRed4());
                     myNum.add(buyOne.getRed5());
                     myNum.add(buyOne.getRed6());
+                    myNum.add(buyOne.getRed3());
+                    myNum.add(buyOne.getRed4());
                     for(int i=0;i<6;i++){
                         for(int j=0;j<6;j++){
                             if(myNum.get(i).equals(kaiJiang.get(j))){
