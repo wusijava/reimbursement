@@ -2,7 +2,11 @@ package com.wusi.reimbursement.mapper;
 
 import com.wusi.reimbursement.base.dao.mybatis.BaseMapper;
 import com.wusi.reimbursement.entity.Math;
+import com.wusi.reimbursement.query.MathQuery;
+import com.wusi.reimbursement.query.SsqQuery;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author admin
@@ -10,6 +14,8 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface MathMapper extends BaseMapper<Math,Long> {
+    long querycount();
 
+    List<Math> queryListByParam(MathQuery query);
 
 }

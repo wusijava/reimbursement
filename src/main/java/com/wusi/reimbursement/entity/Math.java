@@ -16,4 +16,13 @@ public class Math implements Identifiable<Long> {
     private String content;
     private Date createTime;
     private String result;
+    /**
+     * 正确答案
+     */
+    private Integer rightResult;
+    /**
+     * 时间
+     */
+    private String time;
+
 }

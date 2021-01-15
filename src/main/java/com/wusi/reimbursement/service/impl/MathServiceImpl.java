@@ -4,9 +4,13 @@ import com.wusi.reimbursement.base.dao.mybatis.BaseMapper;
 import com.wusi.reimbursement.base.service.impl.BaseMybatisServiceImpl;
 import com.wusi.reimbursement.entity.Math;
 import com.wusi.reimbursement.mapper.MathMapper;
+import com.wusi.reimbursement.query.MathQuery;
+import com.wusi.reimbursement.query.SsqQuery;
 import com.wusi.reimbursement.service.MathService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author admin
@@ -22,5 +26,15 @@ public class MathServiceImpl extends BaseMybatisServiceImpl<Math,Long> implement
     @Override
     protected BaseMapper<Math, Long> getBaseMapper() {
         return mathMapper;
+    }
+
+    @Override
+    public long querycount() {
+        return mathMapper.querycount();
+    }
+
+    @Override
+    public List<Math> queryListByParam(MathQuery query) {
+        return mathMapper.queryListByParam(query);
     }
 }
