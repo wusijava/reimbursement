@@ -27,55 +27,53 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequestMapping(value = "api/math")
-public class Mahtcontroller {
+public class MathController {
     @Autowired
     private MathService MathService;
     @Autowired
     private MathMapper MathMapper;
+
     @ResponseBody
     @RequestMapping(value = "getTi")
-    @RateLimit(permitsPerSecond = 1, ipLimit = true,description = "限制出题频率")
+    @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
     public Response<Math> getTi(Integer size) {
-        Math res=new Math();
-        while (true){
+        Math res = new Math();
+        while (true) {
             Random r = new Random();
             int numberOne = r.nextInt(size);
             int numberTwo = r.nextInt(size);
-            //int numberThree = r.nextInt(99);
             int number = r.nextInt(3);
-
-            //45  99
-            if(numberOne<numberTwo){
-                int temp=0;
-                temp=numberOne;
-                numberOne=numberTwo;
-                numberTwo=temp;
+            if (numberOne < numberTwo) {
+                int temp = 0;
+                temp = numberOne;
+                numberOne = numberTwo;
+                numberTwo = temp;
             }
             res.setNumOne(numberOne);
             res.setNumTwo(numberTwo);
-            int result=0;
-            if(number%2==1){
+            int result = 0;
+            if (number % 2 == 1) {
                 res.setSymbolOne("-");
-                result=  numberOne-numberTwo;
-            }else{
+                result = numberOne - numberTwo;
+            } else {
                 res.setSymbolOne("+");
-                result=  numberOne+numberTwo;
+                result = numberOne + numberTwo;
             }
-            if(result>(size)){
+            if (result > (size)) {
                 continue;
             }
             int symbolTwo = r.nextInt(3);
             int numberThree = r.nextInt(result);
             res.setNumThree(numberThree);
-            if(symbolTwo%2==1){
+            if (symbolTwo % 2 == 1) {
                 res.setSymbolTwo("-");
-                result=result-numberThree;
-            }else{
+                result = result - numberThree;
+            } else {
                 res.setSymbolTwo("+");
-                result=result+numberThree;
+                result = result + numberThree;
             }
             res.setResult(result);
-            if(result<100){
+            if (result < 100) {
                 break;
             }
         }
@@ -85,40 +83,41 @@ public class Mahtcontroller {
     @ResponseBody
     @RequestMapping(value = "checkTi")
     public Response<String> checkTi(Math math) {
-        if(DataUtil.isEmpty(math.getResult())){
-            return Response.ok("请输入你的答案!~") ;
+        if (DataUtil.isEmpty(math.getResult())) {
+            return Response.ok("请输入你的答案!~");
         }
-        int one=0;
-        int two=0;
-        if(math.getSymbolOne().equals("-")){
-            one=math.getNumOne()-math.getNumTwo();
-        }else{
-            one=math.getNumOne()+math.getNumTwo();
+        int one = 0;
+        int two = 0;
+        if (math.getSymbolOne().equals("-")) {
+            one = math.getNumOne() - math.getNumTwo();
+        } else {
+            one = math.getNumOne() + math.getNumTwo();
         }
-        if("-".equals(math.getSymbolTwo())){
-            two= one-math.getNumThree();
-        }else{
-            two= one+math.getNumThree();
+        if ("-".equals(math.getSymbolTwo())) {
+            two = one - math.getNumThree();
+        } else {
+            two = one + math.getNumThree();
         }
         //记录
-        com.wusi.reimbursement.entity.Math  log=new com.wusi.reimbursement.entity.Math();
-        log.setContent(math.getNumOne()+math.getSymbolOne()+math.getNumTwo()+math.getSymbolTwo()+math.getNumThree()+"="+math.getResult());
+        com.wusi.reimbursement.entity.Math log = new com.wusi.reimbursement.entity.Math();
+        log.setContent(math.getNumOne() + math.getSymbolOne() + math.getNumTwo() + math.getSymbolTwo() + math.getNumThree() + "=" + math.getResult());
         log.setCreateTime(new Date());
-        if(two==math.getResult()){
+        if (two == math.getResult()) {
             log.setResult("对");
-        }else{
+        } else {
             log.setResult("错");
             log.setRightResult(two);
         }
         log.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
         MathService.insert(log);
-        if(two==math.getResult()){
-            return Response.ok("答对了,小柠檬真棒~") ;
-        }else{
-            return Response.ok("答错了,小柠檬继续努力哦~") ;
+        if (two == math.getResult()) {
+            return Response.ok("答对了,小柠檬真棒~");
+        } else {
+            return Response.ok("答错了,小柠檬继续努力哦~");
         }
 
     }
+
     @RequestMapping(value = "homeworkLog")
     @ResponseBody
     public Response<List<MathParam>> homeworkLog(MathQuery query) {
@@ -126,15 +125,15 @@ public class Mahtcontroller {
             query.setPage(0);
         }
         query.setLimit(3);
-        long count=MathService.querycount();
-        long page=0;
-        if(count%query.getLimit()==0){
-            page=count/query.getLimit();
-        }else{
-            page=count/query.getLimit()+1;
+        long count = MathService.querycount();
+        long page = 0;
+        if (count % query.getLimit() == 0) {
+            page = count / query.getLimit();
+        } else {
+            page = count / query.getLimit() + 1;
         }
         List<String> result = MathMapper.getResult();
-        query.setPage(query.getLimit()*(query.getPage()));
+        query.setPage(query.getLimit() * (query.getPage()));
         List<com.wusi.reimbursement.entity.Math> maths = MathService.queryListByParam(query);
         List<String> list = maths.stream().map(com.wusi.reimbursement.entity.Math::getTime).collect(Collectors.toList());
         ArrayList<MathParam> MathParam = new ArrayList<>();
@@ -144,11 +143,11 @@ public class Mahtcontroller {
             math.setTime(time);
 
             List<com.wusi.reimbursement.entity.Math> ssqs = MathService.queryList(math);
-            List<com.wusi.reimbursement.entity.Math> list2=new ArrayList<>();
-            for(com.wusi.reimbursement.entity.Math com:ssqs){
+            List<com.wusi.reimbursement.entity.Math> list2 = new ArrayList<>();
+            for (com.wusi.reimbursement.entity.Math com : ssqs) {
                 list2.add(com);
             }
-            MathParam.add(new MathParam(list2,time,page,result.get(0),result.get(1)));
+            MathParam.add(new MathParam(list2, time, page, result.get(0), result.get(1)));
         }
         return Response.ok(MathParam);
     }
