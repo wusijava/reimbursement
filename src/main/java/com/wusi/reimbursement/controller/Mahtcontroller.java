@@ -2,20 +2,14 @@ package com.wusi.reimbursement.controller;
 
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.common.ratelimit.anonation.RateLimit;
-import com.wusi.reimbursement.entity.RequestContext;
-import com.wusi.reimbursement.entity.Ssq;
-import com.wusi.reimbursement.mapper.SsqMapper;
+import com.wusi.reimbursement.mapper.MathMapper;
 import com.wusi.reimbursement.query.MathQuery;
-import com.wusi.reimbursement.query.SsqParam;
-import com.wusi.reimbursement.query.SsqQuery;
 import com.wusi.reimbursement.service.MathService;
-import com.wusi.reimbursement.service.SsqService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
-import com.wusi.reimbursement.utils.MoneyUtil;
 import com.wusi.reimbursement.vo.Math;
 import com.wusi.reimbursement.vo.MathParam;
-import com.wusi.reimbursement.vo.SsqVo;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +30,8 @@ import java.util.stream.Collectors;
 public class Mahtcontroller {
     @Autowired
     private MathService MathService;
+    @Autowired
+    private MathMapper MathMapper;
     @ResponseBody
     @RequestMapping(value = "getTi")
     @RateLimit(permitsPerSecond = 1, ipLimit = true,description = "限制出题频率")
@@ -137,10 +133,12 @@ public class Mahtcontroller {
         }else{
             page=count/query.getLimit()+1;
         }
+        List<String> result = MathMapper.getResult();
         query.setPage(query.getLimit()*(query.getPage()));
         List<com.wusi.reimbursement.entity.Math> maths = MathService.queryListByParam(query);
         List<String> list = maths.stream().map(com.wusi.reimbursement.entity.Math::getTime).collect(Collectors.toList());
         ArrayList<MathParam> MathParam = new ArrayList<>();
+
         for (String time : list) {
             com.wusi.reimbursement.entity.Math math = new com.wusi.reimbursement.entity.Math();
             math.setTime(time);
@@ -150,7 +148,7 @@ public class Mahtcontroller {
             for(com.wusi.reimbursement.entity.Math com:ssqs){
                 list2.add(com);
             }
-            MathParam.add(new MathParam(list2,time,page));
+            MathParam.add(new MathParam(list2,time,page,result.get(0),result.get(1)));
         }
         return Response.ok(MathParam);
     }

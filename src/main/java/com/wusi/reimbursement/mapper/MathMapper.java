@@ -7,6 +7,7 @@ import com.wusi.reimbursement.query.SsqQuery;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author admin
@@ -17,5 +18,7 @@ public interface MathMapper extends BaseMapper<Math,Long> {
     long querycount();
 
     List<Math> queryListByParam(MathQuery query);
+
+    List<String> getResult();
 
 }

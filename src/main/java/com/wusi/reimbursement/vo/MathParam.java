@@ -17,4 +17,6 @@ public class MathParam {
     private List<Math> list;
     private String time;
     private Long totalPage;
+    private String right;
+    private String error;
 }

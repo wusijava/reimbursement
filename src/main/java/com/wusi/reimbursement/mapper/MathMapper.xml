@@ -132,6 +132,13 @@
         </where>-->
         ORDER BY time desc limit #{page},#{limit}
     </select>
+    <select id="getResult" resultType="java.lang.String">
+        select  t.count from
+            (
+                    (select count(*) as count FROM math where result ='对' )
+                    union
+                    (select count(*) as count FROM math where result ='错'  )  )  t
+    </select>
 
     <update id="updateById" parameterType="com.wusi.reimbursement.entity.Math">
         UPDATE
