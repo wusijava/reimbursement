@@ -86,7 +86,7 @@ public class SsqController {
         if (num < 1) {
             SsqBonusService.insert(ssq);
             //发送钉钉推送
-            DingDingTalkUtils.sendDingDingMsg("今日开奖信息:期数:"+ssq.getTerm()+",红球:"+ssq.getRed1()+"-"+ssq.getRed2()+"-"+ssq.getRed3()+"-"+ssq.getRed4()+"-"+ssq.getRed5()+"-"+ssq.getRed6()+"蓝球:"+ssq.getBlue());
+            //DingDingTalkUtils.sendDingDingMsg("今日开奖信息:期数:"+ssq.getTerm()+",红球:"+ssq.getRed1()+"-"+ssq.getRed2()+"-"+ssq.getRed3()+"-"+ssq.getRed4()+"-"+ssq.getRed5()+"-"+ssq.getRed6()+"蓝球:"+ssq.getBlue());
             //去查找有误购买此期的购买记录
             Ssq buy=new Ssq();
             buy.setTerm(query.getTerm());
@@ -135,7 +135,7 @@ public class SsqController {
                             buyOne.setBonus("5000000");
                         }
                         //钉钉群发中奖消息
-                        DingDingTalkUtils.sendDingDingMsg("恭喜:"+buyOne.getUser()+",喜中"+MoneyUtil.multiply(buyOne.getBonus(), buyOne.getNum())+"元大奖!!!");
+                        //DingDingTalkUtils.sendDingDingMsg("恭喜:"+buyOne.getUser()+",喜中"+MoneyUtil.multiply(buyOne.getBonus(), buyOne.getNum())+"元大奖!!!");
                         //发送中奖短信
                         SMSUtil.sendSMS("18602702325", buyOne.getBonus(), 842665);
                         if(DataUtil.isNotEmpty(buyOne.getType())&&buyOne.getType().equals(2)){

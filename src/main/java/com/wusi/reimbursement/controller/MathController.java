@@ -136,7 +136,6 @@ public class MathController {
             }
             secPlan.setRight(MoneyUtil.add(secPlan.getRight(), "1"));
         } else {
-            secPlan.setYiDo(MoneyUtil.add(secPlan.getYiDo(), "1"));
             log.setResult("错");
             log.setRightResult(two);
             secPlan.setError(MoneyUtil.add(secPlan.getError(), "1"));
