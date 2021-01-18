@@ -1,4 +1,3 @@
-/*
 package com.wusi.reimbursement.utils;
 
 import com.dingtalk.api.DefaultDingTalkClient;
@@ -13,12 +12,13 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-*/
-/**
+/*
  * @ Description   :  钉钉机器人
  * @ Author        :  wusi
  * @ CreateDate    :  2021/1/18$ 10:27$
- *//*
+
+ */
+
 
 public class DingDingTalkUtils {
     public  static void sendDingDingMsg(String content) throws Exception {
@@ -51,4 +51,3 @@ public class DingDingTalkUtils {
         request.setAt(at);
     }
 }
-*/

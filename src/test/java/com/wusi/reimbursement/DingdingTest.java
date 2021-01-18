@@ -1,4 +1,3 @@
-/*
 package com.wusi.reimbursement;
 
 import com.dingtalk.api.DefaultDingTalkClient;
@@ -20,12 +19,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-*/
-/**
- * @ Description   :  java类作用描述
- * @ Author        :  wusi
- * @ CreateDate    :  2021/1/18$ 10:09$
- *//*
+
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -73,4 +68,3 @@ public class DingdingTest {
 //        links.setPicURL("https://www.allinpay.com
     }
 }
-*/
