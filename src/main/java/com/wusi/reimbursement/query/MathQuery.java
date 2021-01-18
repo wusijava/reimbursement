@@ -4,7 +4,7 @@ import com.wusi.reimbursement.entity.Math;
 import lombok.Data;
 
 /**
- * @ Description   :  homework
+ * @ Description   :  MathQuery
  * @ Author        :  wusi
  * @ CreateDate    :  2020/1/9$ 11:10$
  */

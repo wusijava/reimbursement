@@ -5,7 +5,7 @@ import com.wusi.reimbursement.entity.Spend;
 import lombok.Data;
 
 /**
- * @ Description   :  报销查询类
+ * @ Description   :  花销查询类
  * @ Author        :  wusi
  * @ CreateDate    :  2020/1/9$ 11:10$
  */

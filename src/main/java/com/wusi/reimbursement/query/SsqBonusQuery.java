@@ -4,7 +4,7 @@ import com.wusi.reimbursement.entity.SsqBonus;
 import lombok.Data;
 
 /**
- * @ Description   :  作业query
+ * @ Description   :  开奖查询类
  * @ Author        :  wusi
  * @ CreateDate    :  2020/1/16$ 17:14$
  */

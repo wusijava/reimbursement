@@ -5,7 +5,7 @@ import com.wusi.reimbursement.entity.SsqBonus;
 import lombok.Data;
 
 /**
- * @ Description   :  ssq
+ * @ Description   :  ssq查询类
  * @ Author        :  wusi
  * @ CreateDate    :  2020/1/16$ 17:14$
  */
