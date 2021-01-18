@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * wusi
+ */
 @Data
 public class MathPlan implements Identifiable<Long> {
 
