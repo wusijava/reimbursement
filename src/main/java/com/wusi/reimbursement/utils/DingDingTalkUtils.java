@@ -8,10 +8,8 @@ import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,11 +45,7 @@ public class DingDingTalkUtils {
         OapiRobotSendRequest.Text text = new OapiRobotSendRequest.Text();
         text.setContent(content);
         request.setText(text);
-
-      /*  OapiRobotSendRequest.At at = new OapiRobotSendRequest.At();
-        at.setAtMobiles(Arrays.asList("132xxxxxxxx"));*/
         OapiRobotSendResponse response = client.execute(request);
-        // isAtAll类型如果不为Boolean，请升级至最新SDK
         at.setIsAtAll(true);
         request.setAt(at);
     }

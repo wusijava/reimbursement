@@ -14,8 +14,8 @@ public class MainEntity {
         String basePack = Main.class.getPackage().getName();
         CodeGenerator codeGenerator = new CodeGenerator();
         codeGenerator.generateMybatisXml(basePack, Address.class);
-        codeGenerator.generateDao(basePack, Address.class);
-        codeGenerator.generateService(basePack, Address.class);
+    //    codeGenerator.generateDao(basePack, Address.class);
+  //      codeGenerator.generateService(basePack, Address.class);
 //        codeGenerator.generateCreateSqlForPackage("com.click.jd.merchant.modules");
     }
 }

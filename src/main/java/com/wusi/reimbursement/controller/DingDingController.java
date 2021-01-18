@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class DingDingController {
     @RequestMapping(value = "sendDingDingMessage")
-    public Response sendDingDingMessage(String content) throws Exception {
+    public Response sendDingDingMessage(String content)  {
         try {
             DingDingTalkUtils.sendDingDingMsg(content);
         } catch (Exception e) {
