@@ -1,6 +1,7 @@
 package com.wusi.reimbursement.controller;
 
 import com.wusi.reimbursement.common.Response;
+import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DingDingTalkUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class DingDingController {
     @RequestMapping(value = "sendDingDingMessage")
     public Response sendDingDingMessage(String content)  {
+        if(DataUtil.isEmpty(content)){
+            Response.fail("群发内容不能为空~~");
+        }
         try {
             DingDingTalkUtils.sendDingDingMsg(content);
         } catch (Exception e) {

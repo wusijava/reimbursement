@@ -184,7 +184,7 @@ public class ProductController {
         vo.setCreateTime(DateUtil.formatDate(record.getCreateTime(), "yyyy-MM-dd"));
         return vo;
     }
-//监控记录
+    //监控记录
     @RequestMapping(value = "changeState")
     @ResponseBody
     public Response<String> changeState(Long id){
