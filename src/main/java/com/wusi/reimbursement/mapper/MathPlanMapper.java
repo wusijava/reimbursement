@@ -5,7 +5,7 @@ import com.wusi.reimbursement.entity.MathPlan;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * @author admin
+ * @author wusi
  * @date 2021-01-18 13:28:48
  **/
 @Mapper
