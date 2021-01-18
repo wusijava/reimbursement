@@ -16,7 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class DingDingController {
     @RequestMapping(value = "sendDingDingMessage")
     public Response sendDingDingMessage(String content) throws Exception {
-        DingDingTalkUtils.sendDingDingMsg(content);
+        try {
+            DingDingTalkUtils.sendDingDingMsg(content);
+        } catch (Exception e) {
+            log.error("群发异常,{}", content);
+            return Response.ok("群发失败!");
+        }
         return Response.ok("群发成功!");
     }
 
