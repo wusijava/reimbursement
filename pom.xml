@@ -185,13 +185,13 @@
             <version>2.1-rev6</version>
         </dependency>
 
-       <!-- <dependency>
+        <dependency>
             <groupId>com.dingding</groupId>
             <artifactId>dingding</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/lib/taobao-sdk-java-auto_1479188381469-20210107.jar</systemPath>
-        </dependency>-->
+        </dependency>
 
     </dependencies>
 
@@ -211,9 +211,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-              <!--  <configuration>
+                <configuration>
                     <includeSystemScope>true</includeSystemScope>
-                </configuration>-->
+                </configuration>
             </plugin>
         </plugins>
     </build>
