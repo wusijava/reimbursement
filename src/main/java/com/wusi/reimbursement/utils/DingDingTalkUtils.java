@@ -27,9 +27,7 @@ public class DingDingTalkUtils {
         mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
         byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
         String sign = URLEncoder.encode(new String(Base64.encodeBase64(signData)), "UTF-8");
-        //System.out.println(sign);
         String url = "https://oapi.dingtalk.com/robot/send?access_token=a6bb03fdcd4aaad711c4bf40e68e6eb71a23ac23f19f77e5c63082cb839b471f" + "&" + "timestamp=" + timestamp + "&" + "sign=" + sign;
-        //System.out.println(url);
 
         DingTalkClient client = new DefaultDingTalkClient(url);
         OapiRobotSendRequest request = new OapiRobotSendRequest();
