@@ -59,7 +59,7 @@ public class ProductController {
         for (ProductNew productNew : productNews) {
             i++;
             //增加延迟时间  线上
-            Thread.sleep(180000);
+            Thread.sleep(90000);
             try {
                 html = Jsoup.connect(productNew.getAmyUrl()).timeout(200000).execute().body();
             } catch (IOException e) {
@@ -70,29 +70,29 @@ public class ProductController {
             if (DataUtil.isEmpty(html)) {
                 continue;
             }
-            String amyValue = GetJsonValue(html, "online");
-            if (amyValue.equals(" true,") && productNew.getAmyState().equals("offline")) {
+            String amyValue = GetJsonValue(html, "online").trim();
+            if (amyValue.equals("true,") && productNew.getAmyState().equals("offline")) {
                 amyOnNum++;
             }
             if (amyValue.equals("false") && productNew.getAmyState().equals("online")) {
                 amyOffNum++;
             }
-            productNew.setAmyState(amyValue.equals(" false") ? "offline" : "online");
+            productNew.setAmyState(amyValue.equals("false") ? "offline" : "online");
             //判断自己状态
             String myValue = null;
             if (DataUtil.isNotEmpty(productNew.getMyUrl())) {
                 html = Jsoup.connect(productNew.getMyUrl()).execute().body();
-                myValue = GetJsonValue(html, "online");
-                productNew.setMyState(myValue.equals(" false") ? "offline" : "online");
+                myValue = GetJsonValue(html, "online").trim();
+                productNew.setMyState(myValue.equals("false") ? "offline" : "online");
             }
-            if (amyValue.equals(" true,") && (!amyValue.equals(myValue))) {
+            if (amyValue.equals("true,") && (!amyValue.equals(myValue))) {
                 //提示已上架
                 SMSUtil.sendSMS(PHONE_NUB, productNew.getModel(), templatedIdOnline);
             } else if (amyValue.equals("false") && (!amyValue.equals(myValue))) {
                 //提示已下架
-                if (productNew.getAmyState().equals("online")) {
+               /* if (productNew.getAmyState().equals("online")) {
                     amyOffNum++;
-                }
+                }*/
                 SMSUtil.sendSMS(PHONE_NUB, productNew.getModel(), templateId);
             }
             productNew.setCreateTime(new Date());

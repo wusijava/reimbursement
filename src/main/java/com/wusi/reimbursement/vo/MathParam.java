@@ -19,4 +19,12 @@ public class MathParam {
     private Long totalPage;
     private String right;
     private String error;
+    //总任务量
+    private String task;
+    //已做
+    private String yiDo;
+    //未做
+    private String weiDo;
+    private String rightToday;
+    private String errorToday;
 }

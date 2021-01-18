@@ -2,11 +2,14 @@ package com.wusi.reimbursement.controller;
 
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.common.ratelimit.anonation.RateLimit;
+import com.wusi.reimbursement.entity.MathPlan;
 import com.wusi.reimbursement.mapper.MathMapper;
 import com.wusi.reimbursement.query.MathQuery;
+import com.wusi.reimbursement.service.MathPlanService;
 import com.wusi.reimbursement.service.MathService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
+import com.wusi.reimbursement.utils.MoneyUtil;
 import com.wusi.reimbursement.vo.Math;
 import com.wusi.reimbursement.vo.MathParam;
 import lombok.AllArgsConstructor;
@@ -32,6 +35,8 @@ public class MathController {
     private MathService MathService;
     @Autowired
     private MathMapper MathMapper;
+    @Autowired
+    private MathPlanService MathPlanService;
 
     @ResponseBody
     @RequestMapping(value = "getTi")
@@ -102,14 +107,43 @@ public class MathController {
         com.wusi.reimbursement.entity.Math log = new com.wusi.reimbursement.entity.Math();
         log.setContent(math.getNumOne() + math.getSymbolOne() + math.getNumTwo() + math.getSymbolTwo() + math.getNumThree() + "=" + math.getResult());
         log.setCreateTime(new Date());
+
+        //加入任务
+        MathPlan query = new MathPlan();
+        query.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+        MathPlan plan = MathPlanService.queryOne(query);
+        if (DataUtil.isEmpty(plan)) {
+            MathPlan newPlan = new MathPlan();
+            newPlan.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+            newPlan.setTask("50");
+            newPlan.setWeiDo("50");
+            newPlan.setYiDo("0");
+            newPlan.setRight("0");
+            newPlan.setError("0");
+            newPlan.setCreateTime(new Date());
+            MathPlanService.insert(newPlan);
+        }
+        //再查一次
+        MathPlan sec = new MathPlan();
+        sec.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+        MathPlan secPlan = MathPlanService.queryOne(sec);
         if (two == math.getResult()) {
             log.setResult("对");
+            secPlan.setYiDo(MoneyUtil.add(secPlan.getYiDo(), "1"));
+            secPlan.setWeiDo(MoneyUtil.subtract(secPlan.getTask(), secPlan.getYiDo()));
+            if(Integer.valueOf(secPlan.getWeiDo())<0){
+                secPlan.setWeiDo("0");
+            }
+            secPlan.setRight(MoneyUtil.add(secPlan.getRight(), "1"));
         } else {
+            secPlan.setYiDo(MoneyUtil.add(secPlan.getYiDo(), "1"));
             log.setResult("错");
             log.setRightResult(two);
+            secPlan.setError(MoneyUtil.add(secPlan.getError(), "1"));
         }
         log.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
         MathService.insert(log);
+        MathPlanService.updateById(secPlan);
         if (two == math.getResult()) {
             return Response.ok("答对了,小柠檬真棒~");
         } else {
@@ -124,7 +158,7 @@ public class MathController {
         if (DataUtil.isEmpty(query.getPage())) {
             query.setPage(0);
         }
-        query.setLimit(3);
+        query.setLimit(1);
         long count = MathService.querycount();
         long page = 0;
         if (count % query.getLimit() == 0) {
@@ -137,17 +171,28 @@ public class MathController {
         List<com.wusi.reimbursement.entity.Math> maths = MathService.queryListByParam(query);
         List<String> list = maths.stream().map(com.wusi.reimbursement.entity.Math::getTime).collect(Collectors.toList());
         ArrayList<MathParam> MathParam = new ArrayList<>();
-
         for (String time : list) {
+            String task = null;
+            String yiDo = null;
+            String weiDo = null;
+            String rightToday;
+            String errorToday;
+            MathPlan plan = new MathPlan();
+            plan.setTime(time);
+            MathPlan queryPlan = MathPlanService.queryOne(plan);
+            task = queryPlan.getTask();
+            yiDo = queryPlan.getYiDo();
+            weiDo = queryPlan.getWeiDo();
+            rightToday = queryPlan.getRight();
+            errorToday = queryPlan.getError();
             com.wusi.reimbursement.entity.Math math = new com.wusi.reimbursement.entity.Math();
             math.setTime(time);
-
             List<com.wusi.reimbursement.entity.Math> ssqs = MathService.queryList(math);
             List<com.wusi.reimbursement.entity.Math> list2 = new ArrayList<>();
             for (com.wusi.reimbursement.entity.Math com : ssqs) {
                 list2.add(com);
             }
-            MathParam.add(new MathParam(list2, time, page, result.get(0), result.get(1)));
+            MathParam.add(new MathParam(list2, time, page, result.get(0), result.get(1), task, yiDo, weiDo, rightToday, errorToday));
         }
         return Response.ok(MathParam);
     }
