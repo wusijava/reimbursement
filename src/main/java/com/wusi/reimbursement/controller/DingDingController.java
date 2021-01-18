@@ -6,10 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/* * @ Description   :  钉钉机器人群发器
- * @ Author        :  wusi
- * @ CreateDate    :  2021/1/18$ 14:32$
- * */
+/**
+ * 吴思  钉钉群发消息
+ */
 
 @RestController
 @Slf4j

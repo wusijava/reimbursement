@@ -144,9 +144,9 @@ public class MathController {
         MathService.insert(log);
         MathPlanService.updateById(secPlan);
         if (two == math.getResult()) {
-            return Response.ok("答对了,小柠檬真棒~");
+            return Response.ok("答对了,小柠檬不错哦~");
         } else {
-            return Response.ok("答错了,小柠檬继续努力哦~");
+            return Response.ok("答错了,小柠檬加油哦~");
         }
 
     }
