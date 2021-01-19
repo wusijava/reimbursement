@@ -35,6 +35,22 @@ spring:
         min-idle: 50
         max-idle: 100
         max-active: 200
+  mail:
+    host: smtp.qq.com
+    username: 513936307@qq.com
+    password: gomlsnqhyiekbjba
+    from: 513936307@qq.com
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+          port: 465
+          starttls:
+            enable: true
+            required: true
+    default-encoding: utf-8
+
 excelDownloadUrl: http://49.233.192.222:8083/downloadExcel/
 server:
   port: 8083
@@ -50,4 +66,3 @@ upload:
     accessKey: dJR8UzN31Iy8-yzRlBR3TBrkOe1RUdMNp0yZM_9k
     secretKey: l1uLDn9umthxCvqCrKRsAYqriucp0uIJciDcV4Jz
     host: http://www.photo.wearelie.com/
-
