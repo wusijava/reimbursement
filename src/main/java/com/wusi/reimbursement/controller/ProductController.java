@@ -141,6 +141,7 @@ public class ProductController {
 
     private ProductNewVO getVO(ProductNew pro) {
         ProductNewVO vo= new ProductNewVO();
+        vo.setId(pro.getId());
         vo.setAmyStateDesc(pro.getAmyStateDesc());
         vo.setMyStateDesc(pro.getMyStateDesc());
         vo.setAmyState(pro.getAmyState());
@@ -200,5 +201,17 @@ public class ProductController {
         }
         return Response.ok("处理成功!");
 
+    }
+    //处理状态
+    @RequestMapping(value = "handleState")
+    @ResponseBody
+    public Response<String> handleState(Long id){
+        if(DataUtil.isEmpty(id)){
+            return Response.fail("id为空~");
+        }
+        ProductNew r = productNewService.queryById(id);
+        r.setMyState(r.getAmyState());
+        productNewService.updateById(r);
+        return Response.ok("处理成功!");
     }
 }
