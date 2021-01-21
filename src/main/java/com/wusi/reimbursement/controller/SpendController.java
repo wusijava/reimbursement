@@ -109,7 +109,7 @@ public class SpendController {
         spendList.setItem(spend.getItem());
         spendList.setPrice(spend.getPrice());
         spendList.setConsumer(spend.getConsumer());
-        spendList.setDate(DateUtil.formatDate(spend.getDate(), DateUtil.PATTERN_YYYY_MM_DD));
+        spendList.setDate(DateUtil.formatDate(spend.getDate(), DateUtil.PATTERN_YYYY_MM_DD_HH_MM_SS));
         if(DataUtil.isEmpty(spend.getRemark())){
             spendList.setRemark("暂无");
         }else{
@@ -146,9 +146,9 @@ public class SpendController {
         spend.setItem(spendList.getItem());
         spend.setPrice(spendList.getPrice());
         spend.setConsumer(spendList.getConsumer());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date buydate=simpleDateFormat.parse(spendList.getDate());
-        spend.setDate(buydate);
+        /*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date buydate=simpleDateFormat.parse(spendList.getDate());*/
+        spend.setDate(new Date());
         spend.setRemark(spendList.getRemark());
         spend.setUrl(spendList.getUrl());
         return  spend;
