@@ -49,8 +49,9 @@ public class WeekUtils {
         }
 
         String numStr=String.valueOf(num+1);
-        if(String.valueOf(num).length()<3){
-            for( int j=3-String.valueOf(num).length();j<=3;j++ ){
+        if(numStr.length()<3){
+        //if(String.valueOf(num).length()<3){
+            for( int j=1;j<=3-numStr.length();j++ ){
                 numStr="0"+numStr;
             }
         }
