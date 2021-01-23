@@ -115,8 +115,17 @@ public class MathController {
         if (DataUtil.isEmpty(plan)) {
             MathPlan newPlan = new MathPlan();
             newPlan.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
-            newPlan.setTask("50");
-            newPlan.setWeiDo("50");
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            //星期六或星期天暂定150题
+            if(w==0||w==6){
+                newPlan.setTask("150");
+            }else{
+                //平时做50题
+                newPlan.setTask("50");
+            }
+            newPlan.setWeiDo(newPlan.getTask());
             newPlan.setYiDo("0");
             newPlan.setRight("0");
             newPlan.setError("0");
