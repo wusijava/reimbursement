@@ -4,21 +4,28 @@ import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.common.ratelimit.anonation.RateLimit;
 import com.wusi.reimbursement.entity.MathPlan;
 import com.wusi.reimbursement.mapper.MathMapper;
+import com.wusi.reimbursement.query.MathPlanQuery;
 import com.wusi.reimbursement.query.MathQuery;
 import com.wusi.reimbursement.service.MathPlanService;
 import com.wusi.reimbursement.service.MathService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
 import com.wusi.reimbursement.utils.MoneyUtil;
+import com.wusi.reimbursement.utils.RedisUtil;
 import com.wusi.reimbursement.vo.Math;
 import com.wusi.reimbursement.vo.MathParam;
-import lombok.AllArgsConstructor;
+import com.wusi.reimbursement.vo.MathPlanVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -119,9 +126,9 @@ public class MathController {
             cal.setTime(new Date());
             int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
             //星期六或星期天暂定150题
-            if(w==0||w==6){
+            if (w == 0 || w == 6) {
                 newPlan.setTask("150");
-            }else{
+            } else {
                 //平时做50题
                 newPlan.setTask("50");
             }
@@ -140,7 +147,7 @@ public class MathController {
             log.setResult("对");
             secPlan.setYiDo(MoneyUtil.add(secPlan.getYiDo(), "1"));
             secPlan.setWeiDo(MoneyUtil.subtract(secPlan.getTask(), secPlan.getYiDo()));
-            if(Integer.valueOf(secPlan.getWeiDo())<0){
+            if (Integer.valueOf(secPlan.getWeiDo()) < 0) {
                 secPlan.setWeiDo("0");
             }
             secPlan.setRight(MoneyUtil.add(secPlan.getRight(), "1"));
@@ -203,5 +210,76 @@ public class MathController {
             MathParam.add(new MathParam(list2, time, page, result.get(0), result.get(1), task, yiDo, weiDo, rightToday, errorToday));
         }
         return Response.ok(MathParam);
+    }
+
+    //错题
+    @ResponseBody
+    @RequestMapping(value = "cuoTi")
+    @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
+    public Response<Math> cuoTi() {
+        List<com.wusi.reimbursement.entity.Math> maths = null;
+        if (DataUtil.isEmpty(RedisUtil.get("ti"))) {
+            log.error("无缓存,数据库取值");
+            com.wusi.reimbursement.entity.Math cuoTi = new com.wusi.reimbursement.entity.Math();
+            cuoTi.setResult("错");
+            maths = MathService.queryList(cuoTi);
+            //存缓存  存30分钟
+            RedisUtil.set("ti", maths, 1000 * 60 * 30L);
+        } else {
+            log.error("有缓存,redis取值");
+            Object object = RedisUtil.get("ti");
+            maths = (List<com.wusi.reimbursement.entity.Math>) object;
+        }
+
+        Integer size = maths.size();
+        Random r = new Random();
+        int index = r.nextInt(size - 1);
+        com.wusi.reimbursement.entity.Math ti = maths.get(index);
+        String content = ti.getContent();
+        String back = content.replace("-", "+");
+        int i = back.indexOf("+");
+        int j = back.indexOf("+", i + 1);
+        int k = back.indexOf("=");
+        Math vo = new Math();
+        vo.setNumOne(Integer.valueOf(back.substring(0, i)));
+        vo.setSymbolOne(content.substring(i, i + 1));
+        vo.setNumTwo(Integer.valueOf(back.substring(i + 1, j)));
+        vo.setSymbolTwo(content.substring(j, j + 1));
+        vo.setNumThree(Integer.valueOf(back.substring(j + 1, k)));
+        return Response.ok(vo);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "homeworkTotal")
+    @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
+    public Response<Page<MathPlanVo>> homeworkTotal(MathPlanQuery query) {
+        if (DataUtil.isEmpty(query.getPage())) {
+            query.setPage(0);
+        }
+        if (DataUtil.isEmpty(query.getLimit())) {
+            query.setLimit(2);
+        }
+        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+        Page<MathPlan> page = MathPlanService.queryPage(query, pageable);
+        List<MathPlanVo> voList = new ArrayList<>();
+        for (MathPlan plan : page.getContent()) {
+            voList.add(getPlanVo(plan));
+        }
+        Page<MathPlanVo> voPage = new PageImpl<>(voList, pageable, page.getTotalElements());
+        return Response.ok(voPage);
+    }
+
+    private MathPlanVo getPlanVo(MathPlan plan) {
+        MathPlanVo vo = new MathPlanVo();
+        vo.setTask(plan.getTask());
+        vo.setYiDo(plan.getYiDo());
+        vo.setWeiDo(plan.getWeiDo());
+        vo.setTime(plan.getTime());
+        vo.setRight(plan.getRight());
+        vo.setError(plan.getError());
+        BigDecimal one=new BigDecimal(plan.getRight());
+        BigDecimal two=new BigDecimal(MoneyUtil.add(plan.getRight(), plan.getError()));
+        vo.setRate(MoneyUtil.multiply(one.divide(two,2,BigDecimal.ROUND_HALF_UP).toString(), "100")+"%");
+        return vo;
     }
 }
