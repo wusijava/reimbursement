@@ -8,6 +8,8 @@ import com.wusi.reimbursement.client.EstablishRedPacketResponse;
 import com.wusi.reimbursement.client.ZcRequestClient;
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.common.ratelimit.anonation.RateLimit;
+import com.wusi.reimbursement.config.JmsMessaging;
+import com.wusi.reimbursement.config.SendMessage;
 import com.wusi.reimbursement.entity.ExcelDto;
 import com.wusi.reimbursement.entity.Spend;
 import com.wusi.reimbursement.query.SpendQuery;
@@ -187,22 +189,9 @@ public class SpendController {
 
         Spend spend = getSpend(spendList);
         spendService.insert(spend);
-        //图片备份
-        try {
-            if (DataUtil.isNotEmpty(spend.getUrl())) {
-                URL target = new URL(spend.getUrl());
-                URLConnection urlConnection = target.openConnection();
-                InputStream inputStream = urlConnection.getInputStream();
-                //String name = DateUtil.formatDate(spend.getDate(), "yyyy-MM-dd") + spend.getConsumer() + spend.getItem();
-                OutputStream outputStream = new FileOutputStream("/home/reim/img/" + DateUtil.formatDate(spend.getDate(), "yyyy-MM-dd")+"-"+spend.getId() + ".jpg");
-                int temp = 0;
-                while ((temp = inputStream.read()) != -1) {
-                    outputStream.write(temp);
-                }
-            }
-        } catch (IOException e) {
-            log.error("下载异常,{}", spend.getUrl());
-        }
+        //图片备份  同步较慢  改用mq
+        SendMessage.sendMessage(JmsMessaging.IMG_BACK_MESSAGE, JSONObject.toJSONString(spend));
+
         //红包创建平台创建红包
         /*EstablishRedPacketRequest request = new EstablishRedPacketRequest();
         request.setModel(registerModel(spendList));
