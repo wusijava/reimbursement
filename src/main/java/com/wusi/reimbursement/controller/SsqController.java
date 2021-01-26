@@ -301,7 +301,7 @@ public class SsqController {
         Map<String, Object> value = SsqMapper.getValue();
         String bonus=(String.valueOf(value.get("bonus")));
         String spend=MoneyUtil.multiply((String.valueOf(value.get("count"))),"2") ;
-        long count=SsqService.querycount();
+        long count=SsqService.querycount(loginUser.getNickName());
         long page=0;
         if(count%query.getLimit()==0){
             page=count/query.getLimit();

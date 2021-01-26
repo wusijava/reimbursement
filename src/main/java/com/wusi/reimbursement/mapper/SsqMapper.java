@@ -17,7 +17,7 @@ public interface SsqMapper extends BaseMapper<Ssq,Long> {
 
     List<Ssq> queryListByParam(SsqQuery ssqQuery);
 
-    long querycount();
+    long querycount(String buyer);
 
     Map<String,Object>  getValue();
 

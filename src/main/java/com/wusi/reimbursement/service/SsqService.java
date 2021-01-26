@@ -12,5 +12,5 @@ import java.util.List;
  **/
 public interface SsqService extends BaseService<Ssq,Long> {
     List<Ssq> queryListByParam(SsqQuery ssqQuery);
-    long querycount();
+    long querycount(String buyer);
 }

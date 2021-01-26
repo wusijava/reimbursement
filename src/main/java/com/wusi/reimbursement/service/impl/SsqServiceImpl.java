@@ -33,7 +33,7 @@ public class SsqServiceImpl extends BaseMybatisServiceImpl<Ssq,Long> implements 
     }
 
     @Override
-    public long querycount() {
-        return ssqMapper.querycount();
+    public long querycount(String buyer) {
+        return ssqMapper.querycount(buyer);
     }
 }

@@ -33,7 +33,7 @@ public class BackUpController {
             String filePathTaobao = BackupDbUtil.backup("taobao");
             //发送邮件
             //String filePathTaobao="D:\\excel\\blackList.xlsx";
-            mailService.sendAttachmentsMail("513936307@qq.com","腾讯云数据库备份"+ DateUtil.formatDate(new Date(), "yyyy-MM-dd"),"今日备份已发到附近,请及时保存备份!",filePathTaobao);
+            mailService.sendAttachmentsMail("513936307@qq.com","腾讯云数据库备份"+ DateUtil.formatDate(new Date(), "yyyy-MM-dd"),"今日备份已发到附件,请及时保存备份!",filePathTaobao);
             //删除7天之前的文件
             String path="/home/back/dababase/";
             File file=new File(path);
