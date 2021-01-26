@@ -38,8 +38,8 @@ public class ImgBackController {
                     //获取输入流
                     InputStream inputStream = urlConnection.getInputStream();
                     //获取输出流 这里是下载保存图片到本地的路径
-                    String name= DateUtil.formatDate(str.getDate(), "yyyy-MM-dd")+str.getConsumer()+str.getItem();
-                    OutputStream outputStream = new FileOutputStream("/home/reim/img" +name +".jpg");
+                    //String name= DateUtil.formatDate(str.getDate(), "yyyy-MM-dd")+str.getConsumer()+str.getItem();
+                    OutputStream outputStream = new FileOutputStream("/home/reim/img/" +str.getId() +".jpg");
                     int temp = 0;
                     while ((temp = inputStream.read()) != -1) {
                         outputStream.write(temp);

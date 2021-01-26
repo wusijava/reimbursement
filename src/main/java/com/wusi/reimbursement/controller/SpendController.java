@@ -193,8 +193,8 @@ public class SpendController {
                 URL target = new URL(spend.getUrl());
                 URLConnection urlConnection = target.openConnection();
                 InputStream inputStream = urlConnection.getInputStream();
-                String name = DateUtil.formatDate(spend.getDate(), "yyyy-MM-dd") + spend.getConsumer() + spend.getItem();
-                OutputStream outputStream = new FileOutputStream("/home/reim/img" + name + ".jpg");
+                //String name = DateUtil.formatDate(spend.getDate(), "yyyy-MM-dd") + spend.getConsumer() + spend.getItem();
+                OutputStream outputStream = new FileOutputStream("/home/reim/img/" + DateUtil.formatDate(spend.getDate(), "yyyy-MM-dd")+"-"+spend.getId() + ".jpg");
                 int temp = 0;
                 while ((temp = inputStream.read()) != -1) {
                     outputStream.write(temp);
