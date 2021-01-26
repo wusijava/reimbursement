@@ -18,6 +18,7 @@ import com.wusi.reimbursement.utils.RedisUtil;
 import com.wusi.reimbursement.utils.StringUtils;
 import com.wusi.reimbursement.vo.SpendList;
 import com.wusi.reimbursement.vo.SpendVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +49,7 @@ import java.util.*;
  * @ CreateDate    :  2020/1/21$ 15:46$
  */
 @RestController
+@Slf4j
 public class SpendController {
 
     static Boolean testCheckSign = true;
@@ -59,7 +67,7 @@ public class SpendController {
     SpendService spendService;
 
     @Value("${excelDownloadUrl}")
-    private  String excelDownloadUrl;
+    private String excelDownloadUrl;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -67,75 +75,78 @@ public class SpendController {
     @ResponseBody
     @SysLog("开支列表")
     public Response<Page<SpendList>> productList(SpendQuery query) {
-            if (DataUtil.isEmpty(query.getPage())) {
-                query.setPage(0);
-            }
-            if (DataUtil.isEmpty(query.getLimit())) {
-                query.setLimit(18);
-            }
-            Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
-            Page<Spend>  page= spendService.queryPage(query,pageable);
-            //重新封装一个query 不带分页的query
-            SpendQuery newQuery=new SpendQuery();
-            newQuery.setItem(query.getItem());
-            newQuery.setStartTime(query.getStartTime());
-            newQuery.setEndTime(query.getEndTime());
-            newQuery.setConsumer(query.getConsumer());
-            List<Spend> List=spendService.queryList(newQuery);
-            List<SpendList> volist=new ArrayList<>();
-            for (Spend spend:page.getContent()){
-                volist.add(getVo(spend));
-            }
-        BigDecimal total=new BigDecimal("0.00");
-        BigDecimal personTotal=new BigDecimal("0.00");
-        for(Spend spend:List){
-            BigDecimal bigDecimal=new BigDecimal(spend.getPrice());
-            total=bigDecimal.add(total);
+        if (DataUtil.isEmpty(query.getPage())) {
+            query.setPage(0);
         }
-        for(SpendList spendlist:volist){
-            BigDecimal bigDecimal=new BigDecimal(spendlist.getPrice());
-            personTotal=bigDecimal.add(personTotal);
+        if (DataUtil.isEmpty(query.getLimit())) {
+            query.setLimit(18);
         }
-        for(SpendList spendList:volist){
+        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+        Page<Spend> page = spendService.queryPage(query, pageable);
+        //重新封装一个query 不带分页的query
+        SpendQuery newQuery = new SpendQuery();
+        newQuery.setItem(query.getItem());
+        newQuery.setStartTime(query.getStartTime());
+        newQuery.setEndTime(query.getEndTime());
+        newQuery.setConsumer(query.getConsumer());
+        List<Spend> List = spendService.queryList(newQuery);
+        List<SpendList> volist = new ArrayList<>();
+        for (Spend spend : page.getContent()) {
+            volist.add(getVo(spend));
+        }
+        BigDecimal total = new BigDecimal("0.00");
+        BigDecimal personTotal = new BigDecimal("0.00");
+        for (Spend spend : List) {
+            BigDecimal bigDecimal = new BigDecimal(spend.getPrice());
+            total = bigDecimal.add(total);
+        }
+        for (SpendList spendlist : volist) {
+            BigDecimal bigDecimal = new BigDecimal(spendlist.getPrice());
+            personTotal = bigDecimal.add(personTotal);
+        }
+        for (SpendList spendList : volist) {
             spendList.setTotal(total.toString());
             spendList.setPersonTotal(personTotal.toString());
         }
-        Page<SpendList> vopage=new PageImpl<>(volist, pageable, page.getTotalElements());
+        Page<SpendList> vopage = new PageImpl<>(volist, pageable, page.getTotalElements());
         return Response.ok(vopage);
     }
+
     private SpendList getVo(Spend spend) {
-        SpendList spendList=new SpendList();
+        SpendList spendList = new SpendList();
         spendList.setId(spend.getId());
         spendList.setItem(spend.getItem());
         spendList.setPrice(spend.getPrice());
         spendList.setConsumer(spend.getConsumer());
         spendList.setDate(DateUtil.formatDate(spend.getDate(), DateUtil.PATTERN_YYYY_MM_DD_HH_MM_SS));
-        if(DataUtil.isEmpty(spend.getRemark())){
+        if (DataUtil.isEmpty(spend.getRemark())) {
             spendList.setRemark("暂无");
-        }else{
+        } else {
             spendList.setRemark(spend.getRemark());
         }
-        if(DataUtil.isEmpty(spend.getUrl())){
+        if (DataUtil.isEmpty(spend.getUrl())) {
             spendList.setUrl("http://www.photo.wearelie.com/temp/1/4yg16z/{2}.jpg");
-        }else{
+        } else {
             spendList.setUrl(spend.getUrl());
         }
 
         return spendList;
     }
+
     @RequestMapping(value = "/spendDetail", method = RequestMethod.POST)
     @ResponseBody
     @SysLog("开支明细")
     public Response<SpendList> todetails(SpendQuery query) {
-        Spend Spend=spendService.queryOne(query);
+        Spend Spend = spendService.queryOne(query);
         return Response.ok(getVo(Spend));
     }
+
     @RequestMapping(value = "/spendUpdate", method = RequestMethod.POST)
     @ResponseBody
     @SysLog("更新消费明细")
     public Response<String> update(SpendList query) throws ParseException {
         System.out.println(query);
-        Spend spend=getSpend(query);
+        Spend spend = getSpend(query);
         spendService.updateById(spend);
         return Response.ok("ok");
     }
@@ -151,8 +162,9 @@ public class SpendController {
         spend.setDate(new Date());
         spend.setRemark(spendList.getRemark());
         spend.setUrl(spendList.getUrl());
-        return  spend;
+        return spend;
     }
+
     @RequestMapping(value = "/spendDel", method = RequestMethod.POST)
     @ResponseBody
     @SysLog("删除消费项")
@@ -165,6 +177,7 @@ public class SpendController {
         }
         return Response.fail("删除失败!!!");
     }
+
     //saveSpend
     @RequestMapping(value = "/saveSpend", method = RequestMethod.POST)
     @ResponseBody
@@ -172,14 +185,31 @@ public class SpendController {
     @RateLimit(permitsPerSecond = 0.2, ipLimit = true, description = "限制导出频率")
     public Response<String> save(SpendList spendList) throws Exception {
 
-        Spend spend=getSpend(spendList);
-      spendService.insert(spend);
-      //红包创建平台创建红包
+        Spend spend = getSpend(spendList);
+        spendService.insert(spend);
+        //图片备份
+        try {
+            if (DataUtil.isNotEmpty(spend.getUrl())) {
+                URL target = new URL(spend.getUrl());
+                URLConnection urlConnection = target.openConnection();
+                InputStream inputStream = urlConnection.getInputStream();
+                String name = DateUtil.formatDate(spend.getDate(), "yyyy-MM-dd") + spend.getConsumer() + spend.getItem();
+                OutputStream outputStream = new FileOutputStream("/home/reim/img" + name + ".jpg");
+                int temp = 0;
+                while ((temp = inputStream.read()) != -1) {
+                    outputStream.write(temp);
+                }
+            }
+        } catch (IOException e) {
+            log.error("下载异常,{}", spend.getUrl());
+        }
+        //红包创建平台创建红包
         /*EstablishRedPacketRequest request = new EstablishRedPacketRequest();
         request.setModel(registerModel(spendList));
         EstablishRedPacketResponse response = client.execute(request);*/
         return Response.ok("添加成功!");
     }
+
     @RequestMapping(value = "out", method = RequestMethod.POST)
     @ResponseBody
     @SysLog
@@ -202,12 +232,14 @@ public class SpendController {
         String url = excelDownloadUrl + key;
         return Response.ok(url);
     }
+
     private List<JSONObject> parser(List<SpendVo> spendVo) {
         return JSONObject.parseArray(JSONObject.toJSONString(spendVo), JSONObject.class);
     }
+
     private SpendVo getSpendVo(Spend spend) {
         SpendVo spendVo = new SpendVo();
-       // reimbursementList.setId(reimbursement.getId());
+        // reimbursementList.setId(reimbursement.getId());
         spendVo.setId(spend.getId());
         spendVo.setItem(spend.getItem());
         spendVo.setPrice(spend.getPrice());
@@ -216,6 +248,7 @@ public class SpendController {
         spendVo.setRemark(spend.getRemark());
         return spendVo;
     }
+
     //统计本月消费金额
     @RequestMapping(value = "/spendMonth", method = RequestMethod.POST)
     @ResponseBody
@@ -224,16 +257,16 @@ public class SpendController {
         Date d = null;
         DateFormat sdf = new SimpleDateFormat(DateUtil.PATTERN_YYYY_MM_DD);
         d = new Date();
-         String date = sdf.format(d);
-         //当月消费
-        String sql="select sum(price)  as s from spend where date_format(date,'%Y-%m')=date_format(now(),'%Y-%m');";
+        String date = sdf.format(d);
+        //当月消费
+        String sql = "select sum(price)  as s from spend where date_format(date,'%Y-%m')=date_format(now(),'%Y-%m');";
         List<Map<String, Object>> map = jdbcTemplate.queryForList(sql);
         //本年消费
-        String sqlYear="select sum(price)  as y from spend where date_format(date,'%Y')=date_format(now(),'%Y');";
+        String sqlYear = "select sum(price)  as y from spend where date_format(date,'%Y')=date_format(now(),'%Y');";
         List<Map<String, Object>> mapYear = jdbcTemplate.queryForList(sqlYear);
-        Object sum=map.get(0).getOrDefault("s", 0);
-        Object year=mapYear.get(0).getOrDefault("y", 0);
-        Spend spend=new Spend();
+        Object sum = map.get(0).getOrDefault("s", 0);
+        Object year = mapYear.get(0).getOrDefault("y", 0);
+        Spend spend = new Spend();
         spend.setPrice(sum.toString());
         spend.setItem(year.toString());
         return Response.ok(spend);
@@ -241,21 +274,22 @@ public class SpendController {
 
     //新增相同的消费
     @RequestMapping(value = "submitAddSame")
-    public void submitAddSame(SpendVo spend){
+    public void submitAddSame(SpendVo spend) {
         System.out.println(spend);
-        Spend same=new Spend();
+        Spend same = new Spend();
         same.setDate(new Date());
         same.setConsumer(spend.getConsumer());
         same.setItem(spend.getItem());
         same.setPrice(spend.getPrice());
         spendService.insert(same);
     }
+
     static EstablishRedPacketModel registerModel(SpendList list) {
-        EstablishRedPacketModel model=new EstablishRedPacketModel();
+        EstablishRedPacketModel model = new EstablishRedPacketModel();
         model.setAmount(list.getPrice());
         //model.setTradeNo("123456");
         model.setOutTradeNo(StringUtils.getTradeNo());
-        model.setTitle(list.getConsumer()+"创建的消费红包!");
+        model.setTitle(list.getConsumer() + "创建的消费红包!");
         //model.setState(1);
         model.setType(2);
 
