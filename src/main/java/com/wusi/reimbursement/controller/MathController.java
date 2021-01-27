@@ -239,7 +239,7 @@ public class MathController {
                 return Response.ok(null);
             }
             //存缓存  存10分钟
-            RedisUtil.set("ti", maths, 1000 * 60 * 10L);
+            RedisUtil.set("ti", maths,  60*10L);
         } else {
             source="有缓存,redis取值";
             log.error("有缓存,redis取值");
