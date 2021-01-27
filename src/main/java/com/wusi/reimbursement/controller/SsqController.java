@@ -301,7 +301,12 @@ public class SsqController {
         Map<String, Object> value = SsqMapper.getValue();
         String bonus=(String.valueOf(value.get("bonus")));
         String spend=MoneyUtil.multiply((String.valueOf(value.get("count"))),"2") ;
-        long count=SsqService.querycount(loginUser.getNickName());
+        long count=0;
+        if(DataUtil.isNotEmpty(query.getType())&&query.getType().equals(3)){
+            count=SsqService.querycount(loginUser.getNickName());
+        }else{
+            count=SsqService.querycount(null);
+        }
         long page=0;
         if(count%query.getLimit()==0){
             page=count/query.getLimit();
@@ -453,11 +458,11 @@ public class SsqController {
         if(DataUtil.isEmpty(query.getRed1())&&DataUtil.isEmpty(query.getRed2())&&DataUtil.isEmpty(query.getRed3())&&DataUtil.isEmpty(query.getRed4())&&DataUtil.isEmpty(query.getRed5())&&DataUtil.isEmpty(query.getRed6())&&DataUtil.isEmpty(query.getBlue())){
             return Response.ok("最少输入一个号码!");
         }
-        SsqHistory history = SsqHistoryService.queryOne(query);
-        if(DataUtil.isEmpty(history)){
+        Long num= SsqHistoryService.queryCount(query);
+        if(num==0){
             return Response.ok("历史未出过此号!");
         }else{
-            return Response.ok("历史已出过此号!");
+            return Response.ok("历史已出过"+num+"次!");
         }
     }
 

@@ -94,7 +94,11 @@ public class MathController {
 
     @ResponseBody
     @RequestMapping(value = "checkTi")
-    public Response<String> checkTi(Math math) {
+    public Response<String> checkTi(Math math,Long rowId) {
+        com.wusi.reimbursement.entity.Math count=null;
+        if(DataUtil.isNotEmpty(rowId)){
+            count = MathService.queryById(rowId);
+        }
         if (DataUtil.isEmpty(math.getResult())) {
             return Response.ok("请输入你的答案!~");
         }
@@ -151,9 +155,14 @@ public class MathController {
                 secPlan.setWeiDo("0");
             }
             secPlan.setRight(MoneyUtil.add(secPlan.getRight(), "1"));
+            if(DataUtil.isNotEmpty(rowId)){
+                count.setCount(count.getCount()+1);
+                MathService.updateById(count);
+            }
         } else {
             log.setResult("错");
             log.setRightResult(two);
+            log.setCount(0);
             secPlan.setError(MoneyUtil.add(secPlan.getError(), "1"));
         }
         log.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
@@ -217,15 +226,22 @@ public class MathController {
     @RequestMapping(value = "cuoTi")
     @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
     public Response<Math> cuoTi() {
-        List<com.wusi.reimbursement.entity.Math> maths = null;
+        List<com.wusi.reimbursement.entity.Math> maths ;
+        String source="";
         if (DataUtil.isEmpty(RedisUtil.get("ti"))) {
             log.error("无缓存,数据库取值");
+            source="无缓存,数据库取值";
             com.wusi.reimbursement.entity.Math cuoTi = new com.wusi.reimbursement.entity.Math();
             cuoTi.setResult("错");
+            cuoTi.setCount(1);
             maths = MathService.queryList(cuoTi);
-            //存缓存  存30分钟
-            RedisUtil.set("ti", maths, 1000 * 60 * 30L);
+            if(maths.size()==0){
+                return Response.ok(null);
+            }
+            //存缓存  存10分钟
+            RedisUtil.set("ti", maths, 1000 * 60 * 10L);
         } else {
+            source="有缓存,redis取值";
             log.error("有缓存,redis取值");
             Object object = RedisUtil.get("ti");
             maths = (List<com.wusi.reimbursement.entity.Math>) object;
@@ -233,7 +249,7 @@ public class MathController {
 
         Integer size = maths.size();
         Random r = new Random();
-        int index = r.nextInt(size - 1);
+        int index = r.nextInt(size);
         com.wusi.reimbursement.entity.Math ti = maths.get(index);
         String content = ti.getContent();
         String back = content.replace("-", "+");
@@ -246,6 +262,8 @@ public class MathController {
         vo.setNumTwo(Integer.valueOf(back.substring(i + 1, j)));
         vo.setSymbolTwo(content.substring(j, j + 1));
         vo.setNumThree(Integer.valueOf(back.substring(j + 1, k)));
+        vo.setSource(source);
+        vo.setRowId(ti.getId());
         return Response.ok(vo);
     }
 

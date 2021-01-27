@@ -25,4 +25,8 @@ public class Math implements Identifiable<Long> {
      */
     private String time;
 
+    /**
+     * 错题回顾次数
+     */
+    private Integer count;
 }

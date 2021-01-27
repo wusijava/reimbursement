@@ -15,4 +15,6 @@ public class Math {
     private String  symbolTwo;
     private Integer numThree;
     private Integer result;
+    private String source;
+    private Long rowId;
 }

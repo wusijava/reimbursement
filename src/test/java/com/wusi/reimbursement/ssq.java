@@ -2,6 +2,7 @@ package com.wusi.reimbursement;
 
 import com.wusi.reimbursement.entity.SsqHistory;
 import com.wusi.reimbursement.service.SsqHistoryService;
+import com.wusi.reimbursement.utils.RedisUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -474,6 +475,11 @@ public class ssq {
 
         }
         System.out.println(six);
+    }
+    @Test
+    public void del(){
+        RedisUtil.del("ti");
+
     }
 
 }
