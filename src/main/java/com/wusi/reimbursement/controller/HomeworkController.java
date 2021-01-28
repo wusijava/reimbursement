@@ -325,4 +325,18 @@ public class HomeworkController {
     public void deleteRec(Long id) {
         remindRecordService.deleteById(id);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "mind")
+    public Response<String> mind() {
+        RequestContext.RequestUser loginUser = RequestContext.getCurrentUser();
+        Housework query=new Housework();
+        query.setUserNameTo(loginUser.getNickName());
+        query.setReceiveState(Housework.ReceiveState.wait.getCode());
+        Long aLong = houseworkService.queryCount(query);
+        if(aLong>0){
+            return Response.ok(loginUser.getNickName()+",您有"+aLong+"项家务未完成,请及时处理!");
+        }
+        return Response.ok(null);
+    }
 }
