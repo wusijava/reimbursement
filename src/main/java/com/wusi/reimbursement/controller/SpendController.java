@@ -186,7 +186,9 @@ public class SpendController {
     @SysLog("保存消费项")
     @RateLimit(permitsPerSecond = 0.2, ipLimit = true, description = "限制导出频率")
     public Response<String> save(SpendList spendList) throws Exception {
-
+        if(!StringUtils.isNumeric(spendList.getPrice())){
+            return Response.fail("金额填数字,你个憨批~");
+        }
         Spend spend = getSpend(spendList);
         spendService.insert(spend);
         //图片备份  同步较慢  改用mq

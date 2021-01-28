@@ -239,14 +239,14 @@ public class MathController {
                 return Response.ok(null);
             }
             //存缓存  存10分钟
-            RedisUtil.set("ti", maths,  60*10L);
+            RedisUtil.set("ti", maths,  600);
         } else {
-            source="有缓存,redis取值";
+            long ti = RedisUtil.getExpire("ti");
+            source="有缓存,redis取值,缓存剩余"+ti+"秒!";
             log.error("有缓存,redis取值");
             Object object = RedisUtil.get("ti");
             maths = (List<com.wusi.reimbursement.entity.Math>) object;
         }
-
         Integer size = maths.size();
         Random r = new Random();
         int index = r.nextInt(size);
