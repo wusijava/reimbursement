@@ -20,6 +20,10 @@ public class SsqBonus implements Identifiable<Long> {
   private String blue;
   private Date createTime;
   private String week;
+  /**
+   * 增加照片url
+   */
+  private String url;
 
 
 

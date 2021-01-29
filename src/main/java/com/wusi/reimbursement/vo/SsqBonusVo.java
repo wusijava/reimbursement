@@ -11,6 +11,10 @@ public class SsqBonusVo  {
 
   private Long id;
   private String term;
+  /**
+   * 增加图片显示
+   */
+  private String url;
   private String red1;
   private String red2;
   private String red3;

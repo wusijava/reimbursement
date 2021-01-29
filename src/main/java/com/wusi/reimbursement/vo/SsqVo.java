@@ -64,5 +64,4 @@ public class SsqVo  {
    */
   private Integer state;
 
-
 }

@@ -49,6 +49,8 @@ public class SsqController {
     private SsqQuickService ssqQuickService;
     @Autowired
     private SsqHistoryService SsqHistoryService;
+    @Autowired
+    private SsqImgService SsqImgService;
 
     @RequestMapping(value = "getBonusNum")
     @ResponseBody
@@ -180,6 +182,12 @@ public class SsqController {
         SsqBonusVo vo = new SsqBonusVo();
         vo.setId(ssqBonus.getId());
         vo.setTerm(ssqBonus.getTerm());
+        SsqImg img=new SsqImg();
+        img.setTerm(ssqBonus.getTerm());
+        SsqImg ssqImg = SsqImgService.queryOne(img);
+        if(DataUtil.isNotEmpty(ssqImg)){
+            vo.setUrl(ssqImg.getUrl());
+        }
         vo.setRed1(ssqBonus.getRed1());
         vo.setRed2(ssqBonus.getRed2());
         vo.setRed3(ssqBonus.getRed3());
@@ -317,6 +325,7 @@ public class SsqController {
         List<String> list = ssqs1.stream().map(Ssq::getTerm).collect(Collectors.toList());
         ArrayList<SsqParam> ssqParams = new ArrayList<>();
         String commission=SsqMapper.getCommission(loginUser.getNickName());
+
         for (String s : list) {
             SsqQuery ssqQuery = new SsqQuery();
             ssqQuery.setTerm(s);
@@ -329,7 +338,15 @@ public class SsqController {
             for(Ssq Ssq:ssqs){
                 list2.add(getSsqVo2(Ssq));
             }
-            ssqParams.add(new SsqParam(list2,ssqQuery.getTerm(),page,bonus,spend,commission));
+            //图片
+            SsqImg img=new SsqImg();
+            img.setTerm(ssqQuery.getTerm());
+            SsqImg ssqImg = SsqImgService.queryOne(img);
+            String url="";
+            if(DataUtil.isNotEmpty(ssqImg)){
+                url=ssqImg.getUrl();
+            }
+            ssqParams.add(new SsqParam(list2,ssqQuery.getTerm(),page,bonus,spend,commission,url));
         }
         return Response.ok(ssqParams);
     }
@@ -513,5 +530,24 @@ public class SsqController {
            }
         }
         return Response.ok(blue);
+    }
+
+    @RequestMapping(value = "saveImg")
+    @ResponseBody
+    public Response<String> saveImg(String url,String term) {
+        if(DataUtil.isEmpty(url)||DataUtil.isEmpty(term)){
+            return Response.fail("参数不完整!");
+        }
+        SsqImg save=new SsqImg();
+        save.setTerm(term);
+        save.setUrl(url);
+        save.setCreateTime(new Date());
+        try {
+            SsqImgService.insert(save);
+        } catch (Exception e) {
+            log.error("保存异常,{}", term);
+            return Response.fail("上传异常!");
+        }
+        return Response.ok("上传成功!");
     }
 }

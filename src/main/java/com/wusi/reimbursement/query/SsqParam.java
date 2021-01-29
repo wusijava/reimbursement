@@ -15,4 +15,5 @@ public class SsqParam {
     private String bonus;
     private String spend;
     private String commission;
+    private String url;
 }
