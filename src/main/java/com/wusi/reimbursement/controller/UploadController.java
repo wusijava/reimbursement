@@ -29,7 +29,7 @@ public class UploadController {
     @SysLog
     public Response<Map<String, Object>> getUploadToken(String type) {
         if (DataUtil.isNotEmpty(type)) {
-            String filename = MessageFormat.format("temp/{0}/{1}/{2}", type, StringUtils.createRandom(false, 6));
+            String filename = MessageFormat.format("temp/{0}/{1}", type, StringUtils.createRandom(false, 6));
             Map<String, Object> result = uploadService.getUploadToken(filename + ".jpg");
             if (!DataUtil.isEmpty(result)) {
                 return Response.ok(result);

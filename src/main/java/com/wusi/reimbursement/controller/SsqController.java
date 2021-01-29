@@ -16,6 +16,7 @@ import com.wusi.reimbursement.vo.SsqVo;
 import com.wusi.reimbursement.vo.suiJi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +52,10 @@ public class SsqController {
     private SsqHistoryService SsqHistoryService;
     @Autowired
     private SsqImgService SsqImgService;
+    @Value("${upload.qiniu.host}")
+    private String imgPrefix;
+    @Autowired
+    private UploadService uploadService;
 
     @RequestMapping(value = "getBonusNum")
     @ResponseBody
@@ -147,6 +152,7 @@ public class SsqController {
                         //未中奖
                         buyOne.setIsBonus("-1");
                         buyOne.setBonus("0");
+                        DingDingTalkUtils.sendDingDingMsg("未中奖,没关系,下期五百万,菩萨保佑!");
                     }
                     buyOne.setWeek(ssq.getWeek());
                     buyOne.setBonusTime(ssq.getCreateTime());
@@ -535,6 +541,7 @@ public class SsqController {
     @RequestMapping(value = "saveImg")
     @ResponseBody
     public Response<String> saveImg(String url,String term) {
+        RequestContext.RequestUser loginUser = RequestContext.getCurrentUser();
         if(DataUtil.isEmpty(url)||DataUtil.isEmpty(term)){
             return Response.fail("参数不完整!");
         }
@@ -544,6 +551,8 @@ public class SsqController {
         save.setCreateTime(new Date());
         try {
             SsqImgService.insert(save);
+            //钉钉群推送消息
+            DingDingTalkUtils.sendDingDingMsg(loginUser.getNickName()+"购买了:"+term+"期彩票,彩票照片地址:"+imgPrefix+uploadService.moveInformFile(url));
         } catch (Exception e) {
             log.error("保存异常,{}", term);
             return Response.fail("上传异常!");

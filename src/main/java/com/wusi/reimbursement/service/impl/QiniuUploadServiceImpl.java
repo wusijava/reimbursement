@@ -5,6 +5,7 @@ import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.util.Auth;
+import com.wusi.reimbursement.exception.BizException;
 import com.wusi.reimbursement.service.UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +61,27 @@ public class QiniuUploadServiceImpl implements UploadService {
         } catch (QiniuException e) {
             log.error("七牛移动文件出错{}",e);
             return false;
+        }
+    }
+
+    @Override
+    public String moveInformFile(String file) {
+        String oldFile = "";
+        String newFile = "";
+        if (file.indexOf(host) > -1) {
+            file = file.replace(host, "");
+        }
+        if (file.indexOf("temp/") > -1) {
+            oldFile = file;
+            newFile = file.replace("temp/", "");
+        } else {
+            return file;
+        }
+        if (this.moveFile(oldFile, newFile)) {
+            return newFile;
+        } else {
+            log.error("更新文件路径异常,oldFile:{},newFile:{}", oldFile, newFile);
+            throw new BizException("上传失败");
         }
     }
 }

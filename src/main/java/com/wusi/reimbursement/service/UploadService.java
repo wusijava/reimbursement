@@ -11,4 +11,7 @@ public interface UploadService {
     Map<String, Object> getUploadToken(String fileName);
 
     boolean moveFile(String oldFileName, String newFileName);
+
+    String moveInformFile(String file);
+
 }

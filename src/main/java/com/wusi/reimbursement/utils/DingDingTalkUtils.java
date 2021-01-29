@@ -32,13 +32,13 @@ public class DingDingTalkUtils {
         DingTalkClient client = new DefaultDingTalkClient(url);
         OapiRobotSendRequest request = new OapiRobotSendRequest();
         OapiRobotSendRequest.At at=new OapiRobotSendRequest.At();
-        at.setIsAtAll(true);
+        /*at.setIsAtAll(true);
         List<String> mob=new ArrayList<>();
         mob.add("15387179733");
         mob.add("18602702325");
         mob.add("18627228022");
         mob.add("15549056894");
-        at.setAtMobiles(mob);
+        at.setAtMobiles(mob);*/
         request.setMsgtype("text");
         request.setAt(at);
         OapiRobotSendRequest.Text text = new OapiRobotSendRequest.Text();
