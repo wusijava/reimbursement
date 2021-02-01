@@ -559,4 +559,18 @@ public class SsqController {
         }
         return Response.ok("上传成功!");
     }
+
+    @RequestMapping(value = "changeBlue")
+    @ResponseBody
+    public Response<String> changeBlue() {
+        Response<List<String>> listResponse = this.blueThree(3);
+        List<String> list=listResponse.getData();
+        List<SsqQuick> my=this.SsqQuick().getData();
+        for(int i=0; i<my.size();i++){
+            my.get(i).setBlue(list.get(i));
+            ssqQuickService.updateById(my.get(i));
+        }
+        return Response.ok("同步成功");
+    }
+
 }
