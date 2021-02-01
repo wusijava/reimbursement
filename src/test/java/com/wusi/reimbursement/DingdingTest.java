@@ -5,6 +5,7 @@ import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.OapiRobotSendRequest;
 import com.dingtalk.api.response.OapiRobotSendResponse;
 import com.taobao.api.ApiException;
+import com.wusi.reimbursement.utils.WeekUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +18,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
-
-
+import java.util.Date;
 
 
 @RunWith(SpringRunner.class)
@@ -66,5 +68,12 @@ public class DingdingTest {
 //        OapiRobotSendRequest.Links links = new OapiRobotSendRequest.Links();
 //        links.setMessageURL("https://www.dingtalk.com/");
 //        links.setPicURL("https://www.allinpay.com
+    }
+    @Test
+    public void getNum() throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date parse = sdf.parse("2021-02-21 20:01:01");
+        String ssqNum = WeekUtils.getSsqNum(parse);
+        System.out.println(ssqNum);
     }
 }

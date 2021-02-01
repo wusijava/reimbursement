@@ -236,7 +236,7 @@ public class SsqController {
     @RequestMapping(value = "getSsqNum")
     @ResponseBody
     public Response<String> getSsqNum() throws ParseException {
-        return Response.ok(WeekUtils.getSsqNum());
+        return Response.ok(WeekUtils.getSsqNum(null));
     }
     @RequestMapping(value = "addSsq")
     @ResponseBody
