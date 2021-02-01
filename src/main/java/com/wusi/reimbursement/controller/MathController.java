@@ -230,7 +230,6 @@ public class MathController {
         String source="";
         if (DataUtil.isEmpty(RedisUtil.get("ti"))) {
             log.error("无缓存,数据库取值");
-            source="无缓存,数据库取值";
             com.wusi.reimbursement.entity.Math cuoTi = new com.wusi.reimbursement.entity.Math();
             cuoTi.setResult("错");
             cuoTi.setCount(1);
@@ -238,8 +237,9 @@ public class MathController {
             if(maths.size()==0){
                 return Response.ok(null);
             }
-            //存缓存  存10分钟
-            RedisUtil.set("ti", maths,  600);
+            source="无缓存,数据库取值,共计剩余:"+maths.size()+"道错题!";
+            //存缓存  存5分钟
+            RedisUtil.set("ti", maths,  300);
         } else {
             long ti = RedisUtil.getExpire("ti");
             source="有缓存,redis取值,缓存剩余"+ti+"秒!";

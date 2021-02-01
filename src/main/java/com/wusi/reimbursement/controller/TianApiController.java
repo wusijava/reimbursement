@@ -26,11 +26,15 @@ public class TianApiController {
     private static String dayEnglish = "http://api.tianapi.com/txapi/everyday/index";
     //网易云
     private static String wangYi = "http://api.tianapi.com/txapi/hotreview/index";
-
+    //神回复
+    private static String huiFu="http://api.tianapi.com/txapi/godreply/index";
+    //最美宋词
+    private static String songCi="http://api.tianapi.com/txapi/zmsc/index";
+    //台词
+    private static String dialogue="http://api.tianapi.com/txapi/dialogue/index";
     @RequestMapping(value = "du", produces = "application/json; charset=utf-8")
     public String duJiTang() {
         String jsonResult = request(duJiTang, httpArg);
-        System.out.println(jsonResult);
         return jsonResult;
     }
 
@@ -68,6 +72,21 @@ public class TianApiController {
     @RequestMapping(value = "wangYi", produces = "application/json; charset=utf-8")
     public String wangYi() {
         String jsonResult = request(wangYi, httpArg);
+        return jsonResult;
+    }
+    @RequestMapping(value = "huiFu", produces = "application/json; charset=utf-8")
+    public String huiFu() {
+        String jsonResult = request(huiFu, httpArg);
+        return jsonResult;
+    }
+    @RequestMapping(value = "songCi", produces = "application/json; charset=utf-8")
+    public String songCi() {
+        String jsonResult = request(songCi, httpArg);
+        return jsonResult;
+    }
+    @RequestMapping(value = "dialogue", produces = "application/json; charset=utf-8")
+    public String dialogue() {
+        String jsonResult = request(dialogue, httpArg);
         return jsonResult;
     }
 }
