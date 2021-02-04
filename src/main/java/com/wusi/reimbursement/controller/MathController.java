@@ -239,7 +239,8 @@ public class MathController {
             }
             source="无缓存,数据库取值,共计剩余:"+maths.size()+"道错题!";
             //存缓存  存5分钟
-            RedisUtil.set("ti", maths,  300);
+            long time=maths.size();
+            RedisUtil.set("ti", maths,  time);
         } else {
             long ti = RedisUtil.getExpire("ti");
             source="有缓存,redis取值,缓存剩余"+ti+"秒!";
