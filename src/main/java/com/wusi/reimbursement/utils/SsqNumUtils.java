@@ -50,7 +50,10 @@ public class SsqNumUtils {
         List<String> ball = new ArrayList<>();
         //获取期数
         int index = jsonStr.indexOf("期开奖结果");
-        String term = jsonStr.substring(index - 8, index);
+        String term = jsonStr.substring(index - 5, index);
+        String start = term.substring(0, 2);
+        String end = term.substring(2, 5);
+        term="20"+start+"-"+end;
         ball.add(term);
         //开奖日期
         int bonusIndex = jsonStr.indexOf("开奖日期：");

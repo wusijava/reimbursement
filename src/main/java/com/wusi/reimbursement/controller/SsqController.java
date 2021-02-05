@@ -63,15 +63,39 @@ public class SsqController {
     public void getBonusNum() throws Exception {
         SsqBonus ssq = SsqNumGuanWangUtils.getSsqNum();
         List<String> kaiJiang=new ArrayList<>();
-        kaiJiang.add(ssq.getRed1());
-        kaiJiang.add(ssq.getRed2());
-        kaiJiang.add(ssq.getRed3());
-        kaiJiang.add(ssq.getRed4());
-        kaiJiang.add(ssq.getRed5());
-        kaiJiang.add(ssq.getRed6());
         SsqBonus query = new SsqBonus();
         query.setTerm(ssq.getTerm());
         Long num = SsqBonusService.queryCount(query);
+        long numBaidu=0;
+        if(num>0){
+            SsqBonus baidu = SsqNumUtils.getSsqNum();
+            SsqBonus bai = new SsqBonus();
+            bai.setTerm(baidu.getTerm());
+            numBaidu = SsqBonusService.queryCount(baidu);
+            if(numBaidu==0){
+                ssq.setTerm(baidu.getTerm());
+                ssq.setRed1(baidu.getRed1());
+                ssq.setRed2(baidu.getRed2());
+                ssq.setRed3(baidu.getRed3());
+                ssq.setRed4(baidu.getRed4());
+                ssq.setRed5(baidu.getRed5());
+                ssq.setRed6(baidu.getRed6());
+                ssq.setBlue(baidu.getBlue());
+                kaiJiang.add(ssq.getRed1());
+                kaiJiang.add(ssq.getRed2());
+                kaiJiang.add(ssq.getRed3());
+                kaiJiang.add(ssq.getRed4());
+                kaiJiang.add(ssq.getRed5());
+                kaiJiang.add(ssq.getRed6());
+            }
+        }else{
+            kaiJiang.add(ssq.getRed1());
+            kaiJiang.add(ssq.getRed2());
+            kaiJiang.add(ssq.getRed3());
+            kaiJiang.add(ssq.getRed4());
+            kaiJiang.add(ssq.getRed5());
+            kaiJiang.add(ssq.getRed6());
+        }
         //加入到历史库
         SsqHistory his=new SsqHistory();
         his.setTerm(ssq.getTerm());
@@ -90,7 +114,7 @@ public class SsqController {
             ins.setBonusTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
             SsqHistoryService.insert(ins);
         }
-        if (num < 1) {
+        if (num < 1||numBaidu<1) {
             SsqBonusService.insert(ssq);
             //发送钉钉推送
             DingDingTalkUtils.sendDingDingMsg("今日开奖信息:期数:"+ssq.getTerm()+",红球:"+ssq.getRed1()+"-"+ssq.getRed2()+"-"+ssq.getRed3()+"-"+ssq.getRed4()+"-"+ssq.getRed5()+"-"+ssq.getRed6()+"蓝球:"+ssq.getBlue());
