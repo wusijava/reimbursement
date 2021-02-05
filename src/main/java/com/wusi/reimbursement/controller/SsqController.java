@@ -225,7 +225,7 @@ public class SsqController {
         vo.setRed5(ssqBonus.getRed5());
         vo.setRed6(ssqBonus.getRed6());
         vo.setBlue(ssqBonus.getBlue());
-        vo.setCreateTime(DateUtil.formatDate(ssqBonus.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+        vo.setCreateTime(DateUtil.formatDate(ssqBonus.getCreateTime(), "yyyy-MM-dd")+" 21:15");
         vo.setWeek(ssqBonus.getWeek());
         //查找自己的购买记录
         Ssq ssq=new Ssq();
