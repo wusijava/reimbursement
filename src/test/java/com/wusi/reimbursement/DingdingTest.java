@@ -20,8 +20,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RunWith(SpringRunner.class)
@@ -75,5 +75,16 @@ public class DingdingTest {
         Date parse = sdf.parse("2021-02-21 20:01:01");
         String ssqNum = WeekUtils.getSsqNum(parse);
         System.out.println(ssqNum);
+    }
+    @Test
+    public void lamada(){
+        ArrayList<User> list = new ArrayList<>();
+        list.add(new User(1,"张无忌",25,1));
+        list.add(new User(2,"周芷若",24,2));
+        list.add(new User(3,"赵敏",23,2));
+        Map<Integer, List<User>> genderGroup = list.stream().collect(Collectors.groupingBy(User::getSex, Collectors.toList()));
+        System.out.println(genderGroup);
+        int min = list.stream().mapToInt(User::getAge).min().orElse(-1);
+        System.out.println(min);
     }
 }

@@ -66,12 +66,12 @@ public class SsqController {
         SsqBonus query = new SsqBonus();
         query.setTerm(ssq.getTerm());
         Long num = SsqBonusService.queryCount(query);
-        long numBaidu=0;
+        long numBaidu=2;
         if(num>0){
             SsqBonus baidu = SsqNumUtils.getSsqNum();
             SsqBonus bai = new SsqBonus();
             bai.setTerm(baidu.getTerm());
-            numBaidu = SsqBonusService.queryCount(baidu);
+            numBaidu = SsqBonusService.queryCount(bai);
             if(numBaidu==0){
                 ssq.setTerm(baidu.getTerm());
                 ssq.setRed1(baidu.getRed1());
