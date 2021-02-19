@@ -5,6 +5,7 @@ import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.OapiRobotSendRequest;
 import com.dingtalk.api.response.OapiRobotSendResponse;
 import com.taobao.api.ApiException;
+import com.wusi.reimbursement.utils.AesUtil;
 import com.wusi.reimbursement.utils.WeekUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
@@ -86,5 +87,10 @@ public class DingdingTest {
         System.out.println(genderGroup);
         int min = list.stream().mapToInt(User::getAge).min().orElse(-1);
         System.out.println(min);
+    }
+    @Test
+    public void getMa(){
+        String encrypt = AesUtil.Encrypt("OBXZ9O798A7", "xiangshikeji2017");
+        System.out.println(encrypt);
     }
 }
