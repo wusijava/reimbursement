@@ -1,4 +1,6 @@
 spring:
+  jpa:
+    open-in-view: false
   datasource:
     username: root
     password: 13545630179qq.
