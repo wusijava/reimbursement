@@ -195,9 +195,9 @@ public class SpendController {
         SendMessage.sendMessage(JmsMessaging.IMG_BACK_MESSAGE, JSONObject.toJSONString(spend));
 
         //红包创建平台创建红包
-        EstablishRedPacketRequest request = new EstablishRedPacketRequest();
+        /*EstablishRedPacketRequest request = new EstablishRedPacketRequest();
         request.setModel(registerModel(spendList));
-        EstablishRedPacketResponse response = client.execute(request);
+        EstablishRedPacketResponse response = client.execute(request);*/
         return Response.ok("添加成功!");
     }
 
