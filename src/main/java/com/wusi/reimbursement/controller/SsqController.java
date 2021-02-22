@@ -62,16 +62,21 @@ public class SsqController {
     @Scheduled(cron = "0 0 22,23 * * ?")
     public void getBonusNum() throws Exception {
         SsqBonus ssq = SsqNumGuanWangUtils.getSsqNum();
+        ssq.setTerm("2021-016");
         List<String> kaiJiang=new ArrayList<>();
         SsqBonus query = new SsqBonus();
         query.setTerm(ssq.getTerm());
         Long num = SsqBonusService.queryCount(query);
         long numBaidu=2;
         if(num>0){
-            SsqBonus baidu = SsqNumUtils.getSsqNum();
-            SsqBonus bai = new SsqBonus();
-            bai.setTerm(baidu.getTerm());
-            numBaidu = SsqBonusService.queryCount(bai);
+            SsqBonus baidu = null;
+            try {
+                baidu = SsqNumUtils.getSsqNum();
+            } catch (Exception e) {
+                DingDingTalkUtils.sendDingDingMsg("百度获取开奖异常~~,请重试!");
+            }
+            query.setTerm(baidu.getTerm());
+            numBaidu = SsqBonusService.queryCount(query);
             if(numBaidu==0){
                 ssq.setTerm(baidu.getTerm());
                 ssq.setRed1(baidu.getRed1());
