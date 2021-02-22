@@ -82,8 +82,8 @@ activemq: #MQ消息中间件
 aj:
   captcha:
     water-font: \u5b8b\u4f53
-    water-mark: 吴思
-    font-type: 宋体
-    slip-offset: 5
+    water-mark: \u6e56\u5317\u70b9\u8d5e
+    font-type: \u5b8b\u4f53
+    slip-offset: 2
     # aes加密坐标开启或者禁用(true|false)
     aes-status: true
