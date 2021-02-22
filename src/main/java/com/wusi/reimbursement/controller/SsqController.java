@@ -62,7 +62,6 @@ public class SsqController {
     @Scheduled(cron = "0 0 22,23 * * ?")
     public void getBonusNum() throws Exception {
         SsqBonus ssq = SsqNumGuanWangUtils.getSsqNum();
-        ssq.setTerm("2021-016");
         List<String> kaiJiang=new ArrayList<>();
         SsqBonus query = new SsqBonus();
         query.setTerm(ssq.getTerm());
