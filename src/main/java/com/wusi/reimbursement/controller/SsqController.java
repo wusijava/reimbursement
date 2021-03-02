@@ -575,12 +575,13 @@ public class SsqController {
         }
         SsqImg save=new SsqImg();
         save.setTerm(term);
-        save.setUrl(url);
         save.setCreateTime(new Date());
         try {
-            SsqImgService.insert(save);
             //钉钉群推送消息
-            DingDingTalkUtils.sendDingDingMsg(loginUser.getNickName()+"购买了:"+term+"期彩票,彩票照片地址:"+imgPrefix+uploadService.moveInformFile(url));
+            String urlNew=imgPrefix+uploadService.moveInformFile(url);
+            DingDingTalkUtils.sendDingDingMsg(loginUser.getNickName()+"购买了:"+term+"期彩票,彩票照片地址:"+urlNew);
+            save.setUrl(urlNew);
+            SsqImgService.insert(save);
         } catch (Exception e) {
             log.error("保存异常,{}", term);
             return Response.fail("上传异常!");
