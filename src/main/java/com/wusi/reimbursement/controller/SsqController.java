@@ -85,6 +85,7 @@ public class SsqController {
                 ssq.setRed5(baidu.getRed5());
                 ssq.setRed6(baidu.getRed6());
                 ssq.setBlue(baidu.getBlue());
+                ssq.setWeek(baidu.getWeek());
                 kaiJiang.add(ssq.getRed1());
                 kaiJiang.add(ssq.getRed2());
                 kaiJiang.add(ssq.getRed3());
