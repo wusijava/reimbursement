@@ -1,6 +1,10 @@
 package com.wusi.reimbursement.controller;
 
+import com.wusi.reimbursement.common.Response;
+import com.wusi.reimbursement.entity.Festival;
+import com.wusi.reimbursement.service.FestivalService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 /**
  * @ Description   :  天行数据接口测试
@@ -18,6 +23,8 @@ import java.net.URL;
 @RestController
 @Slf4j
 public class TianApiController {
+    @Autowired
+    private FestivalService festivalService;
     //key
     private static String httpArg = "key=7e110e1235a562e9e11b09cfd965c5a2";
     //毒鸡汤
@@ -89,4 +96,10 @@ public class TianApiController {
         String jsonResult = request(dialogue, httpArg);
         return jsonResult;
     }
+    @RequestMapping(value = "getTime", produces = "application/json; charset=utf-8")
+    public List<Festival> getTime() {
+        List<Festival> festivals = festivalService.queryList(new Festival());
+        return festivals;
+    }
+
 }
