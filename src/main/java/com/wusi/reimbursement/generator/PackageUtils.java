@@ -22,9 +22,9 @@ public class PackageUtils {
         if (classNames != null) {
             for (String className : classNames) {
                 if("RedisConfig".equalsIgnoreCase(className)){
-                    System.out.println(Class.forName(className).getAnnotations().length);
+                    //System.out.println(Class.forName(className).getAnnotations().length);
                 }
-                System.out.println(className);
+                //System.out.println(className);
             }
         }
     }

@@ -43,6 +43,6 @@ public class EncryptDecrypt {
     }
 
     public static void main(String[] args) {
-        System.out.println(encrypt("QR201908121401467650"));
+        //System.out.println(encrypt("QR201908121401467650"));
     }
 }

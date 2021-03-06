@@ -298,7 +298,7 @@ public class MathController {
         vo.setError(plan.getError());
         BigDecimal one=new BigDecimal(plan.getRight());
         BigDecimal two=new BigDecimal(MoneyUtil.add(plan.getRight(), plan.getError()));
-        vo.setRate(MoneyUtil.multiply(one.divide(two,2,BigDecimal.ROUND_HALF_UP).toString(), "100")+"%");
+        vo.setRate(one.divide(two, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")).setScale(2).toString()+"%");
         return vo;
     }
 }

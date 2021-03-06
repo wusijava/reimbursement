@@ -76,7 +76,7 @@ public class BaseController {
     @ResponseBody
     @SysLog("报销列表")
     public Response<Page<ReimbursementList>> productList(ReimbursementQuery query) {
-        System.out.println(query);
+        //System.out.println(query);
         if (DataUtil.isEmpty(query.getPage())) {
             query.setPage(0);
         }
@@ -85,7 +85,7 @@ public class BaseController {
         }
         Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
         Page<Reimbursement>  page= reimbursementService.queryPage(query,pageable);
-        System.out.println(page);
+        //System.out.println(page);
         List<ReimbursementList> volist=new ArrayList<>();
         for (Reimbursement reimbursement:page.getContent()){
             volist.add(getReimbursementLististVo(reimbursement));

@@ -23,7 +23,7 @@ public interface TokenStoreResolver {
      * @param expireTime
      */
     default void addOrUpdateToken(String token, String userId, Date expireTime) {
-        System.out.println(token);
+        //System.out.println(token);
         if (expireTime == null) {
             RedisUtil.set(KEYPREFIX + token, userId, times);
         } else {

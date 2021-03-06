@@ -2,6 +2,7 @@ package com.wusi.reimbursement;
 
 import com.wusi.reimbursement.entity.SsqHistory;
 import com.wusi.reimbursement.service.SsqHistoryService;
+import com.wusi.reimbursement.utils.MoneyUtil;
 import com.wusi.reimbursement.utils.RedisUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,9 +15,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +36,24 @@ public class ssq {
     private static StringBuffer mStringBuffer;
     @Autowired
     private SsqHistoryService SsqHistoryService;
+    @Test
+    public void timeToStamp() throws ParseException {
+        String str="2021-04-04"+" 00:00:01";
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date parse = sf.parse(str);
+        long time = parse.getTime();
+        System.out.println(time);
+    }
+    @Test
+    public void testMath(){
+        BigDecimal one=new BigDecimal("3");
+        BigDecimal two=new BigDecimal("7");
+        BigDecimal three=new BigDecimal("100");
+        BigDecimal divide = one.divide(two, 4, BigDecimal.ROUND_HALF_UP);
+        BigDecimal multiply = divide.multiply(three);
+        System.out.println(multiply.setScale(2));
+
+    }
     @Test
     public void Test() throws IOException {
         String html = Jsoup.connect("https://shuangseqiu.cjcp.com.cn/").timeout(200000).execute().body();
