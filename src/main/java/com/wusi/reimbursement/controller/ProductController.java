@@ -87,13 +87,13 @@ public class ProductController {
             }
             if (amyValue.equals("true,") && (!amyValue.equals(myValue))) {
                 //提示已上架
-                SMSUtil.sendSMS(PHONE_NUB, productNew.getModel(), templatedIdOnline);
+                //SMSUtil.sendSMS(PHONE_NUB, productNew.getModel(), templatedIdOnline);
             } else if (amyValue.equals("false") && (!amyValue.equals(myValue))) {
                 //提示已下架
                /* if (productNew.getAmyState().equals("online")) {
                     amyOffNum++;
                 }*/
-                SMSUtil.sendSMS(PHONE_NUB, productNew.getModel(), templateId);
+                //SMSUtil.sendSMS(PHONE_NUB, productNew.getModel(), templateId);
             }
             productNew.setCreateTime(new Date());
             productNewService.updateById(productNew);

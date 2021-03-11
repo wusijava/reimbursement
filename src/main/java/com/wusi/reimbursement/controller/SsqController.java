@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -603,4 +604,34 @@ public class SsqController {
         return Response.ok("同步成功");
     }
 
+    //加入购买提醒
+    @RequestMapping(value = "mindBuySsq")
+    @ResponseBody
+    @Scheduled(cron = "0 0 18 * * ?")
+    public void mindBuySsq() throws Exception {
+        Calendar cal = Calendar.getInstance();
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //cal.setTime(sdf.parse("2021-03-14"));
+        cal.setTime(new Date());
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (w < 0) {
+            w = 0;
+        }
+        //星期天轮到tomcat购买 星期六或星期天提醒
+        if(w==0||w==6){
+            //首先获取此时的购买期数
+            String ssqNum = WeekUtils.getSsqNum(null);
+            //查找彩票图片地址是否有此期
+            SsqImg query=new SsqImg();
+            query.setTerm(ssqNum);
+            Long aLong = SsqImgService.queryCount(query);
+            //未查到 及未购买
+            if(aLong<1){
+                DingDingTalkUtils.sendDingDingMsg("小伙子,你五百万的项目完工了么?你睡得着觉,吃的下饭?");
+                //发送短信
+                SMSUtil.sendSMS("18627228022", "五百万的项目", 826585);
+            }
+        }
+
+    }
 }
