@@ -13,11 +13,9 @@ import com.wusi.reimbursement.config.SendMessage;
 import com.wusi.reimbursement.entity.ExcelDto;
 import com.wusi.reimbursement.entity.Spend;
 import com.wusi.reimbursement.query.SpendQuery;
+import com.wusi.reimbursement.service.IMailService;
 import com.wusi.reimbursement.service.SpendService;
-import com.wusi.reimbursement.utils.DataUtil;
-import com.wusi.reimbursement.utils.DateUtil;
-import com.wusi.reimbursement.utils.RedisUtil;
-import com.wusi.reimbursement.utils.StringUtils;
+import com.wusi.reimbursement.utils.*;
 import com.wusi.reimbursement.vo.SpendList;
 import com.wusi.reimbursement.vo.SpendVo;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +26,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -72,6 +71,8 @@ public class SpendController {
     private String excelDownloadUrl;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private IMailService mailService;
 
     @RequestMapping("spendList")
     @ResponseBody
@@ -293,5 +294,102 @@ public class SpendController {
         model.setIsNextMonthSettle(0);
         // model.setCreateTime(new Date());
         return model;
+    }
+    static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    //生成每月账单并转成图片形式发送至邮箱
+    @RequestMapping(value = "/createPdfImg", method = RequestMethod.POST)
+    @ResponseBody
+    @Scheduled(cron = "0 0 12 20 * ?")
+    public void createPdfImg(int i) throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.MONTH, -i);
+        Date lastMonth = cal.getTime();
+        String monthStr=format.format(lastMonth);
+        //最早的记录是2019-1月
+        Date parse = format.parse("2019-01");
+        if(cal.getTime().getTime()<parse.getTime()){
+            log.error("最早记录时间为2019-01月");
+            return;
+        }
+        //当月消费
+        String sql = "select sum(price)  as s from spend where date_format(date,'%Y-%m')='"+monthStr+"';";
+        List<Map<String, Object>> map = jdbcTemplate.queryForList(sql);
+        BigDecimal total = (BigDecimal)map.get(0).getOrDefault("s", 0);
+        //当月吴思消费
+        String wusi = "select sum(price)  as s from spend where date_format(date,'%Y-%m')='"+monthStr+"' and consumer='吴思';";
+        List<Map<String, Object>> mapWusi = jdbcTemplate.queryForList(wusi);
+        BigDecimal totalWusi = (BigDecimal)mapWusi.get(0).getOrDefault("s", 0);
+        //当月张明霞消费
+        String zmx = "select sum(price)  as s from spend where date_format(date,'%Y-%m')='"+monthStr+"' and consumer='张明霞';";
+        List<Map<String, Object>> mapZmx = jdbcTemplate.queryForList(zmx);
+        BigDecimal totalZxm = (BigDecimal)mapZmx.get(0).getOrDefault("s", 0);
+        //当月小柠檬消费
+        String wyc = "select sum(price)  as s from spend where date_format(date,'%Y-%m')='"+monthStr+"' and consumer='吴艺橙';";
+        List<Map<String, Object>> mapWyc = jdbcTemplate.queryForList(wyc);
+        BigDecimal totalWyc = (BigDecimal)mapWyc.get(0).getOrDefault("s", 0);
+        //当月小力消费
+        String xl = "select sum(price)  as s from spend where date_format(date,'%Y-%m')='"+monthStr+"' and consumer='小力';";
+        List<Map<String, Object>> mapXl = jdbcTemplate.queryForList(xl);
+        BigDecimal totalXl = (BigDecimal)mapXl.get(0).getOrDefault("s", 0);
+        //当月电费消费
+        String df = "select sum(price)  as s from spend where date_format(date,'%Y-%m')='"+monthStr+"' and item='电费';";
+        List<Map<String, Object>> mapDf = jdbcTemplate.queryForList(df);
+        BigDecimal totalDf = (BigDecimal)mapDf.get(0).getOrDefault("s", 0);
+        //当月水费消费
+        String sf = "select sum(price)  as s from spend where date_format(date,'%Y-%m')='"+monthStr+"' and item='水费';";
+        List<Map<String, Object>> mapSf = jdbcTemplate.queryForList(sf);
+        BigDecimal totalSf = (BigDecimal)mapSf.get(0).getOrDefault("s", 0);
+        //当月最大一笔开销
+        String max = "SELECT sp.consumer as c,sp.item as i,sp.price  as s FROM spend sp where price=(SELECT max(price) FROM spend where date_format(date,'%Y-%m')='"+monthStr+"' ) and date_format(date,'%Y-%m')='"+monthStr+"'";
+        List<Map<String, Object>> mapMax = jdbcTemplate.queryForList(max);
+        String  name = (String) mapMax.get(0).getOrDefault("c", 0);
+        String  item = (String) mapMax.get(0).getOrDefault("i", 0);
+        BigDecimal totalMax = (BigDecimal)mapMax.get(0).getOrDefault("s", 0);
+        Map<String, String> pdfMap = new HashMap<>();
+        if(DataUtil.isNotEmpty(total)){
+            pdfMap.put("total", total.toString());
+        }else{
+            pdfMap.put("total", "0");
+        }
+        if(DataUtil.isNotEmpty(totalWusi)){
+            pdfMap.put("wusi", totalWusi.toString());
+        }else{
+            pdfMap.put("wusi", "0");
+        }
+        if(DataUtil.isNotEmpty(totalZxm)){
+            pdfMap.put("zmx", totalZxm.toString());
+        }else{
+            pdfMap.put("zmx", "0");
+        }
+        if(DataUtil.isNotEmpty(totalWyc)){
+            pdfMap.put("wyc", totalWyc.toString());
+        }else{
+            pdfMap.put("wyc", "0");
+        }
+        if(DataUtil.isNotEmpty(totalXl)){
+            pdfMap.put("xl", totalXl.toString());
+        }else{
+            pdfMap.put("xl", "0");
+        }
+        if(DataUtil.isNotEmpty(totalDf)){
+            pdfMap.put("df", totalDf.toString());
+        }else{
+            pdfMap.put("df", "0");
+        }
+        if(DataUtil.isNotEmpty(totalSf)){
+            pdfMap.put("sf", totalSf.toString());
+        }else{
+            pdfMap.put("sf", "0");
+        }
+        pdfMap.put("max", name+"消费的"+item+totalMax+"元");
+        pdfMap.put("month", monthStr);
+        pdfMap.put("remark", monthStr+"月账单");
+        pdfMap.put("date",sdf.format(new Date()) );
+        PdfUtil.createPdf("home/file/home.pdf", "home/file/"+monthStr+"开支账单.pdf",pdfMap);
+        //转成图片
+        PdfToImgUtils.pdf2Image("home/file/"+monthStr+"开支账单.pdf","home/file/",300,1,monthStr+"账单");
+        mailService.sendAttachmentsMail("513936307@qq.com", monthStr+"家庭账单", "附件是"+monthStr+"的账单,请查收!", "home/file/"+monthStr+"账单.png");
     }
 }
