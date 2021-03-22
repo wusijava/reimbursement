@@ -300,12 +300,12 @@ public class SpendController {
     //生成每月账单并转成图片形式发送至邮箱
     @RequestMapping(value = "/createPdfImg", method = RequestMethod.POST)
     @ResponseBody
-    @Scheduled(cron = "0 0 10 22 * ?")
-    public void createPdfImg(int i) throws ParseException {
+    @Scheduled(cron = "0 11 11 22 * ?")
+    public void createPdfImg() throws ParseException {
         log.error("开始生成月度账单~");
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        cal.add(Calendar.MONTH, -i);
+        cal.add(Calendar.MONTH, -1);
         Date lastMonth = cal.getTime();
         String monthStr=format.format(lastMonth);
         //最早的记录是2019-1月
@@ -388,9 +388,9 @@ public class SpendController {
         pdfMap.put("month", monthStr);
         pdfMap.put("remark", monthStr+"月账单");
         pdfMap.put("date",sdf.format(new Date()) );
-        PdfUtil.createPdf("home/file/home.pdf", "home/file/"+monthStr+"开支账单.pdf",pdfMap);
+        PdfUtil.createPdf("/home/file/home.pdf", "/home/file/"+monthStr+".pdf",pdfMap);
         //转成图片
-        PdfToImgUtils.pdf2Image("home/file/"+monthStr+"开支账单.pdf","home/file/",300,1,monthStr+"账单");
-        mailService.sendAttachmentsMail("513936307@qq.com", monthStr+"家庭账单", "附件是"+monthStr+"的账单,请查收!", "home/file/"+monthStr+"账单.png");
+        PdfToImgUtils.pdf2Image("/home/file/"+monthStr+".pdf","/home/file/",300,1,monthStr);
+        mailService.sendAttachmentsMail("513936307@qq.com", monthStr+"家庭账单", "附件是"+monthStr+"的账单,请查收!", "/home/file/"+monthStr+".png");
     }
 }

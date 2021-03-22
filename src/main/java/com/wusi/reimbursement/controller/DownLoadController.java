@@ -24,7 +24,7 @@ public class DownLoadController  {
     @SysLog("下载文件")
     public Response<String> fileDownLoad(HttpServletResponse response) throws IOException {
         System.out.println("进入文件下载controller");
-        File file = new File("/home/file/报销记录导入模板.xls");
+        File file = new File("/home/file/bx.xls");
         String fileName = file.getName();
         //InputStream ins = new FileInputStream(file);
         InputStream fis=new BufferedInputStream(new FileInputStream(file));
