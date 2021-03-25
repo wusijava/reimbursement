@@ -300,7 +300,7 @@ public class SpendController {
     //生成每月账单并转成图片形式发送至邮箱
     @RequestMapping(value = "/createPdfImg", method = RequestMethod.POST)
     @ResponseBody
-    @Scheduled(cron = "0 11 11 22 * ?")
+    @Scheduled(cron = "0 30 11 1,22 * ?")
     public void createPdfImg() throws ParseException {
         log.error("开始生成月度账单~");
         Calendar cal = Calendar.getInstance();
