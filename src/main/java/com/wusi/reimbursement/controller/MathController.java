@@ -71,7 +71,7 @@ public class MathController {
                 res.setSymbolOne("+");
                 result = numberOne + numberTwo;
             }
-            if (result > (size)) {
+            if (result > (size)||result<=0) {
                 continue;
             }
             int symbolTwo = r.nextInt(3);
@@ -301,4 +301,51 @@ public class MathController {
         vo.setRate(one.divide(two, 4, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal("100")).setScale(2).toString()+"%");
         return vo;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "getTiKindTwo")
+    @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
+    public Response<Math> homeworkTotal() {
+        Response<Math> ti = this.getTi(10);
+        Math data = ti.getData();
+        Random r = new Random();
+        int numberOne = r.nextInt(3);
+        if(numberOne==0){
+            data.setNumOne(null);
+        }
+        if(numberOne==1){
+            data.setNumTwo(null);
+        }
+        if(numberOne==2){
+            data.setNumThree(null);
+        }
+        return Response.ok(data);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "checkTiKindTwo")
+    @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
+    public Response<String> checkTiKindTwo(Math math) {
+        if(DataUtil.isEmpty(math.getNumOne())||DataUtil.isEmpty(math.getNumTwo())||DataUtil.isEmpty(math.getNumThree())){
+            return Response.fail("请填写答案!");
+        }
+        int a=0;
+        int b=0;
+        if(math.getSymbolOne().equals("-")){
+            a=math.getNumOne()-math.getNumTwo();
+        }else{
+            a=math.getNumOne()+math.getNumTwo();
+        }
+        if(math.getSymbolTwo().equals("-")){
+            b=a-math.getNumThree();
+        }else{
+            b=a+math.getNumThree();
+        }
+        if(b==math.getResult()){
+            return Response.ok("答对了,小柠檬不错哦~");
+        } else {
+            return Response.ok("答错了,小柠檬加油哦~");
+        }
+    }
+
 }
