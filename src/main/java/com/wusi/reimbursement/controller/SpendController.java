@@ -404,6 +404,6 @@ public class SpendController {
         if(DataUtil.isEmpty(total)){
             total=new BigDecimal("0");
         }
-        return Response.ok("本月已消费"+total+"元,请理智消费!,尤其是张明霞!");
+        return Response.ok("本月已消费"+total+"元,请理智消费!尤其是张明霞!");
     }
 }

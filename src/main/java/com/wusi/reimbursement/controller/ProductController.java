@@ -59,9 +59,9 @@ public class ProductController {
         for (ProductNew productNew : productNews) {
             i++;
             //增加延迟时间  线上
-            //Thread.sleep(90000);
+            Thread.sleep(900);
             try {
-                html = Jsoup.connect(productNew.getAmyUrl()).timeout(200000).execute().body();
+                html = Jsoup.connect(productNew.getAmyUrl()).execute().body();
             } catch (IOException e) {
                 log.error("扫描商品异常,{},{}", productNew.getModel(), e);
             }
