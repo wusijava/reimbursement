@@ -393,4 +393,17 @@ public class SpendController {
         PdfToImgUtils.pdf2Image("/home/file/"+monthStr+".pdf","/home/file/",300,1,monthStr);
         mailService.sendAttachmentsMail("513936307@qq.com", monthStr+"家庭账单", "附件是"+monthStr+"的账单,请查收!", "/home/file/"+monthStr+".png");
     }
+
+    //显示当月消费
+    @RequestMapping(value = "monthSpend")
+    public Response<String> monthSpend() {
+        String monthStr=format.format(new Date());
+        String sql = "select sum(price)  as s from spend where date_format(date,'%Y-%m')='"+monthStr+"';";
+        List<Map<String, Object>> map = jdbcTemplate.queryForList(sql);
+        BigDecimal total = (BigDecimal)map.get(0).getOrDefault("s", 0);
+        if(DataUtil.isEmpty(total)){
+            total=new BigDecimal("0");
+        }
+        return Response.ok("本月已消费"+total+"元,请理智消费!,尤其是张明霞!");
+    }
 }

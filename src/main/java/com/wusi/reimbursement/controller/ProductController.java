@@ -59,7 +59,7 @@ public class ProductController {
         for (ProductNew productNew : productNews) {
             i++;
             //增加延迟时间  线上
-            Thread.sleep(90000);
+            //Thread.sleep(90000);
             try {
                 html = Jsoup.connect(productNew.getAmyUrl()).timeout(200000).execute().body();
             } catch (IOException e) {
