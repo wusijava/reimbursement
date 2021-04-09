@@ -406,4 +406,31 @@ public class SpendController {
         }
         return Response.ok("本月已消费"+total+"元,请理智消费!尤其是张明霞!");
     }
+    //退单
+    @RequestMapping(value = "refundMoney")
+    public Response<String> refundMoney(String amount,Long id) {
+        if(DataUtil.isEmpty(id)){
+            return Response.fail("参数不完整!");
+        }
+        Spend spend = spendService.queryById(id);
+        if(DataUtil.isEmpty(spend)){
+            return Response.fail("无此消费记录!");
+        }
+        if(DataUtil.isEmpty(amount)){
+            spend.setPrice("0");
+            spend.setRemark(spend.getRemark()+"--全额退款");
+        }else{
+            if(!MoneyUtil.judgeMoney(spend.getPrice(), amount)){
+                return Response.fail("退款金额超过支付金额,你想白嫖??!!");
+            }
+            if(MoneyUtil.judgeMoney(spend.getPrice(), amount)){
+                spend.setRemark(spend.getRemark()+"--全额退款");
+            }else{
+                spend.setRemark(spend.getRemark()+"--部分退款");
+            }
+            spend.setPrice(MoneyUtil.subtract(spend.getPrice(), amount));
+        }
+        spendService.updateById(spend);
+        return  Response.ok("操作成功!");
+    }
 }

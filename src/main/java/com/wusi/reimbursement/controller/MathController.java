@@ -102,6 +102,15 @@ public class MathController {
         if (DataUtil.isEmpty(math.getResult())) {
             return Response.ok("请输入你的答案!~");
         }
+        int two=check(math,rowId,count);
+        if (two == math.getResult()) {
+            return Response.ok("答对了,小柠檬不错哦~");
+        } else {
+            return Response.ok("答错了,小柠檬加油哦~");
+        }
+
+    }
+    public int check(Math math, Long rowId, com.wusi.reimbursement.entity.Math count){
         int one = 0;
         int two = 0;
         if (math.getSymbolOne().equals("-")) {
@@ -168,14 +177,8 @@ public class MathController {
         log.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
         MathService.insert(log);
         MathPlanService.updateById(secPlan);
-        if (two == math.getResult()) {
-            return Response.ok("答对了,小柠檬不错哦~");
-        } else {
-            return Response.ok("答错了,小柠檬加油哦~");
-        }
-
+        return two;
     }
-
     @RequestMapping(value = "homeworkLog")
     @ResponseBody
     public Response<List<MathParam>> homeworkLog(MathQuery query) {
@@ -329,18 +332,7 @@ public class MathController {
         if(DataUtil.isEmpty(math.getNumOne())||DataUtil.isEmpty(math.getNumTwo())||DataUtil.isEmpty(math.getNumThree())){
             return Response.fail("请填写答案!");
         }
-        int a=0;
-        int b=0;
-        if(math.getSymbolOne().equals("-")){
-            a=math.getNumOne()-math.getNumTwo();
-        }else{
-            a=math.getNumOne()+math.getNumTwo();
-        }
-        if(math.getSymbolTwo().equals("-")){
-            b=a-math.getNumThree();
-        }else{
-            b=a+math.getNumThree();
-        }
+        int b=check(math, null, null);
         if(b==math.getResult()){
             return Response.ok("答对了,小柠檬不错哦~");
         } else {
