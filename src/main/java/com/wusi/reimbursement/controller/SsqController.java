@@ -381,6 +381,8 @@ public class SsqController {
             String url="";
             if(DataUtil.isNotEmpty(ssqImg)){
                 url=ssqImg.getUrl();
+            }else{
+                url="http://www.photo.wearelie.com/temp/1/c6qg8n.jpg";
             }
             ssqParams.add(new SsqParam(list2,ssqQuery.getTerm(),page,bonus,spend,commission,url));
         }
