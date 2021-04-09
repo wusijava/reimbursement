@@ -17,7 +17,7 @@ public class DingDingController {
     @RequestMapping(value = "sendDingDingMessage")
     public Response sendDingDingMessage(String content)  {
         if(DataUtil.isEmpty(content)){
-            Response.fail("群发内容不能为空~~");
+            return Response.fail("内容不能为空~~");
         }
         try {
             DingDingTalkUtils.sendDingDingMsg(content);
