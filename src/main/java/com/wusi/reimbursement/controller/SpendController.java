@@ -423,7 +423,7 @@ public class SpendController {
             if(!MoneyUtil.judgeMoney(spend.getPrice(), amount)){
                 return Response.fail("退款金额超过支付金额,你想白嫖??!!");
             }
-            if(MoneyUtil.judgeMoney(spend.getPrice(), amount)){
+            if(MoneyUtil.judgeMoney(amount ,spend.getPrice())){
                 spend.setRemark(spend.getRemark()+"--全额退款");
             }else{
                 spend.setRemark(spend.getRemark()+"--部分退款");
