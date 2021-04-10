@@ -596,9 +596,9 @@ public class SsqController {
     @RequestMapping(value = "changeBlue")
     @ResponseBody
     public Response<String> changeBlue() {
-        Response<List<String>> listResponse = this.blueThree(3);
-        List<String> list=listResponse.getData();
         List<SsqQuick> my=this.SsqQuick().getData();
+        Response<List<String>> listResponse = this.blueThree(my.size());
+        List<String> list=listResponse.getData();
         for(int i=0; i<my.size();i++){
             my.get(i).setBlue(list.get(i));
             ssqQuickService.updateById(my.get(i));

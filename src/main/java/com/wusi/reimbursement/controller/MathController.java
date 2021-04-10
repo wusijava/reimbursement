@@ -89,6 +89,10 @@ public class MathController {
                 break;
             }
         }
+        MathPlan plan = getPlan();
+        if(DataUtil.isNotEmpty(plan)){
+            res.setNum(plan.getWeiDo());
+        }
         return Response.ok(res);
     }
 
@@ -268,7 +272,18 @@ public class MathController {
         vo.setNumThree(Integer.valueOf(back.substring(j + 1, k)));
         vo.setSource(source);
         vo.setRowId(ti.getId());
+        MathPlan plan=getPlan();
+        if(DataUtil.isNotEmpty(plan)){
+            vo.setNum(plan.getWeiDo());
+        }
         return Response.ok(vo);
+    }
+
+    private MathPlan getPlan() {
+        MathPlan query = new MathPlan();
+        query.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+        MathPlan plan = MathPlanService.queryOne(query);
+        return plan;
     }
 
     @ResponseBody
@@ -321,6 +336,10 @@ public class MathController {
         }
         if(numberOne==2){
             data.setNumThree(null);
+        }
+        MathPlan plan = getPlan();
+        if(DataUtil.isNotEmpty(plan)){
+            data.setNum(plan.getWeiDo());
         }
         return Response.ok(data);
     }

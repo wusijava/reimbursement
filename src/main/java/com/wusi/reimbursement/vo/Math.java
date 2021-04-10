@@ -17,4 +17,8 @@ public class Math {
     private Integer result;
     private String source;
     private Long rowId;
+    /**
+     * 今日剩余任务量
+     */
+    private String num;
 }
