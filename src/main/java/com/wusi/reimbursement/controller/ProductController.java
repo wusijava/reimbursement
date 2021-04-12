@@ -60,7 +60,7 @@ public class ProductController {
         for (ProductNew productNew : productNews) {
             i++;
             //增加延迟时间  线上
-            //Thread.sleep(9000);
+            Thread.sleep(5000);
             try {
                 html = Jsoup.connect(productNew.getAmyUrl()).execute().body().substring(1920, 2000);
                 //System.gc();
