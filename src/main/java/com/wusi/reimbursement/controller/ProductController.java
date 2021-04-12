@@ -9,6 +9,7 @@ import com.wusi.reimbursement.service.MonitorRecordService;
 import com.wusi.reimbursement.service.ProductNewService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
+import com.wusi.reimbursement.utils.DingDingTalkUtils;
 import com.wusi.reimbursement.utils.SMSUtil;
 import com.wusi.reimbursement.vo.MonitorRecordVo;
 import com.wusi.reimbursement.vo.ProductNewVO;
@@ -59,9 +60,9 @@ public class ProductController {
         for (ProductNew productNew : productNews) {
             i++;
             //增加延迟时间  线上
-            Thread.sleep(900);
+            //Thread.sleep(900);
             try {
-                html = Jsoup.connect(productNew.getAmyUrl()).execute().body();
+                html = Jsoup.connect(productNew.getAmyUrl()).execute().body().substring(0, 2000);
             } catch (IOException e) {
                 log.error("扫描商品异常,{},{}", productNew.getModel(), e);
             }
@@ -109,7 +110,12 @@ public class ProductController {
             record.setIsDo("0");
         }
         monitorRecordService.insert(record);
-        SMSUtil.sendSMS(PHONE_NUB, ":" + String.valueOf(i), templatedIdTotal);
+        //SMSUtil.sendSMS(PHONE_NUB, ":" + String.valueOf(i), templatedIdTotal);
+        try {
+            DingDingTalkUtils.sendDingDingMsg("商品监控扫描已完成!");
+        } catch (Exception e) {
+           log.error("扫描出错,{}");
+        }
         log.error("定时任务已结束!", DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
 
     }

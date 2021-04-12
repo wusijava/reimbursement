@@ -2,6 +2,7 @@ package com.wusi.reimbursement;
 
 import com.wusi.reimbursement.entity.SsqHistory;
 import com.wusi.reimbursement.service.SsqHistoryService;
+import com.wusi.reimbursement.utils.DateUtil;
 import com.wusi.reimbursement.utils.MoneyUtil;
 import com.wusi.reimbursement.utils.RedisUtil;
 import org.jsoup.Jsoup;
@@ -33,9 +34,15 @@ import java.util.zip.GZIPInputStream;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ssq {
+    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private static StringBuffer mStringBuffer;
     @Autowired
     private SsqHistoryService SsqHistoryService;
+    @Test
+    public void countDays() throws ParseException {
+        int days = (int)(DateUtil.betweenDays(sdf.parse("2019-10-22"), new Date()));
+        System.out.println(days);
+    }
     @Test
     public void timeToStamp() throws ParseException {
         String str="2021-04-04"+" 00:00:01";
