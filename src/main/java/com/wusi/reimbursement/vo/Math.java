@@ -2,13 +2,15 @@ package com.wusi.reimbursement.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @ Description   :  三个数混合运算
  * @ Author        :  wusi
  * @ CreateDate    :  2021/1/15$ 10:05$
  */
 @Data
-public class Math {
+public class Math implements Serializable {
     private Integer numOne;
     private String  symbolOne;
     private Integer numTwo;

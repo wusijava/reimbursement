@@ -49,6 +49,18 @@ public class MathController {
     @RequestMapping(value = "getTi")
     @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
     public Response<Math> getTi(Integer size) {
+        //先判断缓存是否有未做的题
+        //System.out.println(RedisUtil.get("redisTi"));
+        if(RedisUtil.get("redisTi")!=null){
+            Math ma=(Math)RedisUtil.get("redisTi");
+            MathPlan mp= getPlan();
+            if(DataUtil.isNotEmpty(mp)){
+                ma.setNum(mp.getWeiDo());
+            }else{
+                ma.setNum(null);
+            }
+            return Response.ok(ma);
+        }
         Math res = new Math();
         while (true) {
             Random r = new Random();
@@ -93,12 +105,14 @@ public class MathController {
         if(DataUtil.isNotEmpty(plan)){
             res.setNum(plan.getWeiDo());
         }
+        //避免退出刷新换题
+        RedisUtil.set("redisTi", res);
         return Response.ok(res);
     }
 
     @ResponseBody
     @RequestMapping(value = "checkTi")
-    public Response<String> checkTi(Math math,Long rowId) {
+    public Response<String> checkTi(Math math,Long rowId,Integer type) {
         com.wusi.reimbursement.entity.Math count=null;
         if(DataUtil.isNotEmpty(rowId)){
             count = MathService.queryById(rowId);
@@ -108,6 +122,22 @@ public class MathController {
         }
         int two=check(math,rowId,count);
         if (two == math.getResult()) {
+            //获取缓存题
+            Math m=null;
+            if(type.equals(1)){
+                m= (Math)RedisUtil.get("cuoTi");
+            }else{
+                m= (Math)RedisUtil.get("redisTi");
+            }
+            if(m.getNumOne().equals(math.getNumOne())&&m.getNumTwo().equals(math.getNumTwo())&&m.getNumThree().equals(math.getNumThree())&&m.getSymbolOne().equals(math.getSymbolOne())&&m.getSymbolTwo().equals(math.getSymbolTwo())){
+                //表示错题
+                if(type.equals(1)){
+                    RedisUtil.del("cuoTi");
+                }else{
+                    RedisUtil.del("redisTi");
+                }
+
+            }
             return Response.ok("答对了,小柠檬不错哦~");
         } else {
             return Response.ok("答错了,小柠檬加油哦~");
@@ -177,6 +207,8 @@ public class MathController {
             log.setRightResult(two);
             log.setCount(0);
             secPlan.setError(MoneyUtil.add(secPlan.getError(), "1"));
+            secPlan.setTask(MoneyUtil.add(secPlan.getTask(), "2"));
+            secPlan.setWeiDo(MoneyUtil.add(secPlan.getWeiDo(), "2"));
         }
         log.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
         MathService.insert(log);
@@ -233,6 +265,17 @@ public class MathController {
     @RequestMapping(value = "cuoTi")
     @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
     public Response<Math> cuoTi() {
+        if(RedisUtil.get("cuoTi")!=null){
+            Math ma=(Math)RedisUtil.get("cuoTi");
+            MathPlan mp= getPlan();
+            if(DataUtil.isNotEmpty(mp)){
+                ma.setNum(mp.getWeiDo());
+            }else{
+                ma.setNum(null);
+            }
+            ma.setSource("来自未做错题缓存!");
+            return Response.ok(ma);
+        }
         List<com.wusi.reimbursement.entity.Math> maths ;
         String source="";
         if (DataUtil.isEmpty(RedisUtil.get("ti"))) {
@@ -276,6 +319,7 @@ public class MathController {
         if(DataUtil.isNotEmpty(plan)){
             vo.setNum(plan.getWeiDo());
         }
+        RedisUtil.set("cuoTi", vo);
         return Response.ok(vo);
     }
 
@@ -353,6 +397,7 @@ public class MathController {
         }
         int b=check(math, null, null);
         if(b==math.getResult()){
+            RedisUtil.del("redisTi");
             return Response.ok("答对了,小柠檬不错哦~");
         } else {
             return Response.ok("答错了,小柠檬加油哦~");
