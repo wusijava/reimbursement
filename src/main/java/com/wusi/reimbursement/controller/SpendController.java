@@ -409,6 +409,10 @@ public class SpendController {
     //退单
     @RequestMapping(value = "refundMoney")
     public Response<String> refundMoney(String amount,Long id) {
+        boolean b = MoneyUtil.judgeMoney("0", amount);
+        if(b ){
+            return Response.fail("请输入正数!");
+        }
         if(DataUtil.isEmpty(id)){
             return Response.fail("参数不完整!");
         }

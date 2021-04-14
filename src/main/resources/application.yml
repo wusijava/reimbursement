@@ -87,3 +87,5 @@ aj:
     slip-offset: 2
     # aes加密坐标开启或者禁用(true|false)
     aes-status: true
+operateInfo:
+  salt: 2db4d016dbd2aa65
