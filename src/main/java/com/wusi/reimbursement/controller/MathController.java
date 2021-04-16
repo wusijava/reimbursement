@@ -2,16 +2,22 @@ package com.wusi.reimbursement.controller;
 
 import com.wusi.reimbursement.common.Response;
 import com.wusi.reimbursement.common.ratelimit.anonation.RateLimit;
+import com.wusi.reimbursement.entity.AwardList;
+import com.wusi.reimbursement.entity.AwardRecord;
 import com.wusi.reimbursement.entity.MathPlan;
 import com.wusi.reimbursement.mapper.MathMapper;
+import com.wusi.reimbursement.query.AwardRecordQuery;
 import com.wusi.reimbursement.query.MathPlanQuery;
 import com.wusi.reimbursement.query.MathQuery;
+import com.wusi.reimbursement.service.AwardListService;
+import com.wusi.reimbursement.service.AwardRecordService;
 import com.wusi.reimbursement.service.MathPlanService;
 import com.wusi.reimbursement.service.MathService;
 import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
 import com.wusi.reimbursement.utils.MoneyUtil;
 import com.wusi.reimbursement.utils.RedisUtil;
+import com.wusi.reimbursement.vo.AwardRecordVo;
 import com.wusi.reimbursement.vo.Math;
 import com.wusi.reimbursement.vo.MathParam;
 import com.wusi.reimbursement.vo.MathPlanVo;
@@ -26,6 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +51,10 @@ public class MathController {
     private MathMapper MathMapper;
     @Autowired
     private MathPlanService MathPlanService;
+    @Autowired
+    private AwardRecordService awardRecordService;
+    @Autowired
+    private AwardListService awardListService;
 
     @ResponseBody
     @RequestMapping(value = "getTi")
@@ -120,7 +131,7 @@ public class MathController {
         if (DataUtil.isEmpty(math.getResult())) {
             return Response.ok("请输入你的答案!~");
         }
-        int two=check(math,rowId,count);
+        int two=check(math,rowId,count,0);
         if (two == math.getResult()) {
             //获取缓存题
             Math m=null;
@@ -144,22 +155,32 @@ public class MathController {
         }
 
     }
-    public int check(Math math, Long rowId, com.wusi.reimbursement.entity.Math count){
+    public int check(Math math, Long rowId, com.wusi.reimbursement.entity.Math count,Integer type){
         int one = 0;
         int two = 0;
         if (math.getSymbolOne().equals("-")) {
             one = math.getNumOne() - math.getNumTwo();
-        } else {
+        } else if(math.getSymbolOne().equals("+")){
             one = math.getNumOne() + math.getNumTwo();
+        }else if("×".equals(math.getSymbolOne())){
+            two =  math.getNumOne() * math.getNumTwo();
+        }else{
+            two = math.getNumOne() / math.getNumTwo();
         }
-        if ("-".equals(math.getSymbolTwo())) {
+        if (DataUtil.isNotEmpty(math.getSymbolTwo())&&"-".equals(math.getSymbolTwo())) {
             two = one - math.getNumThree();
-        } else {
+        } else if(DataUtil.isNotEmpty(math.getSymbolTwo())&&"+".equals(math.getSymbolTwo())){
             two = one + math.getNumThree();
         }
+
         //记录
         com.wusi.reimbursement.entity.Math log = new com.wusi.reimbursement.entity.Math();
-        log.setContent(math.getNumOne() + math.getSymbolOne() + math.getNumTwo() + math.getSymbolTwo() + math.getNumThree() + "=" + math.getResult());
+        if(DataUtil.isNotEmpty(math.getSymbolTwo())){
+            log.setContent(math.getNumOne() + math.getSymbolOne() + math.getNumTwo() + math.getSymbolTwo() + math.getNumThree() + "=" + math.getResult());
+        }else{
+            log.setContent(math.getNumOne() + math.getSymbolOne() + math.getNumTwo() + "=" + math.getResult());
+        }
+
         log.setCreateTime(new Date());
 
         //加入任务
@@ -194,6 +215,9 @@ public class MathController {
             log.setResult("对");
             secPlan.setYiDo(MoneyUtil.add(secPlan.getYiDo(), "1"));
             secPlan.setWeiDo(MoneyUtil.subtract(secPlan.getTask(), secPlan.getYiDo()));
+            if(secPlan.getWeiDo().equals("0")){
+                createAward(secPlan);
+            }
             if (Integer.valueOf(secPlan.getWeiDo()) < 0) {
                 secPlan.setWeiDo("0");
             }
@@ -211,10 +235,55 @@ public class MathController {
             secPlan.setWeiDo(MoneyUtil.add(secPlan.getWeiDo(), "2"));
         }
         log.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
+        log.setType(type);
         MathService.insert(log);
         MathPlanService.updateById(secPlan);
         return two;
     }
+
+    private void createAward(MathPlan secPlan) {
+        String add = MoneyUtil.add(secPlan.getError(), secPlan.getRight());
+        String rightRate = MoneyUtil.devide(secPlan.getRight(), add);
+        System.out.println(rightRate);
+        //一等奖
+        if(MoneyUtil.judgeMoney(rightRate, "1")){
+            createAwardLog(1,5);
+        }else if(MoneyUtil.judgeMoney(rightRate, "0.95")){
+            createAwardLog(1,4);
+        }else if(MoneyUtil.judgeMoney(rightRate, "0.9")){
+            createAwardLog(1,3);
+        }else if(MoneyUtil.judgeMoney(rightRate, "0.85")){
+            createAwardLog(1,2);
+        }else if(MoneyUtil.judgeMoney(rightRate, "0.80")){
+            createAwardLog(1,1);
+        }else if(MoneyUtil.judgeMoney(rightRate, "0.75")){
+            createAwardLog(0,1);
+        }else if(MoneyUtil.judgeMoney(rightRate, "0.70")){
+            createAwardLog(0,2);
+        } else if(MoneyUtil.judgeMoney(rightRate, "0.65")){
+            createAwardLog(0,3);
+        }else if(MoneyUtil.judgeMoney(rightRate, "0.60")){
+            createAwardLog(0,4);
+        }else{
+            createAwardLog(0,5);
+        }
+    }
+    void createAwardLog(Integer type,Integer level){
+        AwardRecord record=new AwardRecord();
+        AwardList query=new AwardList();
+        query.setType(type);
+        query.setLevel(level);
+        List<AwardList> awardLists = awardListService.queryList(query);
+        Random r = new Random();
+        int index = r.nextInt(awardLists.size());
+        record.setAwardName(awardLists.get(index).getAwardName());
+        record.setType(awardLists.get(index).getType());
+        record.setState(0);
+        record.setCreateTime(new Date());
+        awardRecordService.insert(record);
+    }
+
+
     @RequestMapping(value = "homeworkLog")
     @ResponseBody
     public Response<List<MathParam>> homeworkLog(MathQuery query) {
@@ -283,6 +352,7 @@ public class MathController {
             com.wusi.reimbursement.entity.Math cuoTi = new com.wusi.reimbursement.entity.Math();
             cuoTi.setResult("错");
             cuoTi.setCount(1);
+            cuoTi.setType(0);
             maths = MathService.queryList(cuoTi);
             if(maths.size()==0){
                 return Response.ok(null);
@@ -395,7 +465,7 @@ public class MathController {
         if(DataUtil.isEmpty(math.getNumOne())||DataUtil.isEmpty(math.getNumTwo())||DataUtil.isEmpty(math.getNumThree())){
             return Response.fail("请填写答案!");
         }
-        int b=check(math, null, null);
+        int b=check(math, null, null,0);
         if(b==math.getResult()){
             RedisUtil.del("redisTi");
             return Response.ok("答对了,小柠檬不错哦~");
@@ -403,5 +473,108 @@ public class MathController {
             return Response.ok("答错了,小柠檬加油哦~");
         }
     }
+    @ResponseBody
+    @RequestMapping(value = "getchengChuTi")
+    @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
+    public Response<Math> getchengChuTi(Integer size) {
+        //先判断缓存是否有未做的题
+        if(RedisUtil.get("getchengChuTi")!=null){
+            Math ma=(Math)RedisUtil.get("getchengChuTi");
+            MathPlan mp= getPlan();
+            if(DataUtil.isNotEmpty(mp)){
+                ma.setNum(mp.getWeiDo());
+            }else{
+                ma.setNum(null);
+            }
+            return Response.ok(ma);
+        }
+        Math res = new Math();
+            Random r = new Random();
+        int numberOne;
+            while(true){
+                numberOne = r.nextInt(size);
+                if(numberOne>0){
+                    break;
+                }
+            }
+            int numberTwo = r.nextInt(size);
+            int number = r.nextInt(3);
+            int result=numberOne*numberTwo;
+            if(number%2==0){
+                res.setSymbolOne("×");
+                res.setNumOne(numberOne);
+                res.setNumTwo(numberTwo);
+                res.setResult(result);
+            }else{
+                res.setSymbolOne("÷");
+                res.setNumOne(result);
+                res.setNumTwo(numberOne);
+                res.setResult(result/numberOne);
+            }
+        MathPlan plan = getPlan();
+        if(DataUtil.isNotEmpty(plan)){
+            res.setNum(plan.getWeiDo());
+        }
+        //避免退出刷新换题
+        RedisUtil.set("getchengChuTi", res);
+        return Response.ok(res);
+    }
+    static SimpleDateFormat sdf = new SimpleDateFormat(DateUtil.PATTERN_YYYY_MM_DD);
+    @ResponseBody
+    @RequestMapping(value = "checkChengChu")
+    @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
+    public Response<String> checkChengChu(Math math) {
+        if(DataUtil.isEmpty(math.getResult())){
+            return Response.fail("请填写答案!");
+        }
+        int b=check(math, null, null,1);
+        if(b==math.getResult()){
+            RedisUtil.del("getchengChuTi");
+            return Response.ok("答对了,小柠檬不错哦~");
+        } else {
+            return Response.ok("答错了,小柠檬加油哦~");
+        }
+    }
 
+    @ResponseBody
+    @RequestMapping(value = "getAwardList")
+    @RateLimit(permitsPerSecond = 1, ipLimit = true, description = "限制出题频率")
+    public Response<Page<AwardRecordVo>> getAwardList(AwardRecordQuery query) {
+        if (DataUtil.isEmpty(query.getPage())) {
+            query.setPage(0);
+        }
+        if (DataUtil.isEmpty(query.getLimit())) {
+            query.setLimit(5);
+        }
+        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+        Page<AwardRecord> page = awardRecordService.queryPage(query, pageable);
+        List<AwardRecordVo> voList = new ArrayList<>();
+        for (AwardRecord award : page.getContent()) {
+            voList.add(getAwardVo(award));
+        }
+        Page<AwardRecordVo> voPage = new PageImpl<>(voList, pageable, page.getTotalElements());
+        return Response.ok(voPage);
+    }
+
+    private AwardRecordVo getAwardVo(AwardRecord award) {
+        AwardRecordVo vo=new AwardRecordVo();
+        vo.setAwardName(award.getAwardName());
+        vo.setCreateTime(sdf.format(award.getCreateTime()));
+        vo.setStateDesc(award.getStateDesc());
+        vo.setTypeDesc(award.getTypeDesc());
+        vo.setState(award.getState());
+        vo.setType(award.getType());
+        vo.setId(award.getId());
+        return vo;
+    }
+    @RequestMapping(value = "handleAwardState")
+    public Response<String> handleAwardState(Long id,Integer value){
+        if(DataUtil.isEmpty(value)||DataUtil.isEmpty(id)){
+            return Response.fail("参数有误!");
+        }
+        AwardRecord awardRecord = awardRecordService.queryById(id);
+        awardRecord.setState(value);
+        awardRecordService.updateById(awardRecord);
+        return Response.ok("更新成功!");
+    }
 }

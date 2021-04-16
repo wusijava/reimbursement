@@ -29,4 +29,8 @@ public class Math implements Identifiable<Long> {
      * 错题回顾次数
      */
     private Integer count;
+    /**
+     * type   type=1是乘除法 其他是加减
+     */
+    private Integer type;
 }

@@ -285,7 +285,7 @@ public class MoneyUtil {
      * @param money2 金额2
      */
     public static String devide(String money1, String money2) {
-        BigDecimal total = new BigDecimal(money1).divide(new BigDecimal(money2));
+        BigDecimal total = new BigDecimal(money1).divide(new BigDecimal(money2),2,BigDecimal.ROUND_HALF_DOWN);
         return total.toString();
     }
 
