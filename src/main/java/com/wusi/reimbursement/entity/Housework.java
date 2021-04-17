@@ -35,7 +35,7 @@ public class Housework implements Identifiable<Long> {
      */
     private Integer receiveState;
     /**
-     * 状态 1已完成  0未完成
+     * 状态 1已完成  0未完成 -1已拒绝
      */
     private Integer state;
     /**
@@ -58,6 +58,7 @@ public class Housework implements Identifiable<Long> {
     private Date realityFinishTime;
     public enum State {
         yes(1, "已完成"),
+        reject(-1, "拒绝"),
         not(0, "未完成");
 
         private Integer code;
@@ -88,7 +89,7 @@ public class Housework implements Identifiable<Long> {
     public enum ReceiveState {
         yes(1, "已接受"),
         wait(0, "等待接受"),
-        reject(-1, "等待接受")
+        reject(-1, "拒绝")
         ;
 
         private Integer code;
@@ -118,6 +119,8 @@ public class Housework implements Identifiable<Long> {
     public String getStateDesc(){
         if(State.yes.getCode().equals(state)){
             return "已完成";
+        }else if(State.reject.getCode().equals(state)){
+            return "已拒绝";
         }else{
             return "未完成";
         }

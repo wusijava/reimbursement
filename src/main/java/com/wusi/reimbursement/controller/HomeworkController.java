@@ -225,7 +225,12 @@ public class HomeworkController {
         try {
             //1是更新接受状态
             if (stateType.equals(1)) {
-                housework.setReceiveState(state);
+                if(state.equals(1)){
+                    housework.setReceiveState(state);
+                }else{
+                    housework.setReceiveState(state);
+                    housework.setState(state);
+                }
             } else {
                 housework.setState(state);
                 housework.setRealityFinishTime(new Date());
@@ -332,10 +337,10 @@ public class HomeworkController {
         RequestContext.RequestUser loginUser = RequestContext.getCurrentUser();
         Housework query=new Housework();
         query.setUserNameTo(loginUser.getNickName());
-        query.setReceiveState(Housework.ReceiveState.wait.getCode());
+        query.setState(Housework.State.not.getCode());
         Long aLong = houseworkService.queryCount(query);
         if(aLong>0){
-            return Response.ok(loginUser.getNickName()+",您有"+aLong+"项家务未完成,请及时处理!");
+            return Response.ok(loginUser.getNickName()+",您有"+aLong+"项家务未完成!已完成任务,请及时更改状态!");
         }
         return Response.ok(null);
     }
