@@ -174,7 +174,7 @@ public class SsqController {
                         //钉钉群发中奖消息
                         DingDingTalkUtils.sendDingDingMsg("恭喜:"+buyOne.getUser()+",喜中"+MoneyUtil.multiply(buyOne.getBonus(), buyOne.getNum())+"元大奖!!!");
                         //发送中奖短信
-                        SMSUtil.sendSMS("18602702325", buyOne.getBonus(), 842665);
+                        //SMSUtil.sendSMS("18602702325", buyOne.getBonus(), 842665);
                         if(DataUtil.isNotEmpty(buyOne.getType())&&buyOne.getType().equals(2)){
                             buyOne.setCommission(MoneyUtil.multiply(buyOne.getNum(), MoneyUtil.multiply(buyOne.getBonus(), MoneyUtil.devide(buyOne.getRate(), "100"))));
                         }

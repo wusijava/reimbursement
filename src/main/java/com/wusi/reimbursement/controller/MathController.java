@@ -123,6 +123,7 @@ public class MathController {
 
     @ResponseBody
     @RequestMapping(value = "checkTi")
+    @RateLimit(permitsPerSecond = 0.3, ipLimit = true, description = "限制出题频率")
     public Response<String> checkTi(Math math,Long rowId,Integer type) {
         com.wusi.reimbursement.entity.Math count=null;
         if(DataUtil.isNotEmpty(rowId)){
@@ -155,6 +156,7 @@ public class MathController {
         }
 
     }
+    @RateLimit(permitsPerSecond = 0.3, ipLimit = true, description = "限制出题频率")
     public int check(Math math, Long rowId, com.wusi.reimbursement.entity.Math count,Integer type){
         int one = 0;
         int two = 0;
@@ -215,13 +217,13 @@ public class MathController {
             log.setResult("对");
             secPlan.setYiDo(MoneyUtil.add(secPlan.getYiDo(), "1"));
             secPlan.setWeiDo(MoneyUtil.subtract(secPlan.getTask(), secPlan.getYiDo()));
+            secPlan.setRight(MoneyUtil.add(secPlan.getRight(), "1"));
             if(secPlan.getWeiDo().equals("0")){
                 createAward(secPlan);
             }
             if (Integer.valueOf(secPlan.getWeiDo()) < 0) {
                 secPlan.setWeiDo("0");
             }
-            secPlan.setRight(MoneyUtil.add(secPlan.getRight(), "1"));
             if(DataUtil.isNotEmpty(rowId)){
                 count.setCount(count.getCount()+1);
                 MathService.updateById(count);

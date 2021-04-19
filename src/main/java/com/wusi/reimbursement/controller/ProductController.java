@@ -62,7 +62,7 @@ public class ProductController {
             //增加延迟时间  线上
             //Thread.sleep(9000);
             try {
-                html = Jsoup.connect(productNew.getAmyUrl()).execute().body().substring(1920, 2000);
+                html = Jsoup.connect(productNew.getAmyUrl()).execute().body();
                 System.gc();
             } catch (IOException e) {
                 log.error("扫描商品异常,{},{}", productNew.getModel(), e);
