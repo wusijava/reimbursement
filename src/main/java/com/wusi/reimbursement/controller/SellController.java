@@ -43,7 +43,8 @@ public class SellController {
             d = new Date();
             date = sdf.format(d);
         }
-        File f = new File("/home/file/qipilang.xlsx");
+        //File f = new File("/home/file/qipilang.xlsx");
+        File f = new File("D:\\excel\\qipilang.xlsx");
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(f);
@@ -106,13 +107,14 @@ public class SellController {
                 heBing(sheet ,start,end,5);
                 heBing(sheet ,start,end,6);
             }
-            CellRangeAddress bigOrderRegionOne = new CellRangeAddress( list.get(list.size()-1)+2, (int)days+1 , 4, 4);
-            sheet.addMergedRegion(bigOrderRegionOne);
-            CellRangeAddress bigOrderRegionTwo = new CellRangeAddress( list.get(list.size()-1)+2, (int)days+1 , 5, 5);
-            sheet.addMergedRegion(bigOrderRegionTwo);
-            CellRangeAddress bigOrderRegionThree = new CellRangeAddress( list.get(list.size()-1)+2, (int)days+1 , 6, 6);
-            sheet.addMergedRegion(bigOrderRegionThree);
-
+            if(list.get(list.size()-1)!=days){
+                CellRangeAddress bigOrderRegionOne = new CellRangeAddress( list.get(list.size()-1)+2, (int)days+1 , 4, 4);
+                sheet.addMergedRegion(bigOrderRegionOne);
+                CellRangeAddress bigOrderRegionTwo = new CellRangeAddress( list.get(list.size()-1)+2, (int)days+1 , 5, 5);
+                sheet.addMergedRegion(bigOrderRegionTwo);
+                CellRangeAddress bigOrderRegionThree = new CellRangeAddress( list.get(list.size()-1)+2, (int)days+1 , 6, 6);
+                sheet.addMergedRegion(bigOrderRegionThree);
+            }
             String file_name = "销售报表(爱的报表)" + ".xlsx";
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.addHeader("Content-Disposition", "attachment;filename=" + new String(file_name.getBytes("GBK"), "ISO8859-1"));
