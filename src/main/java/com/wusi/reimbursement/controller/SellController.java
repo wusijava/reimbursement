@@ -66,6 +66,11 @@ public class SellController {
             Date lastDate=last.getTime();
             System.out.println(lastDate);
             long days = DateUtil.betweenDays(oneDate, lastDate);
+            //模板为31天 按实际天数删除多余行
+            for(int m=(int)days;m<=32;m++){
+                Row row = sheet.getRow(m+2);
+                sheet.removeRow(row);
+            }
             Row row;
             String[] weekDays = {"日", "一", "二", "三", "四", "五", "六"};
             List<Integer> list=new ArrayList<>();
@@ -115,7 +120,7 @@ public class SellController {
                 CellRangeAddress bigOrderRegionThree = new CellRangeAddress( list.get(list.size()-1)+2, (int)days+1 , 6, 6);
                 sheet.addMergedRegion(bigOrderRegionThree);
             }
-            String file_name = "销售报表(爱的报表)" + ".xlsx";
+            String file_name = "销售报表" + ".xlsx";
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
             response.addHeader("Content-Disposition", "attachment;filename=" + new String(file_name.getBytes("GBK"), "ISO8859-1"));
             response.setCharacterEncoding("utf-8");
