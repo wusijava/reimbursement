@@ -43,8 +43,8 @@ public class SellController {
             d = new Date();
             date = sdf.format(d);
         }
-        //File f = new File("/home/file/qipilang.xlsx");
-        File f = new File("D:\\excel\\qipilang.xlsx");
+        File f = new File("/home/file/qipilang.xlsx");
+        //File f = new File("D:\\excel\\qipilang.xlsx");
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(f);
