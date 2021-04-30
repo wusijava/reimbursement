@@ -50,7 +50,7 @@ public class SellController {
             fis = new FileInputStream(f);
             Workbook wb = new XSSFWorkbook(fis);
             Sheet sheet = wb.getSheetAt(0);
-            String str=date.substring(5, 7).indexOf("0")!=-1?date.substring(5, 7).replace("0", ""):date.substring(5, 7);
+            String str=date.substring(5, 7).startsWith("0")?date.substring(5, 7).replace("0", ""):date.substring(5, 7);
             wb.setSheetName(0,str+"月目标" );
             wb.setSheetName(1,str+"月冲刺目标");
             System.out.println(sheet.getSheetName());
