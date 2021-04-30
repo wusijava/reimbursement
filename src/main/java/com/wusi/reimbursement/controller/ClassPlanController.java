@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * @ CreateDate    :  2021/4/30$ 11:38$
  */
 @RestController
-@RequestMapping(value = "open/")
+@RequestMapping(value = "api/open/")
 public class ClassPlanController {
     @Autowired
     private ClassPlanService classPlanService;
