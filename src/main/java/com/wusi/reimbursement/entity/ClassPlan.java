@@ -32,8 +32,8 @@ public class ClassPlan implements Identifiable<Long> {
   public enum Classes {
     xiuxi(0, "休息"),
     zao(1, "早班"),
-    cha(2, "插班"),
-    wan(1, "晚班");
+    cha(3, "插班"),
+    wan(2, "晚班");
 
     private Integer code;
     private String desc;
