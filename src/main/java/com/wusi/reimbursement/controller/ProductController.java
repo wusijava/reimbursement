@@ -63,7 +63,7 @@ public class ProductController {
             //Thread.sleep(9000);
             try {
                 html = Jsoup.connect(productNew.getAmyUrl()).execute().body();
-                System.gc();
+                //System.gc();
             } catch (IOException e) {
                 log.error("扫描商品异常,{},{}", productNew.getModel(), e);
             }
@@ -79,24 +79,32 @@ public class ProductController {
             if (amyValue.equals("false") && productNew.getAmyState().equals("online")) {
                 amyOffNum++;
             }
-            productNew.setAmyState(amyValue.equals("false") ? "offline" : "online");
+            if(amyValue.equals("del")){
+                productNew.setAmyState("del");
+            }else{
+                productNew.setAmyState(amyValue.equals("false") ? "offline" : "online");
+            }
             //判断自己状态
             String myValue = null;
             if (DataUtil.isNotEmpty(productNew.getMyUrl())) {
                 html = Jsoup.connect(productNew.getMyUrl()).execute().body();
                 myValue = GetJsonValue(html, "online").trim();
-                productNew.setMyState(myValue.equals("false") ? "offline" : "online");
+                if("del".equals(myValue)){
+                    productNew.setMyState("del");
+                }else{
+                    productNew.setMyState(myValue.equals("false") ? "offline" : "online");
+                }
             }
-            if (amyValue.equals("true,") && (!amyValue.equals(myValue))) {
+         /*   if (amyValue.equals("true,") && (!amyValue.equals(myValue))) {
                 //提示已上架
                 //SMSUtil.sendSMS(PHONE_NUB, productNew.getModel(), templatedIdOnline);
             } else if (amyValue.equals("false") && (!amyValue.equals(myValue))) {
                 //提示已下架
-               /* if (productNew.getAmyState().equals("online")) {
+               *//* if (productNew.getAmyState().equals("online")) {
                     amyOffNum++;
-                }*/
+                }*//*
                 //SMSUtil.sendSMS(PHONE_NUB, productNew.getModel(), templateId);
-            }
+            }*/
             productNew.setCreateTime(new Date());
             productNewService.updateById(productNew);
         }
@@ -123,6 +131,9 @@ public class ProductController {
 
     public static String GetJsonValue(String jsonStr, String key) {
         int index = jsonStr.indexOf(key);
+        if(index==-1){
+            return "del";
+        }
         String result = jsonStr.substring(index + 18, index + 24);
         return result;
     }

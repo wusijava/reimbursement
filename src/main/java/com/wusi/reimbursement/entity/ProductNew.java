@@ -43,7 +43,8 @@ public class ProductNew implements Identifiable<Long> {
 
   public enum AmyState{
     online("online","在线"),
-    offline("offline","下架");
+    offline("offline","下架"),
+    del("del","已删除");
     private String code;
     private String desc;
 
@@ -62,7 +63,8 @@ public class ProductNew implements Identifiable<Long> {
   }
   public enum MyState{
     online("online","在线"),
-    offline("offline","下架");
+    offline("offline","下架"),
+    del("del","已删除");
     private String code;
     private String desc;
 
@@ -82,16 +84,20 @@ public class ProductNew implements Identifiable<Long> {
   public String getAmyStateDesc(){
     if(AmyState.offline.getCode().equals(amyState)){
       return "下架";
-    }else{
+    }else if(AmyState.online.getCode().equals(amyState)){
       return "在线";
+    }else{
+      return "已删除";
     }
   }
 
   public String getMyStateDesc(){
     if(MyState.offline.getCode().equals(myState)){
       return "下架";
-    }else{
+    }else if(MyState.online.getCode().equals(myState)){
       return "在线";
+    }else{
+      return "已删除";
     }
   }
 }
