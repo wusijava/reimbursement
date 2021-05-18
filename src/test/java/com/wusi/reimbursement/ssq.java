@@ -44,6 +44,15 @@ public class ssq {
     @Autowired
     private ClassPlanService classPlanService;
     @Test
+    public void getWater() throws IOException {
+        String html = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/202105/t20210511_677351.shtml").execute().body();
+        Integer indexHan=html.indexOf("汉<");
+        String levle=html.substring(indexHan+739, indexHan+744);
+        System.out.println(levle);
+
+
+    }
+    @Test
     public  void createPlan(){
         Runtime.getRuntime();
         String date="2021-05-31";

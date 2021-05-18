@@ -1,0 +1,185 @@
+package com.wusi.reimbursement.controller;
+
+import com.wusi.reimbursement.common.Response;
+import com.wusi.reimbursement.entity.WaterLevel;
+import com.wusi.reimbursement.query.WaterLevelQuery;
+import com.wusi.reimbursement.service.WaterLevelService;
+import com.wusi.reimbursement.utils.DataUtil;
+import com.wusi.reimbursement.utils.DateUtil;
+import com.wusi.reimbursement.utils.DingDingTalkUtils;
+import com.wusi.reimbursement.vo.WaterLevelVo;
+import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @ Description   :  水位数据监控
+ * @ Author        :  wusi
+ * @ CreateDate    :  2021/5/18$ 9:19$
+ */
+@RestController
+@RequestMapping(value = "waterLevel")
+public class WaterLevelController {
+    static SimpleDateFormat sdf = new SimpleDateFormat(DateUtil.PATTERN_YYYY_MM_DD);
+    @Autowired
+    private WaterLevelService waterLevelService;
+    @RequestMapping(value = "getHistoryData")
+    public void getWaterLevel() throws IOException, ParseException {
+        String html=null;
+        List<WaterLevel> list= new ArrayList<>();
+        for (int i=0;i<399;i++){
+            if(i==0){
+                html = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/index.shtml").execute().body();
+            }else{
+                html = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/index_"+i+".shtml").execute().body();
+            }
+            for(int j =0;j<20;j++){
+                Integer index=html.indexOf("点水位公告<");
+                if(index==-1){
+                    break;
+                }
+                String str=html.substring(index-2, index);
+                if("11".equals(str)||str.indexOf("8")>-1){
+                    String href;
+                    String date;
+                    if("11".equals(str)){
+                        href=html.substring(index-85, index-56);
+                        date=html.substring(index-150, index-140);
+                        if(!href.endsWith("shtml")){
+                            href=html.substring(index-83, index-54);
+                            date=html.substring(index-148, index-138);
+                        }
+                        if(!href.endsWith("shtml")){
+                            href=html.substring(index-87, index-58);
+                            date=html.substring(index-152, index-142);
+                        }
+                    }else{
+                        href=html.substring(index-83, index-54);
+                        date=html.substring(index-148, index-138);
+                    }
+
+                    String htmlInner = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/"+href).execute().body();
+                    Integer indexHan=htmlInner.indexOf("汉<");
+                    String waterLeavel;
+                    if(str.indexOf("8")>-1){
+                         waterLeavel=htmlInner.substring(indexHan+792, indexHan+798).replace("<", "").replace(";", "").replace(" ", "").replace("\">", "").replace("/", "");
+                    }else{
+                         waterLeavel=htmlInner.substring(indexHan+213, indexHan+219).replace("<", "").replace(";", "").replace(" ", "").replace("\">", "").replace("/", "");
+                         if(waterLeavel.indexOf(".")==-1){
+                             waterLeavel=htmlInner.substring(indexHan+792, indexHan+798).replace("<", "").replace(";", "").replace(" ", "").replace("\">", "").replace("/", "");
+                            if(waterLeavel.indexOf(".")==-1){
+                                waterLeavel=htmlInner.substring(indexHan+739, indexHan+745).replace("<", "").replace(";", "").replace(" ", "").replace("\">", "").replace("/", "");
+                            }
+                         }
+                    }
+                    WaterLevel waterLevel=new WaterLevel();
+                    waterLevel.setAddress("汉口");
+                    waterLevel.setCreateTime(sdf.parse(date));
+                    waterLevel.setWaterLevel(waterLeavel);
+                    list.add(waterLevel);
+                    waterLevelService.insert(waterLevel);
+                    html=html.replaceFirst("点水位公告<", "点水位公告>");
+                }else{
+                    html=html.replaceFirst("点水位公告<", "点水位公告>");
+                }
+            }
+            //waterLevelService.insertBatch(list);
+        }
+
+    }
+    @RequestMapping(value = "getTodayData")
+    @Scheduled(cron = "0 0 18,23 * * ?")
+    public void getTodayData() throws Exception {
+        String html = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/index.shtml").execute().body();
+        Integer index = html.indexOf("点水位公告<");
+        String str = html.substring(index - 2, index);
+        if (str.indexOf("8") == -1) {
+            html = html.replaceFirst("点水位公告<", "点水位公告>");
+            index = html.indexOf("点水位公告<");
+        }
+        String href = html.substring(index - 83, index - 54);
+        String date = html.substring(index - 148, index - 138);
+        String htmlInner = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/" + href).execute().body();
+        Integer indexHan = htmlInner.indexOf("汉<");
+        String waterLeavel = htmlInner.substring(indexHan + 792, indexHan + 798).replace("<", "").replace(";", "").replace(" ", "").replace("\">", "").replace("/", "");
+        WaterLevel query=new WaterLevel();
+        query.setCreateTime(sdf.parse(date+" 00:00:00"));
+        Long num = waterLevelService.queryCount(query);
+        if(num==0){
+            query.setWaterLevel(waterLeavel);
+            query.setAddress("汉口");
+            waterLevelService.insert(query);
+        }
+        DingDingTalkUtils.sendDingDingMsg(date + ",汉口水位:" + waterLeavel + "米");
+    }
+    @RequestMapping(value = "getWaterLevelList")
+    public Response<Page> getWaterLevelList(WaterLevelQuery query) {
+        if (DataUtil.isEmpty(query.getPage())) {
+            query.setPage(0);
+        }
+        if (DataUtil.isEmpty(query.getLimit())) {
+            query.setLimit(16);
+        }
+        if(query.getStartTime()!=null&&query.getEndTime()!=null){
+            String[] start=query.getStartTime().split("-");
+            String startMonth="";
+            String startDay="";
+            /*if(start[1].length()<2) {
+                startMonth = "0" + start[1];
+            }else{
+                startMonth=start[1];
+            }*/
+            startMonth=start[1].length()<2?startMonth = "0" + start[1]:start[1];
+            if(start[2].length()<2){
+                startDay="0"+start[2];
+            }else{
+                startDay=start[2];
+            }
+            query.setStartTime(start[0]+"-"+startMonth+"-"+startDay);
+            String[] end=query.getEndTime().split("-");
+            String endMonth="";
+            String endDay="";
+            if(end[1].length()<2) {
+                endMonth = "0" + end[1];
+            }else{
+                endMonth=end[1];
+            }
+            if(end[2].length()<2){
+                endDay="0"+end[2];
+            }else{
+                endDay=end[2];
+            }
+            query.setEndTime(end[0]+"-"+endMonth+"-"+endDay);
+        }
+        Pageable pageable = PageRequest.of(query.getPage(), query.getLimit());
+        Page<WaterLevel> page = waterLevelService.queryPage(query, pageable);
+        List<WaterLevelVo> voList = new ArrayList<>();
+        for (WaterLevel waterLevel : page.getContent()) {
+            voList.add(getListVo(waterLevel));
+        }
+        Page<WaterLevelVo> voPage = new PageImpl<>(voList, pageable, page.getTotalElements());
+        return Response.ok(voPage);
+    }
+
+    private WaterLevelVo getListVo(WaterLevel waterLevel) {
+        WaterLevelVo vo=new WaterLevelVo();
+        vo.setAddress(waterLevel.getAddress());
+        vo.setCreateTime(sdf.format(waterLevel.getCreateTime()));
+        vo.setWaterLevel(waterLevel.getWaterLevel()+"米");
+        vo.setId(waterLevel.getId());
+        return vo;
+    }
+
+}
