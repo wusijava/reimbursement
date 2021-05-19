@@ -3,7 +3,7 @@ package com.wusi.reimbursement.utils;
 import java.math.BigInteger;
 
 /**
- * Created by lvlu on 2016/4/20.
+ * Created by wusi on 2016/4/20.
  */
 public class EncryptDecrypt {
     private static final int RADIX = 16;

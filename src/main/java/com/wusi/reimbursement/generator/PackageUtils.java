@@ -10,7 +10,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * @author lvlu
+ * @author wusi
  * @date 2019-05-16 13:50
  **/
 public class PackageUtils {

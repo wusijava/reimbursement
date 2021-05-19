@@ -3,7 +3,7 @@ package com.wusi.reimbursement.common.ratelimit.anonation;
 import java.lang.annotation.*;
 
 /**
- * @author lvlu
+ * @author wusi
  * @date 2019/12/31 17:50
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD})

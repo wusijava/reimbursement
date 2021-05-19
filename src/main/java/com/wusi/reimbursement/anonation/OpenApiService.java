@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.lang.annotation.*;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 开放接口实现类注解
  * @date 2020-8-22 11:29:45
  */

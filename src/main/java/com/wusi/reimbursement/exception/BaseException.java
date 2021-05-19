@@ -9,7 +9,7 @@ import java.text.MessageFormat;
 /**
  * 系统异常
  *
- * @author duchong
+ * @author wusi
  * @date 2019-12-5 12:41:56
  **/
 public class BaseException extends RuntimeException {

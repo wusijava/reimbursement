@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author duchong
+ * @author wusi
  * @date 2020-8-23 14:23:58
  * @description 接口请求类
  */

@@ -2,7 +2,7 @@ package com.wusi.reimbursement.client;
 
 
 /**
- * @author duchong
+ * @author wusi
  * @description 枚举接口
  * @date 2020-8-22 11:29:45
  */

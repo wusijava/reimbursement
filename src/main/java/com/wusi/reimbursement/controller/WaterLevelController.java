@@ -100,7 +100,7 @@ public class WaterLevelController {
 
     }
     @RequestMapping(value = "getTodayData")
-    @Scheduled(cron = "0 0 18,23 * * ?")
+    @Scheduled(cron = "0 0 12,23 * * ?")
     public void getTodayData() throws Exception {
         String html = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/index.shtml").execute().body();
         Integer index = html.indexOf("点水位公告<");
@@ -113,7 +113,12 @@ public class WaterLevelController {
         String date = html.substring(index - 148, index - 138);
         String htmlInner = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/" + href).execute().body();
         Integer indexHan = htmlInner.indexOf("汉<");
-        String waterLeavel = htmlInner.substring(indexHan + 792, indexHan + 798).replace("<", "").replace(";", "").replace(" ", "").replace("\">", "").replace("/", "");
+        String waterLeavel;
+        if(htmlInner.substring(indexHan+213,indexHan+798).indexOf("n>黄<")>-1){
+            waterLeavel = htmlInner.substring(indexHan + 213, indexHan + 219).replace("<", "").replace(";", "").replace(" ", "").replace("\">", "").replace("/", "");
+        }else{
+            waterLeavel = htmlInner.substring(indexHan + 792, indexHan + 798).replace("<", "").replace(";", "").replace(" ", "").replace("\">", "").replace("/", "");
+        }
         WaterLevel query=new WaterLevel();
         query.setCreateTime(sdf.parse(date+" 00:00:00"));
         Long num = waterLevelService.queryCount(query);
@@ -121,8 +126,8 @@ public class WaterLevelController {
             query.setWaterLevel(waterLeavel);
             query.setAddress("汉口");
             waterLevelService.insert(query);
+            DingDingTalkUtils.sendDingDingMsg(date + ",汉口水位:" + waterLeavel + "米");
         }
-        DingDingTalkUtils.sendDingDingMsg(date + ",汉口水位:" + waterLeavel + "米");
     }
     @RequestMapping(value = "getWaterLevelList")
     public Response<Page> getWaterLevelList(WaterLevelQuery query) {
@@ -136,12 +141,7 @@ public class WaterLevelController {
             String[] start=query.getStartTime().split("-");
             String startMonth="";
             String startDay="";
-            /*if(start[1].length()<2) {
-                startMonth = "0" + start[1];
-            }else{
-                startMonth=start[1];
-            }*/
-            startMonth=start[1].length()<2?startMonth = "0" + start[1]:start[1];
+            startMonth=start[1].length()<2? "0" + start[1]:start[1];
             if(start[2].length()<2){
                 startDay="0"+start[2];
             }else{

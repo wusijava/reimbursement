@@ -3,7 +3,7 @@ package com.wusi.reimbursement.client;
 import java.io.Serializable;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 请求model
  * @date 2019-10-30 09:42:47
  */

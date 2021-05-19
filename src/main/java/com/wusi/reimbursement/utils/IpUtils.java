@@ -3,7 +3,7 @@ package com.wusi.reimbursement.utils;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author lvlu
+ * @author wusi
  * @date 2019-03-01 16:59
  **/
 public class IpUtils {

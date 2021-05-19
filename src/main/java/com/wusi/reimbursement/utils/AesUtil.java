@@ -4,7 +4,7 @@ package com.wusi.reimbursement.utils;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author tuchuan
+ * @author wusi
  * @description
  * @date 2017/6/19 15:45
  */

@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * RSA的签名及验签
  *
- * @author duchong
+ * @author wusi
  * @date 2019-11-23 14:43:53
  */
 public class RSAUtils {

@@ -6,7 +6,7 @@ import com.wusi.reimbursement.client.ApiMethod;
 import java.lang.annotation.*;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 开放接口注解
  * @date 2020-8-22 11:29:45
  */

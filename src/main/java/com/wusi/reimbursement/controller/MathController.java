@@ -271,18 +271,21 @@ public class MathController {
         }
     }
     void createAwardLog(Integer type,Integer level){
-        AwardRecord record=new AwardRecord();
-        AwardList query=new AwardList();
-        query.setType(type);
-        query.setLevel(level);
-        List<AwardList> awardLists = awardListService.queryList(query);
-        Random r = new Random();
-        int index = r.nextInt(awardLists.size());
-        record.setAwardName(awardLists.get(index).getAwardName());
-        record.setType(awardLists.get(index).getType());
-        record.setState(0);
-        record.setCreateTime(new Date());
-        awardRecordService.insert(record);
+        Integer num = awardRecordService.queryNum(sdf.format(new Date()));
+        if(num==0){
+            AwardRecord record=new AwardRecord();
+            AwardList query=new AwardList();
+            query.setType(type);
+            query.setLevel(level);
+            List<AwardList> awardLists = awardListService.queryList(query);
+            Random r = new Random();
+            int index = r.nextInt(awardLists.size());
+            record.setAwardName(awardLists.get(index).getAwardName());
+            record.setType(awardLists.get(index).getType());
+            record.setState(0);
+            record.setCreateTime(new Date());
+            awardRecordService.insert(record);
+        }
     }
 
 

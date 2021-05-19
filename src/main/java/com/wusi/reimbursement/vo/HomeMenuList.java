@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 主菜单
  * @date 2019-11-13 14:31:25
  */

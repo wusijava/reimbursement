@@ -7,7 +7,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.Objects;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 接口请求参数校验
  * @date 2019-11-23 14:14:14
  */

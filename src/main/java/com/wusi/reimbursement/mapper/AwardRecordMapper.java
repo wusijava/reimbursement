@@ -11,5 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface AwardRecordMapper extends BaseMapper<AwardRecord,Long> {
 
-
+Integer queryNum(String date);
 }

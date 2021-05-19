@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author lvlu
+ * @author wusi
  * @description 常见的辅助类
  * @date 2020-8-22 11:38:30
  */

@@ -23,4 +23,9 @@ public class AwardRecordServiceImpl extends BaseMybatisServiceImpl<AwardRecord,L
     protected BaseMapper<AwardRecord, Long> getBaseMapper() {
         return awardRecordMapper;
     }
+
+    @Override
+    public Integer queryNum(String date) {
+        return awardRecordMapper.queryNum(date);
+    }
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * 流操作类
  *
- * @author duchong
+ * @author wusi
  * @date 2019-6-22 14:41:42
  */
 public class IoUtils {

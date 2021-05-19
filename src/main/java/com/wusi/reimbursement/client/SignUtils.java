@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 签名类
  * @date 2019-11-23 14:21:19
  */

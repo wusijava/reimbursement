@@ -121,6 +121,9 @@
         <include refid="table"/>
         WHERE id=#{id}
     </select>
+    <select id="queryNum" resultType="java.lang.Integer">
+        SELECT count(*) FROM award_record where  DATE_FORMAT(create_time,'%Y-%m-%d') =#{date}
+    </select>
 
     <update id="updateById" parameterType="com.wusi.reimbursement.entity.AwardRecord">
         UPDATE

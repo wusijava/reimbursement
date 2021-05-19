@@ -4,7 +4,7 @@ package com.wusi.reimbursement.exception;
 import com.wusi.reimbursement.client.EnumInterface;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 业务异常
  * @date 2019-11-29 11:36:11
  */

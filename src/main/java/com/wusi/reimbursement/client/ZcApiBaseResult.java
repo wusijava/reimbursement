@@ -3,7 +3,7 @@ package com.wusi.reimbursement.client;
 import java.util.Objects;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 错误返回码
  * @date 2019-11-23 14:14:07
  */

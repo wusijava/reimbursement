@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.io.Serializable;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 返回结果
  * @date 2019-10-30 09:42:47
  */

@@ -1,5 +1,5 @@
 package com.wusi.reimbursement.utils;/**
- * Created by lvlu on 2018/5/14.
+ * Created by wusi on 2018/5/14.
  */
 
 import org.springframework.beans.BeansException;
@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
- * @author lvlu
+ * @author wusi
  * @date 2018-05-14 19:33
  **/
 @Component

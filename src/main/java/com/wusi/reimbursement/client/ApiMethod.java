@@ -2,7 +2,7 @@ package com.wusi.reimbursement.client;
 
 
 /**
- * @author duchong
+ * @author wusi
  * @description 对外接口枚举
  * 方法命名规则  统一前缀.模块名称.模块内操作对象泛称.执行操作
  * 统一前缀 com.zanclick.zcpay

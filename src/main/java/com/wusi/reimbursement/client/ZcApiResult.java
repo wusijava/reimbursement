@@ -4,7 +4,7 @@ package com.wusi.reimbursement.client;
 import java.util.Objects;
 
 /**
- * @author duchong
+ * @author wusi
  * @description
  * @date 2020-5-28 11:56:42
  */

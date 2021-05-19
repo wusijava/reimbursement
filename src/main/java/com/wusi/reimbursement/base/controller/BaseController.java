@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * 初始
  *
- * @author duchong
+ * @author wusi
  * @date 2019-06-11 9:41
  **/
 public abstract class BaseController {

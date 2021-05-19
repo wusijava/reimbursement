@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * 还款金额计算详情
  *
- * @author duchong
+ * @author wusi
  * @date 2019-7-16 11:59:37
  */
 @Data

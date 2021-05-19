@@ -3,7 +3,7 @@ package com.wusi.reimbursement.client;
 import java.util.UUID;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 接口工具类
  * @date 2019-12-5 12:43:28
  */

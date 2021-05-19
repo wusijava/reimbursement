@@ -9,7 +9,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.io.Serializable;
 
 /**
- * @author lvlu
+ * @author wusi
  * @date 2019-01-19 11:19
  **/
 @NoRepositoryBean

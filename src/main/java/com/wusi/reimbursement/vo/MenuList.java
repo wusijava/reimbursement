@@ -3,7 +3,7 @@ package com.wusi.reimbursement.vo;
 import lombok.Data;
 
 /**
- * @author duchong
+ * @author wusi
  * @description 主菜单
  * @date 2019-11-13 14:31:08
  */

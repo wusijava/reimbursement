@@ -8,5 +8,5 @@ import com.wusi.reimbursement.entity.AwardRecord;
  * @date 2021-04-16 15:35:29
  **/
 public interface AwardRecordService extends BaseService<AwardRecord,Long> {
-
+Integer queryNum(String date);
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author lvlu
+ * @author wusi
  * @date 2019-03-04 10:49
  **/
 public interface BaseMapper<T extends Identifiable<ID>, ID extends Serializable> {
