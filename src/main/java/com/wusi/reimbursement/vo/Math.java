@@ -23,4 +23,8 @@ public class Math implements Serializable {
      * 今日剩余任务量
      */
     private String num;
+    /**
+     * 序号
+     */
+    private  Integer index;
 }

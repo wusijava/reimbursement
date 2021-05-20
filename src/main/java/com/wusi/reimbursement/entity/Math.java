@@ -30,7 +30,7 @@ public class Math implements Identifiable<Long> {
      */
     private Integer count;
     /**
-     * type   type=1是乘除法 其他是加减
+     * type   type=1是乘除法 0是加减  3是变形题
      */
     private Integer type;
 }

@@ -214,6 +214,9 @@ public class MathController {
         sec.setTime(DateUtil.formatDate(new Date(), "yyyy-MM-dd"));
         MathPlan secPlan = MathPlanService.queryOne(sec);
         if (two == math.getResult()) {
+            if(math.getIndex()!=null){
+                RedisUtil.del("index");
+            }
             log.setResult("对");
             secPlan.setYiDo(MoneyUtil.add(secPlan.getYiDo(), "1"));
             secPlan.setWeiDo(MoneyUtil.subtract(secPlan.getTask(), secPlan.getYiDo()));
@@ -229,8 +232,56 @@ public class MathController {
                 MathService.updateById(count);
             }
         } else {
+            if(DataUtil.isNotEmpty(math.getIndex())){
+                if(math.getIndex()==0){
+                    if(math.getSymbolOne().equals("-")){
+                        two=math.getResult()+math.getNumTwo();
+                    }else{
+                        two=math.getResult()-math.getNumTwo();
+                    }
+                    if(math.getSymbolTwo().equals("-")){
+                        two=two+math.getNumThree();
+                    }else{
+                        two=two-math.getNumThree();
+                    }
+                }
+                //第二个为括号
+                if(math.getIndex()==1){
+                   if(math.getSymbolOne().equals("-")){
+                      if(math.getSymbolTwo().equals("-")){
+                          two=math.getNumOne()-math.getNumThree()-math.getResult();
+                      } else{
+                          two=math.getNumOne()+math.getNumThree()-math.getResult();
+                      }
+                   }else{
+                       if(math.getSymbolOne().equals("-")){
+                           two=math.getResult()-math.getNumOne()+math.getNumThree();
+                       } else{
+                           two=math.getResult()-math.getNumOne()-math.getNumThree();
+                       }
+                   }
+                }
+                //第三个为括号
+                if(math.getIndex()==2){
+                    if(math.getSymbolTwo().equals("-")){
+                        if(math.getSymbolOne().equals("-")){
+                            two=math.getNumOne()-math.getNumTwo()-math.getResult();
+                        } else{
+                            two=math.getNumOne()+math.getNumTwo()-math.getResult();
+                        }
+                    }else{
+                        if(math.getSymbolOne().equals("-")){
+                            two=math.getResult()-math.getNumOne()+math.getNumTwo();
+                        } else{
+                            two=math.getResult()-math.getNumOne()-math.getNumTwo();
+                        }
+                    }
+                }
+                log.setRightResult(two);
+            }else{
+                log.setRightResult(two);
+            }
             log.setResult("错");
-            log.setRightResult(two);
             log.setCount(0);
             secPlan.setError(MoneyUtil.add(secPlan.getError(), "1"));
             secPlan.setTask(MoneyUtil.add(secPlan.getTask(), "2"));
@@ -445,8 +496,14 @@ public class MathController {
     public Response<Math> homeworkTotal() {
         Response<Math> ti = this.getTi(10);
         Math data = ti.getData();
-        Random r = new Random();
-        int numberOne = r.nextInt(3);
+        int numberOne=0;
+        if(RedisUtil.get("index")!=null){
+            numberOne=(Integer) RedisUtil.get("index");
+        }else{
+            Random r = new Random();
+            numberOne = r.nextInt(3);
+            RedisUtil.set("index", numberOne);
+        }
         if(numberOne==0){
             data.setNumOne(null);
         }
@@ -456,6 +513,8 @@ public class MathController {
         if(numberOne==2){
             data.setNumThree(null);
         }
+
+        data.setIndex(numberOne);
         MathPlan plan = getPlan();
         if(DataUtil.isNotEmpty(plan)){
             data.setNum(plan.getWeiDo());
@@ -470,7 +529,7 @@ public class MathController {
         if(DataUtil.isEmpty(math.getNumOne())||DataUtil.isEmpty(math.getNumTwo())||DataUtil.isEmpty(math.getNumThree())){
             return Response.fail("请填写答案!");
         }
-        int b=check(math, null, null,0);
+        int b=check(math, null, null,3);
         if(b==math.getResult()){
             RedisUtil.del("redisTi");
             return Response.ok("答对了,小柠檬不错哦~");
