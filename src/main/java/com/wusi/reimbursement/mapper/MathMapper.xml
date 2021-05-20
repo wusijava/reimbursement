@@ -44,6 +44,9 @@
                     <if test="time != null and time != ''">
                         AND `time`=#{time}
                     </if>
+                    <if test="type != null">
+                        AND `type`=#{type}
+                    </if>
                     <if test="count != null">
                         AND count &lt;3
                     </if>
