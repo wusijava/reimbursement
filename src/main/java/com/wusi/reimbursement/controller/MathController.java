@@ -233,31 +233,32 @@ public class MathController {
             }
         } else {
             if(DataUtil.isNotEmpty(math.getIndex())){
+                Integer result=0;
                 if(math.getIndex()==0){
                     if(math.getSymbolOne().equals("-")){
-                        two=math.getResult()+math.getNumTwo();
+                        result=math.getResult()+math.getNumTwo();
                     }else{
-                        two=math.getResult()-math.getNumTwo();
+                        result=math.getResult()-math.getNumTwo();
                     }
                     if(math.getSymbolTwo().equals("-")){
-                        two=two+math.getNumThree();
+                        result=result+math.getNumThree();
                     }else{
-                        two=two-math.getNumThree();
+                        result=result-math.getNumThree();
                     }
                 }
                 //第二个为括号
                 if(math.getIndex()==1){
                    if(math.getSymbolOne().equals("-")){
                       if(math.getSymbolTwo().equals("-")){
-                          two=math.getNumOne()-math.getNumThree()-math.getResult();
+                          result=math.getNumOne()-math.getNumThree()-math.getResult();
                       } else{
-                          two=math.getNumOne()+math.getNumThree()-math.getResult();
+                          result=math.getNumOne()+math.getNumThree()-math.getResult();
                       }
                    }else{
-                       if(math.getSymbolOne().equals("-")){
-                           two=math.getResult()-math.getNumOne()+math.getNumThree();
+                       if(math.getSymbolTwo().equals("-")){
+                           result=math.getResult()-math.getNumOne()+math.getNumThree();
                        } else{
-                           two=math.getResult()-math.getNumOne()-math.getNumThree();
+                           result=math.getResult()-math.getNumOne()-math.getNumThree();
                        }
                    }
                 }
@@ -265,19 +266,19 @@ public class MathController {
                 if(math.getIndex()==2){
                     if(math.getSymbolTwo().equals("-")){
                         if(math.getSymbolOne().equals("-")){
-                            two=math.getNumOne()-math.getNumTwo()-math.getResult();
+                            result=math.getNumOne()-math.getNumTwo()-math.getResult();
                         } else{
-                            two=math.getNumOne()+math.getNumTwo()-math.getResult();
+                            result=math.getNumOne()+math.getNumTwo()-math.getResult();
                         }
                     }else{
                         if(math.getSymbolOne().equals("-")){
-                            two=math.getResult()-math.getNumOne()+math.getNumTwo();
+                            result=math.getResult()-math.getNumOne()+math.getNumTwo();
                         } else{
-                            two=math.getResult()-math.getNumOne()-math.getNumTwo();
+                            result=math.getResult()-math.getNumOne()-math.getNumTwo();
                         }
                     }
                 }
-                log.setRightResult(two);
+                log.setRightResult(result);
             }else{
                 log.setRightResult(two);
             }
