@@ -8,6 +8,7 @@ import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
 import com.wusi.reimbursement.utils.DingDingTalkUtils;
 import com.wusi.reimbursement.vo.WaterLevelVo;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +33,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "waterLevel")
+@Slf4j
 public class WaterLevelController {
     static SimpleDateFormat sdf = new SimpleDateFormat(DateUtil.PATTERN_YYYY_MM_DD);
     @Autowired
@@ -102,6 +105,7 @@ public class WaterLevelController {
     @RequestMapping(value = "getTodayData")
     @Scheduled(cron = "0 0 12,23 * * ?")
     public void getTodayData() throws Exception {
+        log.error("开始获取水位,{}", sdf.format(new Date()));
         String html = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/index.shtml").execute().body();
         Integer index = html.indexOf("点水位公告<");
         String str = html.substring(index - 2, index);
@@ -110,7 +114,13 @@ public class WaterLevelController {
             index = html.indexOf("点水位公告<");
         }
         String href = html.substring(index - 83, index - 54);
+        if(!href.endsWith(".shtml")){
+            href=html.substring(index - 81, index - 52);
+        }
         String date = html.substring(index - 148, index - 138);
+        if(!date.startsWith("20")){
+            date = html.substring(index - 146, index - 136);
+        }
         String htmlInner = Jsoup.connect("https://cj.msa.gov.cn/xxgk/xxgkml/aqxx/swgg/" + href).execute().body();
         Integer indexHan = htmlInner.indexOf("汉<");
         String waterLeavel;
