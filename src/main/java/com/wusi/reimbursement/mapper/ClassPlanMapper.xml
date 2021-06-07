@@ -5,7 +5,7 @@
             <id column="id" property="id" jdbcType="BIGINT"/>
             <result column="date" property="date" jdbcType="VARCHAR"/>
             <result column="name" property="name" jdbcType="VARCHAR"/>
-            <result column="classes" property="classes" jdbcType="INTEGER"/>
+            <result column="classes" property="classes" jdbcType="VARCHAR"/>
             <result column="cteate_time" property="cteateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
@@ -29,7 +29,7 @@
                     <if test="name != null and name != ''">
                         AND `name`=#{name}
                     </if>
-                    <if test="classes != null">
+                    <if test="classes != null and classes != ''">
                         AND `classes`=#{classes}
                     </if>
                     <if test="cteateTime != null">
@@ -114,18 +114,27 @@
         <include refid="table"/>
         WHERE id=#{id}
     </select>
-    <select id="queryListByParam" resultType="com.wusi.reimbursement.entity.ClassPlan">
-        SELECT DISTINCT date FROM `class_plan`
-        <where>
-            <if test="dateList != null and dateList.size>0">
-                `date`in
-                <foreach collection="dateList" item="id" index="index" open="(" close=")" separator=",">
-                    #{id}
-                </foreach>
+
+    <update id="updateById" parameterType="com.wusi.reimbursement.entity.ClassPlan">
+        UPDATE
+        <include refid="table"/>
+        <set>
+            <if test="date != null and date != ''">
+                 `date`=#{date},
             </if>
-        </where>
-        ORDER BY date desc limit #{page},#{limit}
-    </select>
+            <if test="name != null and name != ''">
+                 `name`=#{name},
+            </if>
+            <if test="classes != null and classes != ''">
+                 `classes`=#{classes},
+            </if>
+            <if test="cteateTime != null">
+                 `cteate_time`=#{cteateTime},
+            </if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
     <select id="querycount" resultType="java.lang.Long">
         select COUNT(*) FROM (select date from class_plan
         <where>
@@ -138,24 +147,24 @@
         </where>
         GROUP BY date) a
     </select>
-
-    <update id="updateById" parameterType="com.wusi.reimbursement.entity.ClassPlan">
-        UPDATE
+    <select id="queryLast" resultType="com.wusi.reimbursement.entity.ClassPlan">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
         <include refid="table"/>
-        <set>
-            <if test="date != null and date != ''">
-                 `date`=#{date},
+        order by id desc limit 1
+    </select>
+
+    <select id="queryListByParam" resultType="com.wusi.reimbursement.entity.ClassPlan">
+        SELECT DISTINCT date FROM `class_plan`
+        <where>
+            <if test="dateList != null and dateList.size>0">
+                `date`in
+                <foreach collection="dateList" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
             </if>
-            <if test="name != null and name != ''">
-                 `name`=#{name},
-            </if>
-            <if test="classes != null">
-                 `classes`=#{classes},
-            </if>
-            <if test="cteateTime != null">
-                 `cteate_time`=#{cteateTime},
-            </if>
-        </set>
-        WHERE id=#{id}
-    </update>
+        </where>
+        ORDER BY date desc limit #{page},#{limit}
+    </select>
 </mapper>

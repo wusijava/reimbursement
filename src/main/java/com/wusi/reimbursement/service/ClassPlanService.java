@@ -15,4 +15,6 @@ import java.util.List;
 public interface ClassPlanService extends BaseService<ClassPlan,Long> {
     List<ClassPlan> queryListByParam(ClassPlanQuery query);
     long querycount(ClassPlanQuery query);
+
+    ClassPlan queryLast();
 }

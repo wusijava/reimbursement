@@ -53,37 +53,6 @@ public class ssq {
 
     }
     @Test
-    public  void createPlan(){
-        Runtime.getRuntime();
-        String date="2021-05-31";
-        List<ClassPlan> list=new ArrayList<>();
-        ClassPlan p1=new ClassPlan();
-        p1.setCteateTime(new DateTime());
-        p1.setClasses(1);
-        p1.setDate(date);
-        p1.setName("张明霞");
-        list.add(p1);
-        ClassPlan p2=new ClassPlan();
-        p2.setCteateTime(new DateTime());
-        p2.setClasses(2);
-        p2.setDate(date);
-        p2.setName("肖琼");
-        list.add(p2);
-        ClassPlan p3=new ClassPlan();
-        p3.setCteateTime(new DateTime());
-        p3.setClasses(3);
-        p3.setDate(date);
-        p3.setName("陈萍");
-        list.add(p3);
-        ClassPlan p4=new ClassPlan();
-        p4.setCteateTime(new DateTime());
-        p4.setClasses(0);
-        p4.setDate(date);
-        p4.setName("肖阳凤");
-        list.add(p4);
-        classPlanService.insertBatch(list);
-    }
-    @Test
     public void countDays() throws ParseException {
         int days = (int)(DateUtil.betweenDays(sdf.parse("2019-10-22"), new Date()));
         System.out.println(days);

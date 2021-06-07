@@ -23,30 +23,32 @@ public class ClassPlan implements Identifiable<Long> {
   /**
    * 班次0休息1早班2插班3晚班
    */
-  private Integer classes;
+  private String classes;
   /**
    * 创建时间
    */
   private Date cteateTime;
 
+  //0休息，a早班，b晚班，c插班
   public enum Classes {
-    xiuxi(0, "休息"),
-    zao(1, "早班"),
-    cha(3, "插班"),
-    wan(2, "晚班");
+    xiuxi("O", "休息"),
+    zao("A", "早班"),
+    cha("C", "插班"),
+    wan("B", "晚班"),
+    meeting("E", "公司开会");
 
-    private Integer code;
+    private String code;
     private String desc;
 
-    Classes(Integer code, String desc) {
+    Classes(String code, String desc) {
       this.code = code;
       this.desc = desc;
     }
-    public Integer getCode() {
+    public String getCode() {
       return code;
     }
 
-    public void setCode(Integer code) {
+    public void setCode(String code) {
       this.code = code;
     }
 
@@ -65,6 +67,8 @@ public class ClassPlan implements Identifiable<Long> {
       return "早班";
     }else if (Classes.cha.getCode().equals(classes)){
       return "插班";
+    }else if (Classes.meeting.getCode().equals(classes)){
+      return "公司开会";
     }else{
       return "晚班";
     }

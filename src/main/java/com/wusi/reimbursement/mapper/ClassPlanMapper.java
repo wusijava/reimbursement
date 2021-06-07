@@ -17,4 +17,6 @@ public interface ClassPlanMapper extends BaseMapper<ClassPlan,Long> {
 
     long querycount(ClassPlanQuery query);
 
+    ClassPlan queryLast();
+
 }

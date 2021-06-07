@@ -36,4 +36,9 @@ public class ClassPlanServiceImpl extends BaseMybatisServiceImpl<ClassPlan,Long>
     public long querycount(ClassPlanQuery query) {
         return classPlanMapper.querycount(query);
     }
+
+    @Override
+    public ClassPlan queryLast() {
+        return classPlanMapper.queryLast();
+    }
 }
