@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -191,5 +192,15 @@ public class WaterLevelController {
         vo.setId(waterLevel.getId());
         return vo;
     }
-
+    @RequestMapping(value = "dayReport")
+    @Scheduled(cron = "0 0 18,19 * * ?")
+    public void dayReport() throws Exception {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        String[] weekDays = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+        if (w !=6 &&w!= 0) {
+            DingDingTalkUtils.sendDingDingMsg(weekDays[w]+":钉钉日报提醒!");
+        }
+    }
 }
