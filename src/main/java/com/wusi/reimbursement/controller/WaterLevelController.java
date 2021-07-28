@@ -203,4 +203,9 @@ public class WaterLevelController {
             DingDingTalkUtils.sendDingDingMsg(weekDays[w]+":钉钉日报提醒!");
         }
     }
+
+    @Scheduled(cron = "0 0 8,12,18,22 * * ?")
+    public void taoBaoSign() throws Exception {
+            DingDingTalkUtils.sendDingDingMsg("淘宝签到活动提醒!!!");
+    }
 }
