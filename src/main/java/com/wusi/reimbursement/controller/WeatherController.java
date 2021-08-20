@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Slf4j
-@RequestMapping(value = "/weather")
+@RequestMapping(value = "api/open/")
 public class WeatherController {
     @Scheduled(cron = "0 45 7 * * ?")
     @RequestMapping(value = "getWeather")
-    public void sendWeatherSMS() {
+    public void sendWeatherSMS() throws Exception {
         String weather = WeatherUtils.getWeather();
         log.error("三日内天气,{}", JSONObject.toJSONString(weather));
     }

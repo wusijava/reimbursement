@@ -15,7 +15,7 @@ import java.util.Map;
  * @ CreateDate    :  2019/11/28$ 16:13$
  */
 public class WeatherUtils {
-    public  static  String getWeather(){
+    public  static  String getWeather() throws Exception {
         String date=null;
         String urlapi="https://free-api.heweather.net/s6/weather/forecast?location=wuhan&key=b941bbcd687b486aa07aab8586dc115e";
         RestTemplate restTemplate =new RestTemplate();
@@ -35,7 +35,8 @@ public class WeatherUtils {
             map.put ("天气情况",two.get("cond_txt_d").toString());
             if(i==0){
                 if(two.get("cond_txt_d").toString().indexOf("雨")!=-1){
-                    SMSUtil.sendSMS("15527875423", "小岩同学", 834979);
+                    //SMSUtil.sendSMS("15527875423", "小岩同学", 834979);
+                    DingDingTalkUtils.sendDingDingMsg("今日武汉有雨,请带伞!");
                 }
             }
             map.put ("湿度",two.get("hum").toString());

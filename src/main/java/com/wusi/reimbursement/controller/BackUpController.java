@@ -20,6 +20,7 @@ import java.util.Date;
  */
 
 @Controller
+@RequestMapping(value = "api/open/")
 public class BackUpController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
