@@ -8,8 +8,8 @@ import java.util.Date;
 public class BackupDbUtil {
      public static String backup(String database) throws IOException {
       System.out.println("------开始备份数据库定时任务------");
-      String user = "root"; //数据库的用户名
-      String password = "13545630179qq.";//数据库的密码
+      //String user = "root"; //数据库的用户名
+      //String password = "13545630179qq.";//数据库的密码
       //String database = "red_packet";//要备份的数据库名
       Date date = new Date();
       SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -18,8 +18,7 @@ public class BackupDbUtil {
       if(!file.exists()){
        file.createNewFile();  
       }
-      String stmt1 = "mysqldump " + database +" -h 127.0.0.1 "+ " -u " + user + " -p" +
-      password + " --result-file=" + filepath;
+      String stmt1 ="docker exec -it  mysql5.7 mysqldump -uroot -p13545630179qq.  taobao >"+filepath;
       try {
         Runtime.getRuntime().exec(stmt1);
         System.out.println("------已经保存到 " + filepath + " 中------");

@@ -25,7 +25,7 @@ public class BackUpController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private IMailService mailService;
-    @Scheduled(cron = "0 35 11 * * *")
+    @Scheduled(cron = "0 18 17 * * *")
     @RequestMapping(value = "backUpDataBase")
     @ResponseBody
     public void cron() {
