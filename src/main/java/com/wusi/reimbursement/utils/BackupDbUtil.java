@@ -1,10 +1,12 @@
 package com.wusi.reimbursement.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+@Slf4j
 public class BackupDbUtil {
      public static String backup(String database) throws IOException {
       System.out.println("------开始备份数据库定时任务------");
@@ -19,6 +21,7 @@ public class BackupDbUtil {
        file.createNewFile();  
       }
       String stmt1 ="docker exec -it  mysql5.7 mysqldump -uroot -p13545630179qq.  taobao >"+filepath;
+      log.error("xshell执行语句,{}",stmt1);
       try {
         Runtime.getRuntime().exec(stmt1);
         System.out.println("------已经保存到 " + filepath + " 中------");

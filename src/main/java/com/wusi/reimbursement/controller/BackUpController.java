@@ -25,7 +25,7 @@ public class BackUpController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private IMailService mailService;
-    @Scheduled(cron = "0 18 17 * * *")
+    //@Scheduled(cron = "0 45 17 * * *")
     @RequestMapping(value = "backUpDataBase")
     @ResponseBody
     public void cron() {
@@ -36,7 +36,7 @@ public class BackUpController {
             //String filePathTaobao="D:\\excel\\blackList.xlsx";
             mailService.sendAttachmentsMail("513936307@qq.com","腾讯云数据库备份"+ DateUtil.formatDate(new Date(), "yyyy-MM-dd"),"今日备份已发到附件,请及时保存备份!",filePathTaobao);
             //删除7天之前的文件
-            String path="/home/back/dababase/";
+          /*  String path="/home/back/dababase/";
             File file=new File(path);
             File[] files=file.listFiles();
             for (int i=0;i<files.length;i++){
@@ -51,7 +51,7 @@ public class BackUpController {
                         files[i].delete();
                     }
                 }
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
