@@ -36,7 +36,7 @@ public class DingDingTalkUtils {
         List<String> mob=new ArrayList<>();
         //mob.add("15387179733");
         mob.add("18602702325");
-        mob.add("18627228022");
+        //mob.add("18627228022");
         //mob.add("15549056894");
         at.setAtMobiles(mob);
         request.setMsgtype("text");

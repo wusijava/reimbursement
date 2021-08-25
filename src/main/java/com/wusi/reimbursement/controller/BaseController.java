@@ -8,10 +8,7 @@ import com.wusi.reimbursement.query.ReimbursementQuery;
 import com.wusi.reimbursement.service.ReimbursementService;
 import com.wusi.reimbursement.service.RoleService;
 import com.wusi.reimbursement.service.UserService;
-import com.wusi.reimbursement.utils.DataUtil;
-import com.wusi.reimbursement.utils.DateUtil;
-import com.wusi.reimbursement.utils.RedisUtil;
-import com.wusi.reimbursement.utils.StringUtils;
+import com.wusi.reimbursement.utils.*;
 import com.wusi.reimbursement.vo.HomeMenuList;
 import com.wusi.reimbursement.vo.ReimbursementList;
 import com.wusi.reimbursement.vo.UserInfo;
@@ -54,8 +51,10 @@ public class BaseController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     @SysLog("登录")
-    public Response<UserInfo> login(String username, String password, HttpSession session) {
+    public Response<UserInfo> login(String username, String password, HttpSession session) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         RequestContext.RequestUser user = RequestContext.getCurrentUser();
+        DingDingTalkUtils.sendDingDingMsg(user.getNickName()+"登录成功---"+sdf.format(new Date()));
         UserInfo info = new UserInfo();
         info.setMobile(user.getMobile());
         info.setUsername(user.getUsername());

@@ -11,6 +11,7 @@ import com.wusi.reimbursement.common.ratelimit.anonation.RateLimit;
 import com.wusi.reimbursement.config.JmsMessaging;
 import com.wusi.reimbursement.config.SendMessage;
 import com.wusi.reimbursement.entity.ExcelDto;
+import com.wusi.reimbursement.entity.RequestContext;
 import com.wusi.reimbursement.entity.Spend;
 import com.wusi.reimbursement.query.SpendQuery;
 import com.wusi.reimbursement.service.IMailService;
@@ -187,6 +188,7 @@ public class SpendController {
     @SysLog("保存消费项")
     @RateLimit(permitsPerSecond = 0.2, ipLimit = true, description = "限制导出频率")
     public Response<String> save(SpendList spendList) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if(!StringUtils.isNumeric(spendList.getPrice())){
             return Response.fail("金额填数字,你个憨批~");
         }
@@ -199,6 +201,7 @@ public class SpendController {
         /*EstablishRedPacketRequest request = new EstablishRedPacketRequest();
         request.setModel(registerModel(spendList));
         EstablishRedPacketResponse response = client.execute(request);*/
+        DingDingTalkUtils.sendDingDingMsg(spend.getConsumer()+"消费了"+spend.getItem()+",金额:"+spend.getPrice()+",备注:"+spend.getRemark()+",消费时间:"+sdf.format(new Date()));
         return Response.ok("添加成功!");
     }
 
