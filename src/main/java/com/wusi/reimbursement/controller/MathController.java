@@ -17,10 +17,8 @@ import com.wusi.reimbursement.utils.DataUtil;
 import com.wusi.reimbursement.utils.DateUtil;
 import com.wusi.reimbursement.utils.MoneyUtil;
 import com.wusi.reimbursement.utils.RedisUtil;
-import com.wusi.reimbursement.vo.AwardRecordVo;
+import com.wusi.reimbursement.vo.*;
 import com.wusi.reimbursement.vo.Math;
-import com.wusi.reimbursement.vo.MathParam;
-import com.wusi.reimbursement.vo.MathPlanVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -641,5 +640,36 @@ public class MathController {
         awardRecord.setState(value);
         awardRecordService.updateById(awardRecord);
         return Response.ok("更新成功!");
+    }
+
+    //数的比较
+    @RequestMapping(value = "compareNum")
+    public Response<CompareNum> handleAwardState(Integer size){
+        Random r = new Random();
+        CompareNum compareNum=new CompareNum();
+        int numberOne = r.nextInt(size);
+        compareNum.setNumOne(String.valueOf(numberOne));
+        int numberTwo = r.nextInt(size);
+        compareNum.setNumTwo(String.valueOf(numberTwo));
+        return Response.ok(compareNum);
+    }
+    //数的比较
+    @RequestMapping(value = "checkCompare")
+    public Response<String> checkCompare(String numOne,String fu,String numTwo){
+        Integer one= Integer.valueOf(numOne);
+        Integer two= Integer.valueOf(numTwo);
+        Boolean result=false;
+        if("＜".equals(fu)){
+            result=one<two;
+        }else if("＞".equals(fu)){
+            result=one>two;
+        }else{
+            result=one==two;
+        }
+        if(result){
+           return Response.ok("答对了,小柠檬不错哦~");
+        }else{
+            return Response.ok("答错了,小柠檬继续加油~");
+        }
     }
 }
